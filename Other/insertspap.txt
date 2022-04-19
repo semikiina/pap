@@ -1,0 +1,95 @@
+algumas querys
+
+
+ //try
+            //{
+            //    using (openCon = new SqlConnection(Globals.connstring))
+            //    {
+            //        string InsertRegister = "INSERT into users (first_name,last_name,nickname,phonenumber,email,token, password) VALUES (@firstName,@lastName,@nickname, @phonenumber, @email, @token,@password)";
+            //        using (SqlCommand querySaveStaff = new SqlCommand(InsertRegister))
+            //        {
+
+            //            querySaveStaff.Connection = openCon;
+            //            querySaveStaff.Parameters.Add("@firstName", SqlDbType.VarChar, 255).Value = first_name.Text.ToString();
+            //            querySaveStaff.Parameters.Add("@lastName", SqlDbType.VarChar, 255).Value = last_name.Text.ToString();
+            //            querySaveStaff.Parameters.Add("@nickname", SqlDbType.VarChar, 255).Value = nickname.Text.ToString();
+            //            querySaveStaff.Parameters.Add("@phonenumber", SqlDbType.VarChar, 255).Value = phone.Text.ToString();
+            //            querySaveStaff.Parameters.Add("@email", SqlDbType.VarChar, 255).Value = email.Text.ToString();
+            //            querySaveStaff.Parameters.Add("@token", SqlDbType.VarChar, 255).Value = num.ToString();
+            //            querySaveStaff.Parameters.Add("@password", SqlDbType.VarChar).Value = newpass.ToString();
+            //            openCon.Open();
+            //            querySaveStaff.ExecuteNonQuery();
+            //            openCon.Close();
+            //        }
+            //    }
+
+            //}
+            //catch (SqlException exe)
+            //{
+            //    Debug.WriteLine("ERRO DE CONEXAO:" + exe.ToString());
+            //}
+
+ //using (openCon = new SqlConnection(Globals.connstring))
+                //{
+                //    string getEmail = "select * from users where email=@email";
+                //    using (SqlCommand querySaveStaff = new SqlCommand(getEmail))
+                //    {
+                //        querySaveStaff.Connection = openCon;
+                //        querySaveStaff.Parameters.Add("@email", SqlDbType.VarChar, 255).Value = email.Text.ToString();
+                //        openCon.Open();
+                //        using (SqlDataReader oReader = querySaveStaff.ExecuteReader())
+                //        {
+                //            try
+                //            {
+                //                if (oReader.HasRows)
+                //                {
+                //                    emaillabel.Text = "This email is already registered!";
+                //                    emaillabel.IsVisible = true;
+                //                    checker2 = true;
+                //                }
+                //            }
+                //            catch (Exception ex)
+                //            {
+                //                Debug.WriteLine(ex.Message);
+                //            }
+
+                //        }
+                //        openCon.Close();
+                //    }
+                //}
+
+using (openCon = new SqlConnection(Globals.connstring))
+                {
+                    string getEmail = "select token from users where email=@email";
+                    using (SqlCommand querySaveStaff = new SqlCommand(getEmail))
+                    {
+                        querySaveStaff.Connection = openCon;
+                        querySaveStaff.Parameters.Add("@email", SqlDbType.VarChar, 255).Value = Globals.email.ToString();
+                        openCon.Open();
+                        using (SqlDataReader oReader = querySaveStaff.ExecuteReader())
+                        {
+                            try
+                            {
+                                while (oReader.Read())
+                                {
+                                    if (oReader["token"].ToString() == Token.Text.ToString())
+                                    {
+                                        UpdateUser();
+
+                                    }
+                                    else
+                                    {
+                                        Token_lbl.IsVisible = true;
+                                    }
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                            }
+
+                        }
+                        openCon.Close();
+                    }
+                }
