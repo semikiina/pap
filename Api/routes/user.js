@@ -70,5 +70,9 @@ router.post('/ncart', userController.NewCart);
 router.delete('/cart/:userid/:productid', userController.DeleteCart);
 
 
+//POST /user/fav/:id
+router.post('/nfav/:userid/:id', userController.NewFavorite);
+
+
 
 module.exports = router;

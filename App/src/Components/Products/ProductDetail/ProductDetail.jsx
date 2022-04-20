@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar} from '@mui/material';
 import {FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
 
-const ProductDetail = ({product}) => {
+const ProductDetail = ({product, newFav}) => {
 
+    console.log(product)
     let i=0;
     const [currentPhoto, setCurrentPhoto] = useState()
     
@@ -78,8 +79,7 @@ const ProductDetail = ({product}) => {
 
                 <Stack direction="row" spacing={2}  alignItems={'center'} marginBottom={3}>
                     <Button variant="outlined" color="secondary" fullWidth>Add to cart</Button>
-                    <FavoriteBorder></FavoriteBorder>
-                    <BookmarkBorder></BookmarkBorder>
+                    <FavoriteBorder onClick={()=>{newFav(product._id)}}></FavoriteBorder>
                 </Stack>
                 <Box>
                     <Typography variant="h5">Description</Typography>

@@ -340,3 +340,49 @@ exports.DeleteCart = async (req, res, next) => {
     })
 
 }
+
+
+
+exports.NewFavorite = (req, res, next) => {
+    console.log('New Fav')
+    const userId = req.params.userid;
+    var exists = 0;
+    User.find({_id: userId, favorite : req.params.id})
+    .then(user =>{
+        user.favorite.forEach(e=>{
+            if(e == req.params.id){
+                user.favorite.pull(req.params.id)
+                exists=1;
+            } 
+            
+        })
+        if(exists==0) user.favorite.push(req.params.id)
+
+        return user.save()
+    })
+    .then(result=>{
+        return Product.findById(req.params.id)
+    })
+    .then(product=>{
+
+        if(exists==0) product.favorite.push(req.params.id)
+        else product.favorite.pull(req.params.id)
+        return  product.save()
+    })
+    .then(result=>{
+        res.status(200).json({
+            lll: result.favorite.length,
+            color: exists
+        })
+    })
+    
+    .catch(error => {
+        console.log(error)
+        return res
+            .status(422)
+            .json({
+                message: "Operation failed.Try again later.",
+                errors: error
+            })
+    })
+}
