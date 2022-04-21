@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Products, DetailsP, Cart, Checkout, Navbar, Home, Error, Login, AddProduct, Profile } from './Components/index';
+import {Products, DetailsP, Cart, Checkout, Navbar, Home, Error, Login, AddProduct, Store } from './Components/index';
 import {BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import {LinearProgress, Skeleton} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -29,6 +29,8 @@ const App = () => {
 
 	const [product, setProduct] = useState([]);
     const [cart, setCart] = useState([]);
+	const [order, setOrder] = useState({});
+	const [errorMessage, setErrorMessage] = useState('');
 
     const fetchProduct = async () =>{
 
@@ -71,6 +73,25 @@ const App = () => {
         })
     }
 
+	const refreshCart = async () => {
+		const newCart = "null";
+	
+		setCart(newCart);
+	};
+
+	const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
+		try {
+			const incomingOrder = await api.post('order');
+
+			setOrder(incomingOrder);
+
+			refreshCart();
+		} catch (error) {
+			setErrorMessage(error.data.error.message);
+		}
+	};
+	
+
 	useEffect(()=>{
         fetchCart();
 		fetchProduct();
@@ -85,13 +106,13 @@ const App = () => {
 				}
 				<Routes>
 					<Route exact path='/' element={<Home/>}/>
-					<Route exact path='/category' element={<Products onAddToCart={AddToCart}  product={product}/>}/>
+					<Route exact path='/category' element={<Products onAddToCart={AddToCart}  product={product}  />}/>
 					<Route exact path='/products/:id' element={<DetailsP/>}/>
 					<Route exact path='/cart' element={<Cart Cart={cart} onRemoveFromCart={RemoveFromCart}/>}/>
 					<Route exact path='/checkout' element={<Checkout Cart={cart} />}/>
 					<Route exact path='/login' element={<Login />}/>
 					<Route exact path='/addProduct' element={<AddProduct />}/>
-					<Route exact path='/profile' element={<Profile />}/>
+					<Route exact path='/store/:id' element={<Store />}/>
 					<Route exact path='*' element={<Error/>}/>
 				</Routes>
 			</Router>

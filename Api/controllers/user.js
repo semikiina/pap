@@ -282,6 +282,7 @@ exports.GetUserById = (req, res, next) => {
         // Populate gets info from other collections
         .populate('cart.items.product_id',['price','title','images','_id'])
         .populate('favorite',['title','images'])
+        .populate('store')
         .then(user => {
             if (!user) {
                 const error = new Error('Could not find the user.')
@@ -346,33 +347,35 @@ exports.DeleteCart = async (req, res, next) => {
 exports.NewFavorite = (req, res, next) => {
     console.log('New Fav')
     const userId = req.params.userid;
-    var exists = 0;
-    User.find({_id: userId, favorite : req.params.id})
+    let exists;
+    User.findById(userId)
     .then(user =>{
-        user.favorite.forEach(e=>{
-            if(e == req.params.id){
-                user.favorite.pull(req.params.id)
-                exists=1;
-            } 
-            
-        })
-        if(exists==0) user.favorite.push(req.params.id)
-
-        return user.save()
+        if(!user.favorite.includes(req.params.id)){
+            exists=true;
+            return user.updateOne({ $push : { favorite: {_id:req.params.id}}}).exec()
+        }
+        else{
+            exists=false;
+            return user.updateOne({ $pull : { favorite: req.params.id}}).exec()
+        }
+        
     })
-    .then(result=>{
+    .then(user=>{
         return Product.findById(req.params.id)
     })
     .then(product=>{
+        if(!product.favorite.includes(userId)){
+            product.updateOne({ $push : { favorite: userId}}).exec()
+        }
+        else{
+            product.updateOne({ $pull : { favorite: userId}}).exec()
+        }
 
-        if(exists==0) product.favorite.push(req.params.id)
-        else product.favorite.pull(req.params.id)
-        return  product.save()
+        return product.save()
     })
     .then(result=>{
         res.status(200).json({
-            lll: result.favorite.length,
-            color: exists
+            fav: exists
         })
     })
     

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar} from '@mui/material';
-import {FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
+import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar, CircularProgress} from '@mui/material';
+import {Favorite,FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
 
-const ProductDetail = ({product, newFav}) => {
+const ProductDetail = ({product, newFav, fav}) => {
 
-    console.log(product)
     let i=0;
     const [currentPhoto, setCurrentPhoto] = useState()
     
@@ -15,6 +14,9 @@ const ProductDetail = ({product, newFav}) => {
     useEffect(()=>{
         if(product.images)  setCurrentPhoto(product.images[0]);
     },[product])
+
+    if (!product) return <CircularProgress/>;
+
     return (
         <>
         <Grid container spacing={2}>
@@ -40,11 +42,8 @@ const ProductDetail = ({product, newFav}) => {
                                             onClick={()=> {ChangedPhoto(e)}}
                                         />
                                         )
-
-                                        
                                     })
                                 }
-                                
                             </Stack>
                         </Box>  
                         
@@ -55,7 +54,7 @@ const ProductDetail = ({product, newFav}) => {
                 <Stack direction="row" spacing={2} marginBottom={1} alignItems={'center'}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" sx={{ width: 56, height: 56 }} />
                     <Box >
-                        <Typography variant="subtitle1"  >Cris Linda's Store</Typography>
+                        <Typography variant="subtitle1" onClick={()=>{ window.location.href="../store/"+product.store_id._id}} >{product.store_id && product.store_id.store_name}</Typography>
                         <Typography variant="subtitle2" color="secondary" >Created by <b>@me</b></Typography>
                     </Box>
                 </Stack>
@@ -79,7 +78,11 @@ const ProductDetail = ({product, newFav}) => {
 
                 <Stack direction="row" spacing={2}  alignItems={'center'} marginBottom={3}>
                     <Button variant="outlined" color="secondary" fullWidth>Add to cart</Button>
-                    <FavoriteBorder onClick={()=>{newFav(product._id)}}></FavoriteBorder>
+                    {fav 
+                        ? <Favorite onClick={()=>{newFav(product._id)}}></Favorite>
+                        : <FavoriteBorder onClick={()=>{newFav(product._id)}}></FavoriteBorder>
+                    }
+                    
                 </Stack>
                 <Box>
                     <Typography variant="h5">Description</Typography>

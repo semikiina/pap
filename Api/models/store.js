@@ -14,7 +14,7 @@ const StoreSchema = new Schema({
     store_description: String,
     product:[{
         type: Schema.Types.ObjectId,
-        ref:'product'
+        ref:'Product'
     }]
 })
 

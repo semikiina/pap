@@ -17,6 +17,9 @@ router.post('/', Product.NewProduct)
 //POST /product/upd/:id
 router.post('/upd/:id', Product.UpdateProduct)
 
+//Get /product/sPrd/:id
+router.get('/sPrd/:id', Product.GetSimilarProducts)
+
 
 module.exports = router;
 

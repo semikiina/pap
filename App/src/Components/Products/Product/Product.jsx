@@ -1,8 +1,8 @@
 import React from 'react';
 import {Card, CardActions, CardContent, CardMedia, Button, Typography, } from '@mui/material';
-import {Favorite} from '@mui/icons-material';
+import {FavoriteBorder, Favorite} from '@mui/icons-material';
 
-const Product = ({product, onAddToCart}) => {
+const Product = ({product, onAddToCart, fav, newFav}) => {
   return (
     <Card sx={{ maxWidth: 345 }} >
       <Button href={'products/'+ product._id} padding={0} >
@@ -21,7 +21,11 @@ const Product = ({product, onAddToCart}) => {
         <Typography gutterBottom variant="h6" component="div">
          {product.title} 
         </Typography>
-        <Favorite/>
+        {
+          fav
+          ? <Favorite onClick={()=>{newFav(product._id)}}/>
+          : <FavoriteBorder onClick={()=>{newFav(product._id)}}/>
+        }
         <Typography  variant="h6" component="div">
          {product.price} € 
         </Typography>

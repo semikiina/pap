@@ -155,3 +155,33 @@ exports.UpdateStore = (req, res, next) => {
         })
 
 }
+
+
+
+
+//Store Get All
+exports.GetTheStoreNew = (req, res, next) => {
+
+    console.log('GET store By User')
+    //Find all stores
+    Store.findById( req.params.id)
+        .populate({
+            path: 'product',
+            match: {
+              active: false,
+            }
+          })
+        .then(store => {
+            res.status(200).json(store)
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Can't find any store.",
+                    errors: error
+
+                })
+        })
+}

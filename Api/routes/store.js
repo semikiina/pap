@@ -46,5 +46,8 @@ router.put('/:id', Auth, SAuth, [
         })
 ], storeController.UpdateStore)
 
+//GET /store/:id
+router.get('/:id', storeController.GetTheStoreNew)
+
 
 module.exports = router;

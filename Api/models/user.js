@@ -16,7 +16,7 @@ const userSchema = new Schema({
     profile_pic : String,
     store:[{
         type: Schema.Types.ObjectId,
-        ref: 'store'
+        ref: 'Store'
     }],
     favorite:[{
         type: Schema.Types.ObjectId,
@@ -68,7 +68,21 @@ userSchema.methods.AddToCart = function(product){
 
     return this.save();
 }
-
+userSchema.methods.RemoveFromCart = function(product){
+    const updatedCartItems = this.cart.items.filter( item =>{
+        return item.product_id.toString() !== product._id.toString()
+    })
+    let subtotal = 0;
+    updatedCartItems.forEach(i =>{
+        subtotal += parseInt(i.quantity* i.price) ;
+    })
+    const nupdatedCart ={
+        items : updatedCartItems,
+        subtotal : subtotal
+    }
+    this.cart = nupdatedCart;
+    return this.save();
+}
 
 
 

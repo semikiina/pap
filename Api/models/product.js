@@ -5,7 +5,10 @@ const Schema = mongoose.Schema;
 const ProductSchema = new Schema({
     title: String,
     description: String,
-    store_id: Schema.Types.ObjectId,
+    store_id:{
+        type : Schema.Types.ObjectId,
+        ref: 'Store'
+    } ,
     price: Number,
     date_created: Date,
     orders:Number,
@@ -15,7 +18,7 @@ const ProductSchema = new Schema({
     }],
     favorite:[{
         type: Schema.Types.ObjectId,
-        ref:'user'
+        ref:'User'
     }]
 
 });

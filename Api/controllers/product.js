@@ -79,7 +79,9 @@ exports.GetTheProduct = (req, res, next) => {
     
     var productid = req.params.id
     Product.findById(productid)
+    .populate('store_id',['store_name','creator_id'])
         .then(product => {
+            console.log(product)
             res.status(200).json(product)
         })
         .catch(error => {
@@ -122,4 +124,25 @@ exports.UpdateProduct = (req, res, next) => {
                 })
         })
 
+}
+
+
+exports.GetSimilarProducts = (req, res, next) => {
+
+    console.log('GET /product/:id')
+    Product.find({store_id: req.params.id})
+        .sort({'date': -1})
+        .limit(2)
+        .then(product => {
+            res.status(200).json(product)
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Can't find the product.",
+                    errors: error.array()
+                })
+        })
 }
