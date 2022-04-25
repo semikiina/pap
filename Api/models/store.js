@@ -9,6 +9,7 @@ const StoreSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref: 'User',
     },
+    store_image : String,
     date_created: Date,
     store_nickname: String,
     store_description: String,

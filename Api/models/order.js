@@ -20,6 +20,7 @@ const OrderSchema = new Schema({
     total: Number,
     date_created : Date,
     status:String,
+    zip_code:String,
     cart:{
         items:[
             {

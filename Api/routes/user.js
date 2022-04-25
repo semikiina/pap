@@ -73,6 +73,11 @@ router.delete('/cart/:userid/:productid', userController.DeleteCart);
 //POST /user/fav/:id
 router.post('/nfav/:userid/:id', userController.NewFavorite);
 
+//POST /user/fav/:id
+router.post('/editUser/:id', userController.NewEditProfile);
+
+
+
 
 
 module.exports = router;

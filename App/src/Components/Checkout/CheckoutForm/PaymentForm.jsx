@@ -1,9 +1,17 @@
-import { Divider, Typography } from '@mui/material'
+import { Divider, Typography, Button,Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import Review from './Review'
 
 const PaymentForm = ({shippingData, cart}) => {
+    const [open, setOpen] = React.useState(false);
 
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
     const paypal = useRef()
 
     useEffect(() =>{
@@ -44,6 +52,7 @@ const PaymentForm = ({shippingData, cart}) => {
             onApprove: async (data, actions) =>{
                 const order = await actions.order.capture()
                 console.log(order)
+                setOpen(true)
             },
             onError: (err) =>{
                 console.log(err)
@@ -60,6 +69,24 @@ const PaymentForm = ({shippingData, cart}) => {
         <Divider></Divider>
         <Typography variant="h4" marginTop={3} marginBottom={3}> Payment method</Typography>
         <div ref={paypal}></div>
+        <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+            {"Order placed Successfully!"}
+            </DialogTitle>
+            <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+                Thanks For Purchasing with TagMe!
+            </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={()=>{ window.location.href ="../"}}>Return</Button>
+            </DialogActions>
+        </Dialog>
         </>
     )
 }

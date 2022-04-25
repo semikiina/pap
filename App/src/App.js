@@ -1,10 +1,15 @@
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.css';
 import React, { useEffect, useState } from 'react'
-import {Products, DetailsP, Cart, Checkout, Navbar, Home, Error, Login, AddProduct, Store } from './Components/index';
+import {Products, DetailsP, Cart, Checkout, Navbar, Home, Error, Login, AddProduct, Store, Favorite, Profile } from './Components/index';
 import {BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import {LinearProgress, Skeleton} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import api from './Services/api';
+import StoreProduct from './Components/Store/Store Products/StoreProducts';
+import Dashboard from './Components/Dashboard/Dashboard';
 
+import Exemplo from './Components/Ajuda/Exemplo';
 
 const THEME = createTheme({
 	typography: {
@@ -13,13 +18,6 @@ const THEME = createTheme({
 		  '-apple-system',
 		  'BlinkMacSystemFont',
 		  '"Segoe UI"',
-		  'Roboto',
-		  '"Helvetica Neue"',
-		  'Arial',
-		  'sans-serif',
-		  '"Apple Color Emoji"',
-		  '"Segoe UI Emoji"',
-		  '"Segoe UI Symbol"',
 		].join(','),
 	  },
  });
@@ -28,9 +26,12 @@ const THEME = createTheme({
 const App = () => {
 
 	const [product, setProduct] = useState([]);
+	const [store, setStore] = useState();
+	const [user, setUser] = useState([]);
     const [cart, setCart] = useState([]);
 	const [order, setOrder] = useState({});
 	const [errorMessage, setErrorMessage] = useState('');
+	const [favorite, setFavorite] = useState([]);
 
     const fetchProduct = async () =>{
 
@@ -41,7 +42,10 @@ const App = () => {
     const fetchCart =() =>{
         api.get('user/620ac00c85d485580493d87f')
         .then(({data})=>{
+			setStore(data.store[0]._id)
+			setUser(data)
 			setCart(data.cart)
+			setFavorite(data.favorite)
         })
         .catch(err=>{
             console.log(err)
@@ -102,17 +106,26 @@ const App = () => {
 		<ThemeProvider theme={THEME}>
 			<Router>
 				{
-					cart.length === 0 ? <Skeleton variant="rectangular" width={'100%'} height={50} margin={0} padding={0} position='fixed'/> : <Navbar Cart={cart}></Navbar>
+					cart.length === 0 ? <Skeleton variant="rectangular" width={'100%'} height={50} margin={0} padding={0} position='fixed'/> : <Navbar Cart={cart} storeid={user.store[0]._id}></Navbar>
 				}
 				<Routes>
 					<Route exact path='/' element={<Home/>}/>
 					<Route exact path='/category' element={<Products onAddToCart={AddToCart}  product={product}  />}/>
 					<Route exact path='/products/:id' element={<DetailsP/>}/>
+
 					<Route exact path='/cart' element={<Cart Cart={cart} onRemoveFromCart={RemoveFromCart}/>}/>
 					<Route exact path='/checkout' element={<Checkout Cart={cart} />}/>
+
+					<Route exact path='/favorite' element={<Favorite favorite={favorite} />}/>
+					<Route exact path='/profile' element={<Profile user={user} setUser={setUser}/>}/>
 					<Route exact path='/login' element={<Login />}/>
-					<Route exact path='/addProduct' element={<AddProduct />}/>
+
 					<Route exact path='/store/:id' element={<Store />}/>
+					<Route exact path='/storeProducts' element={<StoreProduct storeid={store} />}/>
+					<Route exact path='/addProduct' element={<AddProduct storeid={store}/>}/>
+					<Route exact path='/dashboard' element={<Dashboard />}/>
+					<Route exact path='/exemplo' element={<Exemplo />}/>
+
 					<Route exact path='*' element={<Error/>}/>
 				</Routes>
 			</Router>

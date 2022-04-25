@@ -168,7 +168,7 @@ exports.GetTheStoreNew = (req, res, next) => {
         .populate({
             path: 'product',
             match: {
-              active: false,
+              active: true,
             }
           })
         .then(store => {
@@ -185,3 +185,38 @@ exports.GetTheStoreNew = (req, res, next) => {
                 })
         })
 }
+
+//Store Update
+exports.NewUpdateStore = (req, res, next) => {
+
+    console.log('Store Update')
+    var storeid = req.params.id
+    const storeReq = { ...req.body };
+    console.log(req.files)
+    //Find Store by ID
+    Store.findById(storeid)
+        .then(store => {
+            //Store changes
+            store.store_name = storeReq.store_name;
+            store.store_description = storeReq.store_description;
+            store.store_image = req.files[0].path;
+            return store.save();
+        })
+        .then(store => {
+            res.status(200).json({
+                message: "Store ok!",
+                store: store
+            })
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Validation failed. Please insert correct data.",
+                    errors: error
+                })
+        })
+
+}
+

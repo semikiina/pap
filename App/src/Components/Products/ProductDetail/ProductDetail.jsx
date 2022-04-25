@@ -52,10 +52,10 @@ const ProductDetail = ({product, newFav, fav}) => {
             </Grid>
             <Grid item  xs={12} md={6}>
                 <Stack direction="row" spacing={2} marginBottom={1} alignItems={'center'}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" sx={{ width: 56, height: 56 }} />
+                    { product.store_id && <Avatar alt="Remy Sharp" src={"http://localhost:8090/"+product.store_id.store_image} sx={{ width: 56, height: 56 }} />}
                     <Box >
                         <Typography variant="subtitle1" onClick={()=>{ window.location.href="../store/"+product.store_id._id}} >{product.store_id && product.store_id.store_name}</Typography>
-                        <Typography variant="subtitle2" color="secondary" >Created by <b>@me</b></Typography>
+                        <Typography variant="subtitle2" color="secondary" >Created by <b>@{product.store_id && product.store_id.creator_id}</b></Typography>
                     </Box>
                 </Stack>
             
@@ -63,7 +63,7 @@ const ProductDetail = ({product, newFav, fav}) => {
                 <Divider></Divider>
                 
                 <Box marginTop={3}>
-                    <Typography variant="subtitle1" color="grey" >Category of the product</Typography>
+                    <Typography variant="subtitle1" color="grey" >{product.category}</Typography>
                     <Typography variant="h6" padding={0}>{product.title}</Typography>
                 </Box>
                 <Stack direction="row"  marginBottom={1} >

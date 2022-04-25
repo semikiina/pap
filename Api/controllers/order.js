@@ -1,6 +1,8 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
 const User = require('../models/user');
+var easyinvoice = require('easyinvoice');
+const fs = require('fs');
 
 exports.GetOrder = (req, res, next) => {
     Order.find({email: req.params.email})
@@ -25,48 +27,34 @@ exports.Checkout = (req, res, next) => {
     
     let CheckoutReq = { ...req.body };
 
-    User.findById(req.userId)
+    User.findById(CheckoutReq.user_id)
         .then(user =>{
 
-            console.log(user)
             const order = new Order({
-                user_id: req.userId,
+                user_id: CheckoutReq.user_id,
                 email : CheckoutReq.email,
                 first_name: CheckoutReq.first_name,
                 last_name: CheckoutReq.last_name,
                 country: CheckoutReq.country,
-                phone_code : CheckoutReq.phone_code,
-                phone: CheckoutReq.phone,
+                zip_code: CheckoutReq.zip_code,
+                // phone_code : CheckoutReq.phone_code,
+                // phone: CheckoutReq.phone,
                 city: CheckoutReq.city,
-                state: CheckoutReq.state,
+                //state: CheckoutReq.state,
                 address_1: CheckoutReq.address_1,
-                address_2: CheckoutReq.address_2,
-                total: CheckoutReq.total,
+                // address_2: CheckoutReq.address_2,
+                // total: CheckoutReq.total,
                 cart: user.cart,
                 date_created : Date.now(),
             })
 
             return order.save()
         })
-
-        .then(result => {
-
-            return User.findById(req.userId)
-        })
-        .then(user => {
-
-            if(user){
-                user.cart.items=[];
-                
-            }
-            console.log(user)
-            return user.save()
-        })
         .then(result => {
 
             res.status(201).json({
                 message: "Order Placed Successfully!",
-                order: result
+                pdf: result
             })
         })
         .catch(error => {

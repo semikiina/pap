@@ -8,7 +8,7 @@ const Auth = require('../middleware/token');
 router.get('/:email', Auth, Order.GetOrder)
 
 //POST /order
-router.post('/', Auth, Order.Checkout)
+router.post('/', Order.Checkout)
 
 
 module.exports = router;

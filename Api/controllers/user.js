@@ -281,7 +281,7 @@ exports.GetUserById = (req, res, next) => {
         .select(['-password'])
         // Populate gets info from other collections
         .populate('cart.items.product_id',['price','title','images','_id'])
-        .populate('favorite',['title','images'])
+        .populate('favorite',['title','images','price'])
         .populate('store')
         .then(user => {
             if (!user) {
@@ -388,4 +388,43 @@ exports.NewFavorite = (req, res, next) => {
                 errors: error
             })
     })
+}
+
+exports.NewEditProfile = (req, res, next) => {
+
+    var userid = req.params.id
+    const userReq = { ...req.body };
+
+    //Find User by ID
+    User.findById(userid)
+        .then(user => {
+            //User changes
+            if(!user){
+                const error = new Error("User doesn't exist");
+                error.StatusCode = 404;
+                throw error;
+            }
+            user.first_name = userReq.first_name;
+            user.last_name = userReq.last_name;
+            user.nickname = userReq.nickname;
+            user.profile_pic = req.files[0].path;
+            user.bio = userReq.bio;
+            return user.save();
+        })
+        .then(user => {
+            res.status(200).json({
+                message: "User updated sucessfully!",
+                user: user
+            })
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Validation failed. Please insert correct data.",
+                    errors: error
+                })
+        })
+
 }

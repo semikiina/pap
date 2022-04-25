@@ -12,7 +12,9 @@ const ProductSchema = new Schema({
     price: Number,
     date_created: Date,
     orders:Number,
+    category:String,
     active: Boolean,
+    shipping: Number,
     images:[{
         type:String,
     }],

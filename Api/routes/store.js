@@ -50,4 +50,8 @@ router.put('/:id', Auth, SAuth, [
 router.get('/:id', storeController.GetTheStoreNew)
 
 
+//POST /store/editStore/:id
+router.post('/editStore/:id', storeController.NewUpdateStore)
+
+
 module.exports = router;
