@@ -3,6 +3,7 @@ import {AppBar, Toolbar, IconButton, Badge, MenuItem, Menu, Typography, Stack, s
 import {ShoppingCart, Favorite, Store} from '@mui/icons-material'
 import ProfileMenu from './Navbar Items/ProfileMenu';
 import StoreMenu from './Navbar Items/StoreMenu';
+import CartMenu from './Navbar Items/CartMenu';
 
 const settings =[
 	{
@@ -26,10 +27,11 @@ const settings =[
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-const Navbar = ({Cart, storeid}) => {
+const Navbar = ({Cart, storeid,onRemoveFromCart}) => {
 
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [anchorElStore, setAnchorElStore] = useState(null);
+	const [anchorElCart, setAnchorElCart] = useState(null);
 
 	const handleOpenUserMenu = (event) => {
 		setAnchorElUser(event.currentTarget);
@@ -46,6 +48,13 @@ const Navbar = ({Cart, storeid}) => {
 	const handleCloseStoreMenu = () => {
 		setAnchorElStore(null);
 	};
+	const handleOpenCartMenu = (event) => {
+		setAnchorElCart(event.currentTarget);
+	};
+
+	const handleCloseCartMenu = () => {
+		setAnchorElCart(null);
+	};
 
 	return (
 		<>
@@ -60,11 +69,12 @@ const Navbar = ({Cart, storeid}) => {
 						<IconButton href="/favorite" >
 							<Favorite></Favorite>
 						</IconButton>
-						<IconButton href="/cart" >
-							<Badge badgeContent={Cart.items.length} color="secondary">
+						<IconButton onClick={handleOpenCartMenu} >
+							<Badge badgeContent={Cart.items.length} color="secondary" >
 								<ShoppingCart ></ShoppingCart>
 							</Badge> 
 						</IconButton>
+						<CartMenu  handleCloseCartMenu={handleCloseCartMenu} anchorElCart={anchorElCart} cart={Cart} onRemoveFromCart={onRemoveFromCart}></CartMenu>
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Store options">
 								<IconButton onClick={handleOpenStoreMenu} >

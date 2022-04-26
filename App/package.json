@@ -14,7 +14,7 @@
     "axios": "^0.26.1",
     "boxicons": "^2.1.2",
     "devextreme": "^21.2.4",
-    "devextreme-react": "21.2.7",
+    "devextreme-react": "^21.2.4",
     "material-ui-dropzone": "^3.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

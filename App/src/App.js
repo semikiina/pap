@@ -1,5 +1,7 @@
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.css';
 import React, { useEffect, useState } from 'react'
 import {Products, DetailsP, Cart, Checkout, Navbar, Home, Error, Login, AddProduct, Store, Favorite, Profile } from './Components/index';
 import {BrowserRouter as Router, Routes,Route } from 'react-router-dom';
@@ -106,7 +108,7 @@ const App = () => {
 		<ThemeProvider theme={THEME}>
 			<Router>
 				{
-					cart.length === 0 ? <Skeleton variant="rectangular" width={'100%'} height={50} margin={0} padding={0} position='fixed'/> : <Navbar Cart={cart} storeid={user.store[0]._id}></Navbar>
+					cart.length === 0 ? <Skeleton variant="rectangular" width={'100%'} height={50} margin={0} padding={0} position='fixed'/> : <Navbar Cart={cart} storeid={user.store[0]._id} onRemoveFromCart={RemoveFromCart}></Navbar>
 				}
 				<Routes>
 					<Route exact path='/' element={<Home/>}/>

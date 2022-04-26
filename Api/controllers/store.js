@@ -190,16 +190,15 @@ exports.GetTheStoreNew = (req, res, next) => {
 exports.NewUpdateStore = (req, res, next) => {
 
     console.log('Store Update')
-    var storeid = req.params.id
-    const storeReq = { ...req.body };
-    console.log(req.files)
+    const storeReq = { ...req.body};
+
     //Find Store by ID
-    Store.findById(storeid)
+    Store.findById(req.params.id)
         .then(store => {
             //Store changes
             store.store_name = storeReq.store_name;
             store.store_description = storeReq.store_description;
-            store.store_image = req.files[0].path;
+            if(req.files) store.store_image = req.files[0].path;
             return store.save();
         })
         .then(store => {

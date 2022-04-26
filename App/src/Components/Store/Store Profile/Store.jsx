@@ -14,6 +14,7 @@ const Store = () => {
     const {id} = useParams();
     const [value, setValue] = useState('1');
     const [store, setStore] = useState({})
+    const [storeName, setStoreName] = useState()
     const [open, setOpen] = useState(false);
     const [avatar, setAvatar] = useState(null);
 
@@ -29,6 +30,7 @@ const Store = () => {
         api.get('store/'+id)
         .then(({data})=>{
             setStore(data)
+            setStoreName(data.store_name)
             setAvatar(data.store_image)
         })
         .catch(err=>{
@@ -46,7 +48,7 @@ const Store = () => {
                         <Box>
                             <Paper>
                                 <Stack spacing={1} justifyContent="center" alignItems={'center'}>
-                                    <Typography paddingTop={2} align={'center'}>{store.store_name}</Typography>
+                                    <Typography paddingTop={2} align={'center'}>{storeName}</Typography>
                                     {store.store_image &&  <Avatar src={"http://localhost:8090/"+avatar} sx={{width:200, height:200}} variant="square"></Avatar>}
                                     <Stack direction="row" spacing={1} alignItems={'center'} >
                                         <Button  variant="outlined" color="secondary" onClick={handleOpen} >Edit Store</Button>
@@ -74,7 +76,7 @@ const Store = () => {
                     </Grid>
                 </Grid>
             </Container>
-            <StoreEdit open={open} handleClose={handleClose} store={store} setStore={setStore} setAvatar={setAvatar}></StoreEdit>
+            <StoreEdit open={open} handleClose={handleClose} store={store} setStore={setStore} setAvatar={setAvatar} setStoreName={setStoreName}></StoreEdit>
         </>
     )
 }
