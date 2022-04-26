@@ -1,15 +1,17 @@
-import React from 'react'
-import {ImageList, ImageListItem, ImageListItemBar, CircularProgress} from '@mui/material'
+import React, { useState } from 'react'
+import {ImageList, ImageListItem, ImageListItemBar, CircularProgress, Stack, Button,Select, MenuItem, Typography} from '@mui/material'
 
 const StoreProduct = ({product}) => {
 
     const seeProduct = (e)=>{
         window.location.href="../products/"+e
     }
-    
+  
+
     if (!product) return <CircularProgress/>;
     return (
         <>
+        
             <ImageList sx={{ width: '100%', height: 'auto' }} cols={3} rowHeight={'auto'} >
                 {
                     product.map((item) =>{
@@ -18,6 +20,7 @@ const StoreProduct = ({product}) => {
                             <img
                                 src={'http://localhost:8090/'+item.images[0]}
                                 alt={item.title}
+                                sx={{ height:'200'}}
                                 loading="lazy"
                                 onClick={()=>{seeProduct(item._id)}}
                             />

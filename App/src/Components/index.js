@@ -4,7 +4,6 @@ export {default as DetailsP} from './Products/DetailsP';
 export {default as AddProduct} from './Store/Store Products/AddProducts';
 export {default as Cart} from './Cart/Cart';
 export {default as Error} from './Error/Error';
-export {default as Home} from './Home/Home';
 export {default as Checkout} from './Checkout/Checkout';
 export {default as Login} from './Login/Login';
 export {default as Store} from './Store/Store Profile/Store';

@@ -1,14 +1,30 @@
 import { Divider, Typography, Button,Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import Review from './Review'
+import api from '../../../Services/api';
 
 const PaymentForm = ({shippingData, cart}) => {
     const [open, setOpen] = React.useState(false);
-
+    var cartItems=[];
+    var totalitems=0;
     const handleClickOpen = () => {
       setOpen(true);
     };
   
+    useEffect(()=>{
+        cart.items.forEach((item)=>{
+            cartItems.push(
+                {
+                    name:item.product_id.title,
+                    unit_amount: {value: item.product_id.price, currency_code: 'EUR'},
+                    quantity: item.quantity
+                }
+            )
+            totalitems += item.product_id.price * item.quantity
+        })
+        console.log(cartItems)
+    },[])
+
     const handleClose = () => {
       setOpen(false);
     };
@@ -24,7 +40,10 @@ const PaymentForm = ({shippingData, cart}) => {
                             description: 'TagMe! purchase',
                             amount:{
                                 currency_code: 'EUR',
-                                value: cart.subtotal
+                                value: cart.subtotal,
+                                breakdown: {
+                                    item_total: {value: totalitems, currency_code: 'EUR'}
+                                }
                             },
                             shipping:{
                                 name:{
@@ -38,9 +57,9 @@ const PaymentForm = ({shippingData, cart}) => {
                                     postal_code:shippingData.zip_code,
                                     country_code:'PT'
                                 }
-                            }
+                            },
+                            items:cartItems,
 
-                            
                         },
                         
                     ],
@@ -51,6 +70,10 @@ const PaymentForm = ({shippingData, cart}) => {
             },
             onApprove: async (data, actions) =>{
                 const order = await actions.order.capture()
+                api.post('order')
+                {
+                    
+                }
                 console.log(order)
                 setOpen(true)
             },

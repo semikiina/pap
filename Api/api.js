@@ -6,6 +6,7 @@ const storeRoutes = require('./routes/store');
 const orderRoutes = require('./routes/order');
 const feedRoutes = require('./routes/feed');
 
+var nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
@@ -15,6 +16,15 @@ const path = require('path');
 const app = express();
 const router = express.Router();
 var port = process.env.PORT || 8090;
+
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'tagmetheapp@gmail.com',
+    pass: 'Portugal2019!'
+  }
+});
 
 
 //File Storage for images

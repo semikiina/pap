@@ -1,10 +1,36 @@
 import React from 'react'
 import { MenuItem, Menu, Typography, CircularProgress, Stack, Avatar, Button} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
-    console.log(cart)
     if(!cart.items) return <CircularProgress></CircularProgress>
+    if(cart.items.length ==0) 
+    return <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElCart}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={Boolean(anchorElCart)}
+                onClose={handleCloseCartMenu}
+            >
+                <MenuItem onClick={()=>{window.location.href="./" ;handleCloseCartMenu()}}>
+                    <Stack alignItems={'center'} fontSize="large">
+                        <AddShoppingCartIcon></AddShoppingCartIcon>
+                        <Typography>Your shopping cart is empty.</Typography>  
+                        <Typography variant="subtitle2">Start by adding a product.</Typography>  
+                    </Stack>
+                    
+                </MenuItem>
+        </Menu>
     return (
         <>
             <Menu

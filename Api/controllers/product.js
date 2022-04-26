@@ -1,5 +1,3 @@
-
-const { createIndexes } = require('../models/product');
 const Product = require('../models/product');
 const Store = require('../models/store');
 
@@ -8,7 +6,7 @@ exports.GetProducts = (req, res, next) => {
 
     console.log(' GET /product')
     //{store_id: req.storeId}
-    Product.find()
+    Product.find({active:true})
     //Product.find()
         .then(product => {
             res.status(200).json(product)

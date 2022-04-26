@@ -76,7 +76,7 @@ exports.Profile = (req, res, next) => {
 
     User.findById(userId)
     // Populate gets info from other collections
-        .populate('cart.items.product_id',['price','title','images'])
+        .populate('cart.items.product_id',['price','title','images','category'])
         .populate('favorite',['title','images'])
         .then(user => {
             if (!user) {

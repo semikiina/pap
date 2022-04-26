@@ -37,6 +37,7 @@ exports.Checkout = (req, res, next) => {
                 last_name: CheckoutReq.last_name,
                 country: CheckoutReq.country,
                 zip_code: CheckoutReq.zip_code,
+                paypal_id: CheckoutReq.paypal_id,
                 // phone_code : CheckoutReq.phone_code,
                 // phone: CheckoutReq.phone,
                 city: CheckoutReq.city,

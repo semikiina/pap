@@ -189,21 +189,20 @@ exports.GetTheStoreNew = (req, res, next) => {
 //Store Update
 exports.NewUpdateStore = (req, res, next) => {
 
-    console.log('Store Update')
+    console.log('New Store Update')
     const storeReq = { ...req.body};
-
     //Find Store by ID
     Store.findById(req.params.id)
         .then(store => {
             //Store changes
             store.store_name = storeReq.store_name;
             store.store_description = storeReq.store_description;
-            if(req.files) store.store_image = req.files[0].path;
+            if(req.files.length >0) store.store_image = req.files[0].path;
             return store.save();
         })
         .then(store => {
             res.status(200).json({
-                message: "Store ok!",
+                message: "Store updated sucessfully!",
                 store: store
             })
         })

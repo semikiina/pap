@@ -6,7 +6,7 @@ const Review = ({cart, data}) => {
         <>
             <Grid container spacing={3}>
                 <Grid item xs={12} lg={6} marginBottom={4}>
-                <Paper marginTop={3} elevation={3}>
+                <Paper elevation={3}>
                     <Typography variant="h4" marginTop={4} marginBottom={1} padding={2}>Order Summary</Typography>
                     <List>
                         <ListItem>
@@ -36,7 +36,7 @@ const Review = ({cart, data}) => {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} lg={6} marginBottom={4}>
-                    <Paper marginTop={3} elevation={3}>
+                    <Paper  elevation={3}>
                         <Typography variant="h4" marginTop={4} marginBottom={1} padding={2}>Shipping Information</Typography>
                         <Typography  variant="h6" padding={2}> <b>Name:</b> {data.first_name  + " " + data.last_name}</Typography>
                         <Typography  variant="h6" padding={2}> <b>Email:</b> {data.email}</Typography>

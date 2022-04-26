@@ -3,20 +3,10 @@ import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import api from '../../Services/api';
 
-const Favorite = ({favorite}) => {
+const Favorite = ({favorite,newFavorite}) => {
     
     const [hover, setHover] = useState(null);
-    const [fav, setFav] = useState(false);
-    const newFavorite = (id) =>{
-        api.post('user/nfav/620ac00c85d485580493d87f/'+id)
-        .then(({data})=>{
-            console.log(data.fav)
-            if(data.fav)setFav(true)
-            else setFav(false)
-        })
-        
-    }
-
+   
     if(!favorite) return <CircularProgress/>
     return (
         <>
