@@ -280,7 +280,7 @@ exports.GetUserById = (req, res, next) => {
         //Excludes fields
         .select(['-password'])
         // Populate gets info from other collections
-        .populate('cart.items.product_id',['price','title','images','_id'])
+        .populate('cart.items.product_id',['price','title','images','_id','category'])
         .populate('favorite',['title','images','price'])
         .populate('store')
         .then(user => {

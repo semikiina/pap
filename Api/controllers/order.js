@@ -3,6 +3,7 @@ const Order = require('../models/order');
 const User = require('../models/user');
 var easyinvoice = require('easyinvoice');
 const fs = require('fs');
+const transporter = require('../mailer');
 
 exports.GetOrder = (req, res, next) => {
     Order.find({email: req.params.email})
@@ -26,9 +27,19 @@ exports.GetOrder = (req, res, next) => {
 exports.Checkout = (req, res, next) => {
     
     let CheckoutReq = { ...req.body };
-
+    var cartItems=[];
     User.findById(CheckoutReq.user_id)
+        .populate('cart.items.product_id',['price','title','images','category'])
         .then(user =>{
+
+            user.cart.items.forEach((e) =>{
+                cartItems.push({
+                    "quantity": e.quantity,
+                    "description": e.product_id.title,
+                    "price": e.product_id.price,
+                    "tax-rate": 0,
+                })
+            })
 
             const order = new Order({
                 user_id: CheckoutReq.user_id,
@@ -52,12 +63,77 @@ exports.Checkout = (req, res, next) => {
             return order.save()
         })
         .then(result => {
+            var data = {
+                // Customize enables you to provide your own templates
+                // Please review the documentation for instructions and examples
+                "customize": {
+                    //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
+                },
+                "images": {
+                    // The logo on top of your invoice
+                    "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png",
+                    // The invoice background
+                    "background": "https://public.easyinvoice.cloud/img/watermark-draft.jpg"
+                },
+                // Your own data
+                "sender": {
+                    "company": "TagMe!",
+                    "address": "Sample Street 123",
+                    "zip": "1234 AB",
+                    "city": "Sampletown",
+                    "country": "Portugal"
+                },
+                // Your recipient
+                "client": {
+                    "company": CheckoutReq.first_name +" "+ CheckoutReq.last_name,
+                    "address": CheckoutReq.address_1,
+                    "zip": CheckoutReq.zip_code,
+                    "city": CheckoutReq.city,
+                    "country": CheckoutReq.country
+                },
+                "information": {
+                    // Invoice number
+                    "number": CheckoutReq.paypal_id,
+                    // Invoice data
+                    "date": new Date(Date.now()).toLocaleDateString(),
+                },
+                // The products you would like to see on your invoice
+                // Total values are being calculated automatically
+                "products": cartItems,
+                "bottom-notice": "Thanks for purchasing with TagMe!.",
+                "settings": {
+                    "currency": "EUR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+                },
+            };
+           return easyinvoice.createInvoice(data);
+        })
+        .then(result => {
+
+            return transporter.sendMail({
+                from: 'tagmetheapp@gmail.com', // sender address
+                to: CheckoutReq.email, // list of receivers
+                subject: "Your Order was placed successfully ✔", // Subject line
+                text: "Than", // plain text body
+                html: "<p>Hello "+CheckoutReq.first_name+"</p><p>Thanks for your purchase.</p>", // html body
+                attachments: [
+                    {
+                      filename: `invoice.pdf`,
+                      content: result.pdf,
+                      encoding: 'base64',
+                    },
+                  ],
+              });
+        })
+       
+     
+        .then(result => {
 
             res.status(201).json({
                 message: "Order Placed Successfully!",
-                pdf: result
+                email: result
             })
         })
+     
         .catch(error => {
             console.log(error);
             return res
