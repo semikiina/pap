@@ -11,7 +11,7 @@ const Products = ({onAddToCart, product, newFav, userId}) => {
             <Grid item container spacing={2} >
                 {product.map((product)=>{
                     return(
-                        <Grid item key={product._id} xs={'auto'} md={'auto'} lg={'auto'}>
+                        <Grid item key={product._id} xs={12} md={4} lg={3}>
                             <Product key={product._id} product={product}  onAddToCart={onAddToCart} userId={userId} newFav={newFav}></Product>
                         </Grid>
                     )})

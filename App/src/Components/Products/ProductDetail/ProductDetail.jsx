@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar, CircularProgress} from '@mui/material';
+import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar, CircularProgress, Rating} from '@mui/material';
 import {Favorite,FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
 
-const ProductDetail = ({product, newFav, fav, userId}) => {
+const ProductDetail = ({product, newFav, userId, reviewL,avr}) => {
     
     const [currentPhoto, setCurrentPhoto] = useState()
     let i=0;
@@ -26,7 +26,7 @@ const ProductDetail = ({product, newFav, fav, userId}) => {
                         <Box>
                             <CardMedia
                             component="img"
-                            height={'auto'}
+                            sx={{objectFit:'cover', maxHeight:550, maxWidth:550, minHeight:100, minWidth:100 }}
                             image={"http://localhost:8090/" + currentPhoto} 
                             alt={product.title} 
                             />
@@ -52,27 +52,22 @@ const ProductDetail = ({product, newFav, fav, userId}) => {
             </Grid>
             <Grid item  xs={12} md={6}>
                 <Stack direction="row" spacing={2} marginBottom={1} alignItems={'center'}>
-                    { product.store_id && <Avatar alt="Remy Sharp" src={"http://localhost:8090/"+product.store_id.store_image} sx={{ width: 56, height: 56 }} />}
-                    <Box >
+                    { product.store_id && <Avatar alt="Remy Sharp" src={"http://localhost:8090/"+product.store_id.store_image} sx={{ width: 56, height: 56 }} variant="square"/>}
+                    <Box>
                         <Typography variant="subtitle1" onClick={()=>{ window.location.href="../store/"+product.store_id._id}} >{product.store_id && product.store_id.store_name}</Typography>
-                        <Typography variant="subtitle2" color="secondary" >Created by <b>@{product.store_id && product.store_id.creator_id}</b></Typography>
+                        <Typography variant="subtitle2" color="secondary" >Created by <b>@{product.store_id && product.store_id.creator_id.first_name + " " + product.store_id.creator_id.last_name}</b></Typography>
                     </Box>
                 </Stack>
-            
-
                 <Divider></Divider>
                 
                 <Box marginTop={3}>
                     <Typography variant="subtitle1" color="grey" >{product.category}</Typography>
                     <Typography variant="h6" padding={0}>{product.title}</Typography>
                 </Box>
+                
                 <Stack direction="row"  marginBottom={1} >
-                    <StarBorder/>
-                    <StarBorder/>
-                    <StarBorder/>
-                    <StarBorder/>
-                    <StarBorder/>
-                    <Typography variant="subtitle1"> (2394)</Typography>
+                    <Rating readOnly value={avr}></Rating>
+                    <Typography variant="subtitle1"> ({reviewL})</Typography>
                 </Stack>
                 <Typography variant="h5" marginBottom={1}  marginTop={3}>{product.price}€</Typography>
 

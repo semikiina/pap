@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Order = require('../models/order');
 const Product = require('../models/product');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
@@ -416,6 +417,34 @@ exports.NewEditProfile = (req, res, next) => {
                 message: "User updated sucessfully!",
                 user: user
             })
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Validation failed. Please insert correct data.",
+                    errors: error
+                })
+        })
+
+}
+
+//User Orders
+exports.UserOrders = (req, res, next) => {
+
+    console.log('User Orders')
+    Order.find({user_id : req.params.id})
+        .populate({
+            path:'cart.items.product_id',
+            select:'title images price category',
+            populate:{
+                path:"store_id",
+                select:'store_name store_image'
+            }
+        })
+        .then(orders => {
+            res.status(200).json({orders})
         })
         .catch(error => {
             console.log(error);

@@ -8,9 +8,11 @@ import api from '../../../Services/api';
 import { useParams } from 'react-router-dom';
 import StoreEdit from '../Store Profile/StoreEdit/StoreEdit';
 import SearchIcon from '@mui/icons-material/Search';
+import  useAuth  from '../../hooks/useAuth';
+
 
 const Store = () => {
-
+    const {setAuth} = useAuth();
     const [filter, setFilter] =useState('');
     const {id} = useParams();
     const [value, setValue] = useState('1');

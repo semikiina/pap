@@ -26,10 +26,11 @@ exports.GetOrder = (req, res, next) => {
 
 exports.Checkout = (req, res, next) => {
     
+    console.log('POST /order')
     let CheckoutReq = { ...req.body };
     var cartItems=[];
     User.findById(CheckoutReq.user_id)
-        .populate('cart.items.product_id',['price','title','images','category'])
+        .populate('cart.items.product_id',['price','title','images','category','store_id'])
         .then(user =>{
 
             user.cart.items.forEach((e) =>{
@@ -72,8 +73,6 @@ exports.Checkout = (req, res, next) => {
                 "images": {
                     // The logo on top of your invoice
                     "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png",
-                    // The invoice background
-                    "background": "https://public.easyinvoice.cloud/img/watermark-draft.jpg"
                 },
                 // Your own data
                 "sender": {
@@ -114,7 +113,7 @@ exports.Checkout = (req, res, next) => {
                 to: CheckoutReq.email, // list of receivers
                 subject: "Your Order was placed successfully ✔", // Subject line
                 text: "Than", // plain text body
-                html: "<p>Hello "+CheckoutReq.first_name+"</p><p>Thanks for your purchase.</p>", // html body
+                html: "<p>Hello "+CheckoutReq.first_name+",</p><p>Thanks for your purchase.</p>", // html body
                 attachments: [
                     {
                       filename: `invoice.pdf`,

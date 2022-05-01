@@ -3,13 +3,14 @@ import 'devextreme/dist/css/dx.light.css';
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
 import React, { useEffect, useState } from 'react'
-import {Products, DetailsP, Cart, Checkout, Navbar, Home, Error, Login, AddProduct, Store, Favorite, Profile } from './Components/index';
+import {Products, DetailsP, Cart, Checkout, Navbar, Error, Login, AddProduct, Store, Favorite, Profile,Orders } from './Components/index';
 import {BrowserRouter as Router, Routes,Route } from 'react-router-dom';
-import {LinearProgress, Skeleton} from '@mui/material';
+import {Skeleton} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import api from './Services/api';
 import StoreProduct from './Components/Store/Store Products/StoreProducts';
 import Dashboard from './Components/Dashboard/Dashboard';
+import RequireAuth from './Components/hooks/RequireAuth';
 
 import Exemplo from './Components/Ajuda/Exemplo';
 
@@ -126,17 +127,20 @@ const App = () => {
 					<Route exact path='/products/:id' element={<DetailsP newFavorite={newFavorite} fav={fav} userId={userId}/>}/>
 
 					<Route exact path='/cart' element={<Cart Cart={cart} onRemoveFromCart={RemoveFromCart}/>}/>
-					<Route exact path='/checkout' element={<Checkout Cart={cart} />}/>
+					<Route exact path='/checkout' element={<Checkout Cart={cart} userId={userId}/>}/>
 					<Route exact path='/favorite' element={<Favorite favorite={favorite}  newFavorite={newFavorite}/>}/>
 					<Route exact path='/profile' element={<Profile user={user} setUser={setUser}/>}/>
+					<Route exact path='/orders' element={<Orders userId={userId} />}/>
 					<Route exact path='/login' element={<Login />}/>
 
-					<Route exact path='/store/:id' element={<Store />}/>
-					<Route exact path='/storeProducts' element={<StoreProduct storeid={store} />}/>
-					<Route exact path='/addProduct' element={<AddProduct storeid={store}/>}/>
-					<Route exact path='/dashboard' element={<Dashboard />}/>
-					<Route exact path='/exemplo' element={<Exemplo />}/>
-
+					<Route element={<RequireAuth/>}>
+						<Route exact path='/store/:id' element={<Store />}/>
+						<Route exact path='/storeProducts' element={<StoreProduct storeid={store} />}/>
+						<Route exact path='/addProduct' element={<AddProduct storeid={store}/>}/>
+						<Route exact path='/dashboard' element={<Dashboard />}/>
+						<Route exact path='/exemplo' element={<Exemplo />}/>
+					</Route>
+					
 					<Route exact path='*' element={<Error/>}/>
 				</Routes>
 			</Router>

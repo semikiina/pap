@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import Review from './Review'
 import api from '../../../Services/api';
 
-const PaymentForm = ({shippingData, cart}) => {
+const PaymentForm = ({shippingData, cart,userId}) => {
     const [open, setOpen] = React.useState(false);
     var cartItems=[];
     var totalitems=0;
@@ -70,11 +70,18 @@ const PaymentForm = ({shippingData, cart}) => {
             },
             onApprove: async (data, actions) =>{
                 const order = await actions.order.capture()
-                api.post('order')
-                {
-                    
-                }
-                console.log(order)
+                const postOrder = await api.post('order',{
+                    user_id:userId,
+                    email:shippingData.email,
+                    first_name: shippingData.first_name,
+                    last_name: shippingData.last_name,
+                    country: shippingData.country,
+                    zip_code: shippingData.zip_code,
+                    city: shippingData.city,
+                    address_1: shippingData.address_1,
+                    paypal_id: order.id,
+                })
+                console.log(postOrder)
                 setOpen(true)
             },
             onError: (err) =>{

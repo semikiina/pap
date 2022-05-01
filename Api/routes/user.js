@@ -38,6 +38,8 @@ router.post('/', [
 ],
     userController.NewUser);
 
+
+
 //GET /user/profile
 router.get('/profile', Auth, userController.Profile);
 
@@ -53,7 +55,8 @@ router.post('/cart', Auth, userController.Cart);
 //POST /user/fav/:id
 router.post('/fav/:id', Auth, userController.Favorite);
 
-
+    //GET /user/orders/:id
+    router.get('/orders/:id', userController.UserOrders);
 
 
 //
@@ -62,6 +65,7 @@ router.post('/fav/:id', Auth, userController.Favorite);
 
 //GET /user/:id
 router.get('/:id', userController.GetUserById);
+
 
 //GET /user/:id
 router.post('/ncart', userController.NewCart);

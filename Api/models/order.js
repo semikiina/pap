@@ -33,7 +33,10 @@ const OrderSchema = new Schema({
                     type:Number 
                 }
             }
-        ]
+        ],
+        subtotal: Number,
+        shipping: Number,
+        total : Number,
     }
 });
 

@@ -12,8 +12,8 @@ const settings =[
 		href: '../account'
 	},
 	{
-		name: 'Dashboard',
-		href: '../dashboard'
+		name: 'Orders',
+		href: '../orders'
 	},
 	{
 		name: 'Logout',

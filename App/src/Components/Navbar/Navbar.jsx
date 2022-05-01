@@ -5,25 +5,6 @@ import ProfileMenu from './Navbar Items/ProfileMenu';
 import StoreMenu from './Navbar Items/StoreMenu';
 import CartMenu from './Navbar Items/CartMenu';
 
-const settings =[
-	{
-		name: 'Profile',
-		href: '../myprofile'
-	},
-	{
-		name: 'Account',
-		href: '../account'
-	},
-	{
-		name: 'Dashboard',
-		href: '../dashboard'
-	},
-	{
-		name: 'Logout',
-		href: '../'
-	},
-	
-];
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 

@@ -5,6 +5,7 @@ const productRoutes = require('./routes/product');
 const storeRoutes = require('./routes/store');
 const orderRoutes = require('./routes/order');
 const feedRoutes = require('./routes/feed');
+const reviewRoutes = require('./routes/review');
 
 
 const bodyParser = require('body-parser');
@@ -77,6 +78,9 @@ app.use('/order', orderRoutes);
 
 //localhost:8090/feed
 app.use('/feed', feedRoutes);
+
+//localhost:8090/review
+app.use('/review', reviewRoutes);
 
 
 

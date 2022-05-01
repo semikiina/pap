@@ -9,3 +9,4 @@ export {default as Login} from './Login/Login';
 export {default as Store} from './Store/Store Profile/Store';
 export {default as Favorite} from './Favorite/Favorite';
 export {default as Profile} from './Profile/Profile';
+export {default as Orders} from './Orders/Orders';

@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Store = require('../models/store');
+const Order = require('../models/order');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
@@ -205,6 +206,35 @@ exports.NewUpdateStore = (req, res, next) => {
                 message: "Store updated sucessfully!",
                 store: store
             })
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Validation failed. Please insert correct data.",
+                    errors: error
+                })
+        })
+
+}
+
+//Store Orders
+exports.StoreOrders = (req, res, next) => {
+
+    console.log('Store Orders')
+    Order.find()
+        .populate({
+            path:'cart.items.product_id',
+            select:'title images',
+            populate:{
+                path:"store_id",
+                match:{_id : req.params.id},
+                select:'store_name'
+            }
+        })
+        .then(orders => {
+            res.status(200).json({orders: orders})
         })
         .catch(error => {
             console.log(error);

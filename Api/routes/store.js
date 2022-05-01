@@ -49,6 +49,9 @@ router.put('/:id', Auth, SAuth, [
 //GET /store/:id
 router.get('/:id', storeController.GetTheStoreNew)
 
+//GET /store/:id
+router.get('/orders/:id', storeController.StoreOrders)
+
 
 //POST /store/editStore/:id
 router.post('/editStore/:id', storeController.NewUpdateStore)

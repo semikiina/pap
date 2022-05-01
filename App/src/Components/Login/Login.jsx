@@ -1,12 +1,17 @@
 import React, { useContext, useState } from 'react'   
 import LoginForm from './LoginRegisterForms/LoginForm'
 import RegisterForm from './LoginRegisterForms/RegisterForm'
-import AuthContext from '../Context/AuthProvider'
 import api from '../../Services/api';
-import { Alert } from '@mui/material';
+import {useLocation, useNavigate} from 'react-router-dom';
+import  useAuth  from '../hooks/useAuth';
 
 const Login = () => {
-    const {setAuth} = useContext(AuthContext);
+    const {setAuth} = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
+
     const [user, setUser] = useState({});
     const [error, setError] = useState(false);
 
@@ -20,7 +25,8 @@ const Login = () => {
                 email: user.email,
                 password: user.password,
             })
-            setUser(Login.data)
+            setAuth({email:Login.data.email,nickname:Login.data.nickname,token:Login.data.token})
+            navigate(from, {replace: true })
         }
         catch(err){
             console.log(err)

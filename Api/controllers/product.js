@@ -77,7 +77,14 @@ exports.GetTheProduct = (req, res, next) => {
     
     var productid = req.params.id
     Product.findById(productid)
-    .populate('store_id',['store_name','creator_id','store_image'])
+    .populate({
+        path:"store_id",
+        select:'store_image store_name',
+        populate:{
+            path:'creator_id',
+            select:'first_name last_name'
+        }
+    })
         .then(product => {
             res.status(200).json(product)
         })
@@ -197,7 +204,7 @@ exports.DeleteManyProduct = (req, res, next) => {
             return res
                 .status(422)
                 .json({
-                    message: "Can't find the product.",
+                    message: "Can't find the products.",
                     errors: error
                 })
         })

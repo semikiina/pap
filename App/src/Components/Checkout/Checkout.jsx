@@ -6,7 +6,7 @@ import PaymentForm from './CheckoutForm/PaymentForm';
 const steps=['Shipping Adress', 'Payment details']
 
 
-const Checkout = ({Cart}) => {
+const Checkout = ({Cart,userId}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [shippingData, setShippingData] = useState({});
   
@@ -26,7 +26,7 @@ const Checkout = ({Cart}) => {
 
     const Form = () => activeStep == 0 
         ? <AdressForm next={next}/>
-        : <PaymentForm shippingData ={shippingData} cart={Cart}/>
+        : <PaymentForm shippingData ={shippingData} cart={Cart} userId={userId}/>
 
     return (
         <Container>
