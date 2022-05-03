@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import {AppBar, Toolbar, IconButton, Badge, MenuItem, Menu, Typography, Stack, styled, Avatar, Tooltip, Box} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {AppBar, Toolbar, IconButton, Badge, Button, Menu, Typography, Stack, styled, Avatar, Tooltip, Box} from '@mui/material';
 import {ShoppingCart, Favorite, Store} from '@mui/icons-material'
 import ProfileMenu from './Navbar Items/ProfileMenu';
 import StoreMenu from './Navbar Items/StoreMenu';
 import CartMenu from './Navbar Items/CartMenu';
+import useAuth from '../Contexts/useAuth';
 
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-const Navbar = ({Cart, storeid,onRemoveFromCart}) => {
+const Navbar = ({onRemoveFromCart}) => {
 
+	const {user} = useAuth();
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [anchorElStore, setAnchorElStore] = useState(null);
 	const [anchorElCart, setAnchorElCart] = useState(null);
@@ -37,6 +39,8 @@ const Navbar = ({Cart, storeid,onRemoveFromCart}) => {
 		setAnchorElCart(null);
 	};
 
+
+
 	return (
 		<>
 			<AppBar position='fixed' color='inherit' >
@@ -47,31 +51,38 @@ const Navbar = ({Cart, storeid,onRemoveFromCart}) => {
 						</IconButton>
 					</Typography>
 					<Stack direction="row" sx={{ flexGrow: 0, mr:2 }} spacing={2}>
-						<IconButton href="/favorite" >
-							<Favorite></Favorite>
-						</IconButton>
-						<IconButton onClick={handleOpenCartMenu} >
-							<Badge badgeContent={Cart.items.length} color="secondary" >
-								<ShoppingCart ></ShoppingCart>
-							</Badge> 
-						</IconButton>
-						<CartMenu  handleCloseCartMenu={handleCloseCartMenu} anchorElCart={anchorElCart} cart={Cart} onRemoveFromCart={onRemoveFromCart}></CartMenu>
-						<Box sx={{ flexGrow: 0 }}>
-							<Tooltip title="Store options">
-								<IconButton onClick={handleOpenStoreMenu} >
-									<Store ></Store>
+						{
+							user._id ?
+							<>
+								<IconButton href="/favorite" >
+									<Favorite></Favorite>
 								</IconButton>
-							</Tooltip>
-							<StoreMenu handleCloseStoreMenu={handleCloseStoreMenu} anchorElStore={anchorElStore} storeid={storeid}/>
-						</Box>
-						<Box sx={{ flexGrow: 0 }}>
-							<Tooltip title="Profile options">
-								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+								<IconButton onClick={handleOpenCartMenu} >
+									<Badge badgeContent={user.cart.items.length} color="secondary" >
+										<ShoppingCart ></ShoppingCart>
+									</Badge> 
 								</IconButton>
-							</Tooltip>
-							<ProfileMenu handleCloseUserMenu={handleCloseUserMenu} anchorElUser={anchorElUser}/>
-						</Box>
+								<CartMenu  handleCloseCartMenu={handleCloseCartMenu} anchorElCart={anchorElCart} cart={user.cart} onRemoveFromCart={onRemoveFromCart}></CartMenu>
+								<Box sx={{ flexGrow: 0 }}>
+									<Tooltip title="Store options">
+										<IconButton onClick={handleOpenStoreMenu} >
+											<Store ></Store>
+										</IconButton>
+									</Tooltip>
+									<StoreMenu handleCloseStoreMenu={handleCloseStoreMenu} anchorElStore={anchorElStore} storeid={user.store[0]._id}/>
+								</Box>
+								<Box sx={{ flexGrow: 0 }}>
+									<Tooltip title="Profile options">
+										<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+											<Avatar alt={user.nickname} src={'http://localhost:8090/'+user.profile_pic} />
+										</IconButton>
+									</Tooltip>
+									<ProfileMenu handleCloseUserMenu={handleCloseUserMenu} anchorElUser={anchorElUser}/>
+								</Box>
+							</>
+							: <Button onClick={()=>{window.location.href="../login"}} variant="outlined" color="secondary">Login</Button>
+						}
+						
 					</Stack>
 				</Toolbar>
 			</AppBar>

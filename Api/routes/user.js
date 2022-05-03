@@ -47,7 +47,7 @@ router.get('/profile', Auth, userController.Profile);
 router.post('/login', userController.Login);
 
 //PUT /user/profile
-router.post('/profile', Auth, userController.EditProfile);
+router.post('/editProfile', Auth, userController.EditProfile);
 
 //POST /user/cart
 router.post('/cart', Auth, userController.Cart);

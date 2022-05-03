@@ -20,8 +20,8 @@ const NavbarMenu = ({handleCloseStoreMenu, anchorElStore, storeid}) => {
             href: '../dashboard'
         },
         {
-            name: 'Logout',
-            href: '../'
+            name: 'Orders',
+            href: '../storeOrders'
         },
         
     ];

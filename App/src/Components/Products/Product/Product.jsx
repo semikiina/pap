@@ -1,8 +1,11 @@
 import React from 'react';
 import {Card, CardActions, CardContent, CardMedia, Button, Typography, Stack, } from '@mui/material';
 import {FavoriteBorder, Favorite} from '@mui/icons-material';
+import useAuth from '../../Contexts/useAuth';
 
-const Product = ({product, onAddToCart, newFav, userId}) => {
+const Product = ({product, onAddToCart, newFav}) => {
+
+    const {user} = useAuth();
     return (
         <Card sx={{ maxWidth: 345 }} >
             <Button href={'products/'+ product._id} padding={0} >
@@ -28,11 +31,10 @@ const Product = ({product, onAddToCart, newFav, userId}) => {
                     <Stack direction="row" spacing="2">
                         <Typography variant="subtitle1">{product.favorite.length}</Typography>
                             {
-                                product.favorite.includes(userId)
+                                product.favorite.includes(user._id)
                                 ? <Favorite size="small" onClick={()=>{newFav(product._id)}}/>
                                 : <FavoriteBorder size="small" onClick={()=>{newFav(product._id)}}/>
                             }
-                        
                     </Stack>
                 </Stack>
                 

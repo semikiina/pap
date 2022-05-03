@@ -61,7 +61,13 @@ exports.Checkout = (req, res, next) => {
                 date_created : Date.now(),
             })
 
+            user.cart=[]
+            user.save().exec()
+
             return order.save()
+        })
+        .then(result => {
+
         })
         .then(result => {
             var data = {

@@ -2,20 +2,23 @@ import { Container, Typography, Divider, Grid, Paper, Box, Stack, CardMedia, But
 import React, { useEffect, useState } from 'react'
 import api from '../../Services/api'
 import Order from './Order/Order'
+import useAuth from '../Contexts/useAuth';
 
-const Orders = ({userId}) => {
+const Orders = () => {
 
+    const {user} = useAuth();
     const [orders,setOrders] = useState([])
 
     useEffect(()=>{
-        api.get('user/orders/'+userId)
+        if(user._id)
+        api.get('user/orders/'+user._id)
         .then(({data})=>{
             setOrders(data.orders)
         })
         .catch(err=>{
             console.log(err)
         })
-    },[])
+    },[user])
 
     if(!orders) return <CircularProgress></CircularProgress>
     return (

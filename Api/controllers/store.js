@@ -226,7 +226,7 @@ exports.StoreOrders = (req, res, next) => {
     Order.find()
         .populate({
             path:'cart.items.product_id',
-            select:'title images',
+            select:'title price',
             populate:{
                 path:"store_id",
                 match:{_id : req.params.id},

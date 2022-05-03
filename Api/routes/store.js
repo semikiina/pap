@@ -12,6 +12,9 @@ router.get('/', storeController.GetStores)
 //GET /store/:id
 router.get('/profile', Auth, SAuth, storeController.GetTheStore)
 
+//GET /store/orders/:id
+router.get('/orders/:id', storeController.StoreOrders)
+
 //POST /store
 router.post('/', Auth, [
     //Check if store email already exists
@@ -49,8 +52,7 @@ router.put('/:id', Auth, SAuth, [
 //GET /store/:id
 router.get('/:id', storeController.GetTheStoreNew)
 
-//GET /store/:id
-router.get('/orders/:id', storeController.StoreOrders)
+
 
 
 //POST /store/editStore/:id

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar, CircularProgress, Rating} from '@mui/material';
 import {Favorite,FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
+import useAuth from '../../Contexts/useAuth';
 
-const ProductDetail = ({product, newFav, userId, reviewL,avr}) => {
+const ProductDetail = ({product, newFav, reviewL,avr}) => {
     
+    const {user} = useAuth();
     const [currentPhoto, setCurrentPhoto] = useState()
     let i=0;
     
@@ -75,7 +77,7 @@ const ProductDetail = ({product, newFav, userId, reviewL,avr}) => {
                     <Button variant="outlined" color="secondary" fullWidth>Add to cart</Button>
                     {
                         product.favorite &&
-                            product.favorite.includes(userId)
+                            product.favorite.includes(user._id)
                             ? <Favorite onClick={()=>{newFav(product._id)}}></Favorite>
                             : <FavoriteBorder onClick={()=>{newFav(product._id)}}></FavoriteBorder>
                     }

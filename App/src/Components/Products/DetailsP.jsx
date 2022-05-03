@@ -6,7 +6,7 @@ import ProductDetail from './ProductDetail/ProductDetail';
 import ProductDetailFooter from './ProductDetail/ProductDetailFooter';
 import ProductReview from './ProductDetail/ProductReview';
 
-const DetailsP = ({newFavorite,fav, userId}) => {
+const DetailsP = ({newFavorite,fav}) => {
 
     const {id} = useParams();
     const [product, setProduct] = useState([]);
@@ -37,7 +37,7 @@ const DetailsP = ({newFavorite,fav, userId}) => {
 
     return (
         <Container >
-            <ProductDetail product={product} newFav={newFavorite} userId={userId} reviewL={reviews.length} avr={avr}></ProductDetail>
+            <ProductDetail product={product} newFav={newFavorite} reviewL={reviews.length} avr={avr}></ProductDetail>
             <ProductReview id={id} reviews={reviews} setDel={setDel} del={del}></ProductReview>
             <ProductDetailFooter storename="Cris Linda's Store" product={product} ></ProductDetailFooter>
         </Container>

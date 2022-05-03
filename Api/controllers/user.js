@@ -74,11 +74,14 @@ exports.NewUser = (req, res, next) => {
 exports.Profile = (req, res, next) => {
     
     const userId = req.userId;
-
+    console.log('user profile')
     User.findById(userId)
-    // Populate gets info from other collections
-        .populate('cart.items.product_id',['price','title','images','category'])
-        .populate('favorite',['title','images'])
+        //Excludes fields
+        .select(['-password'])
+        // Populate gets info from other collections
+        .populate('cart.items.product_id',['price','title','images','_id','category'])
+        .populate('favorite',['title','images','price'])
+        .populate('store')
         .then(user => {
             if (!user) {
                 const error = new Error('Could not find the user.')
@@ -139,7 +142,7 @@ exports.EditProfile = (req, res, next) => {
 
     var userid = req.userId
     const userReq = { ...req.body };
-
+    console.log(userReq)
     //Find User by ID
     User.findById(userid)
         .then(user => {
@@ -152,7 +155,6 @@ exports.EditProfile = (req, res, next) => {
             user.first_name = userReq.first_name;
             user.last_name = userReq.last_name;
             user.nickname = userReq.nickname;
-            user.bio = userReq.bio;
             return user.save();
         })
         .then(user => {

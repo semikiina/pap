@@ -1,29 +1,11 @@
 import React from 'react'
-import { MenuItem, Menu, Typography} from '@mui/material';
-
-
-const settings =[
-	{
-		name: 'Profile',
-		href: '../profile'
-	},
-	{
-		name: 'Account',
-		href: '../account'
-	},
-	{
-		name: 'Orders',
-		href: '../orders'
-	},
-	{
-		name: 'Logout',
-		href: '../'
-	},
-	
-];
+import { MenuItem, Menu, Typography, ListItemIcon, Button} from '@mui/material';
+import useAuth from '../../Contexts/useAuth';
+import {Person, ManageAccounts, LocalShipping, Logout} from '@mui/icons-material';
 
 const NavbarMenu = ({handleCloseUserMenu, anchorElUser}) => {
 
+    const {user} = useAuth()
     return (
         <>
             <Menu
@@ -42,11 +24,30 @@ const NavbarMenu = ({handleCloseUserMenu, anchorElUser}) => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
             >
-                {settings.map((setting) => (
-                    <MenuItem key={setting.href} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center" onClick={()=>{window.location.href=setting.href}}>{setting.name}</Typography>
-                    </MenuItem>
-                ))}
+                <MenuItem >
+                    <Typography textAlign="center" >Welcome, <b>@{user.nickname}</b></Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                        <Person fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../profile'}}>Profile</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                        <ManageAccounts fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../account'}}>Account</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                        <LocalShipping fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../orders'}}>Orders</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <Button color="error" variant="contained" onClick={()=>{localStorage.clear() ;window.location.href='../'}} startIcon={<Logout size="small"/>} fullWidth>Logout</Button>
+                </MenuItem>
             </Menu>
         </>
     )
