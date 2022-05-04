@@ -57,6 +57,7 @@ exports.Checkout = (req, res, next) => {
                 address_1: CheckoutReq.address_1,
                 // address_2: CheckoutReq.address_2,
                 // total: CheckoutReq.total,
+                state: 'Payed',
                 cart: user.cart,
                 date_created : Date.now(),
             })

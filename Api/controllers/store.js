@@ -230,11 +230,27 @@ exports.StoreOrders = (req, res, next) => {
             populate:{
                 path:"store_id",
                 match:{_id : req.params.id},
-                select:'store_name'
+                select:'store_name -_id'
             }
         })
         .then(orders => {
-            res.status(200).json({orders: orders})
+            var newOrders = [];
+            orders.forEach((or) =>{
+                var itTtotal = 0;
+                or.cart.items.forEach((i) =>{
+                    itTtotal += i.product_id.price *i.quantity
+                })
+                newOrders.push({
+                    name: or.first_name +' '+ or.last_name,
+                    address: or.address_1 +', '+ or.zip_code +', '+ or.city +', '+ or.country,
+                    date_created : or.date_created,
+                    _id: or._id,
+                    cart: or.cart,
+                    price : itTtotal,
+                    state : 'Payed'
+                })
+            })
+            res.status(200).json({orders: newOrders})
         })
         .catch(error => {
             console.log(error);

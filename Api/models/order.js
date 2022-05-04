@@ -15,6 +15,7 @@ const OrderSchema = new Schema({
     phone_code : String,
     phone: String,
     city: String,
+    province: String,
     state: String,
     address_1: String,
     address_2: String,
@@ -22,6 +23,7 @@ const OrderSchema = new Schema({
     date_created : Date,
     status:String,
     zip_code:String,
+    state:String,
     cart:{
         items:[
             {

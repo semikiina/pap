@@ -1,4 +1,4 @@
-import { Container, Divider, Typography, Stack, Button, CircularProgress, IconButton, Menu, MenuItem, Box } from '@mui/material'
+import { Container, Divider, Typography, Stack, Chip, CircularProgress, IconButton, Menu, MenuItem, Box } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import {Add, Delete, MoreVert} from '@mui/icons-material';
 import {Column,DataGrid,FilterRow, Paging, Pager,Selection,SearchPanel, HeaderFilter,Item} from 'devextreme-react/data-grid';
@@ -14,6 +14,7 @@ const StoreOrders = ({storeid}) => {
         if(storeid)
         api.get('store/orders/'+storeid)
         .then(data=>{
+            console.log(data.data.orders)
             setStoreOrders(data.data.orders)
         })
         .catch(err=>{
@@ -21,28 +22,11 @@ const StoreOrders = ({storeid}) => {
         })
     },[storeid])
 
-    const NameCell = (e) =>{
+    const stateCell = (val) =>{
         return (
-            e.data.first_name + " " + e.data.last_name
-        )
+            <Chip variant="outlined" color="success" label={val.value}/>
+            )
     }
-    const AddressCell = (e) =>{
-        console.log(e.data)
-        return (
-            e.data.address_1 + ", " + e.data.zip_code + ", " + e.data.country
-        )
-    }
-    const PriceCell = (e) =>{
-
-        var totalPrice = 0;
-        e.data.cart.items.map((prod) =>{
-            totalPrice += prod.product_id.price * prod.quantity
-        })
-        return (
-            totalPrice+' €'
-        )
-    }
-
 
     if(!storeid) return <CircularProgress></CircularProgress>
     return (
@@ -58,12 +42,12 @@ const StoreOrders = ({storeid}) => {
                     <SearchPanel visible={true} highlightCaseSensitive={true}  width={250}/>
                     <Selection mode="multiple" showCheckBoxesMode="always"/>
                     <HeaderFilter visible={true} allowSearch={true} />
-                    <Column caption="Name" width={200} cellRender={NameCell}/>
-                    <Column  caption="Address"  cellRender={AddressCell} width={500} />
-                    <Column caption="Price" format="currency"  cellRender={PriceCell}width={150} />
+                    <Column dataField="name" caption="Name" width={'auto'} />
+                    <Column dataField="address" caption="Address"  width={'auto'} />
+                    <Column dataField="price" caption="Price" format={{style:'currency', currency: 'EUR', useGrouping: true, minimumSignificantDigits: 3 }} width={150} />
                     
                     <Column dataField="date_created" dataType="date" caption="Date Created" width={'auto'}/>
-                    <Column dataField="active"  caption="State" width={150} />
+                    <Column dataField="state"  caption="State" width={150} cellRender={stateCell}/>
                     <Column caption="Options"   width={'auto'} />
                     <Pager allowedPageSizes={pageSizes} showPageSizeSelector={true} />
                     <Paging defaultPageSize={5} />
