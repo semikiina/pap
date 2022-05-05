@@ -6,21 +6,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
-//GET all users
-exports.GetUsers = (req, res, next) => {
-
-    console.log(' GET /user')
-    User.find()
-        .then(users => {
-            res.status(200).json(users)
-        })
-        .catch(err => {
-            if (!err.StatusCode) err.StatusCode = 500;
-            next(err);
-        })
-}
-
-
 //POST new User
 exports.NewUser = (req, res, next) => {
 
@@ -69,12 +54,26 @@ exports.NewUser = (req, res, next) => {
 
 }
 
+//GET all users
+exports.GetUsers = (req, res, next) => {
+
+    console.log(' GET /user')
+    User.find()
+        .then(users => {
+            res.status(200).json(users)
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
+}
+
 
 //GET user's profile
 exports.Profile = (req, res, next) => {
     
     const userId = req.userId;
-    console.log('user profile')
+    console.log('GET user/profile')
     User.findById(userId)
         //Excludes fields
         .select(['-password'])
@@ -175,181 +174,42 @@ exports.EditProfile = (req, res, next) => {
 
 }
 
-exports.Cart = (req, res, next) => {
+exports.AddAddress = (req, res, next) => {
 
+    console.log('POST user/addAdress')
     var userid = req.userId
-    const cartReq = { ...req.body };
-    console.log('Cart'+cartReq.quantity)
-    let num=0;
-    
-    //Find Store by ID
+    const userReq = { ...req.body };
     User.findById(userid)
-        
         .then(user => {
-
-            var exists=0;
-            user.cart.items.forEach(e => {
-
-                if(e.product_id == cartReq.product_id){
-
-                    e.quantity = parseInt(e.quantity)+parseInt(cartReq.quantity);
-                    
-                    return exists=1;
-                   
-                }
-            });
-            if(exists==0)user.cart.items.push(cartReq)
-
-            //Add  Total
-            num += cartReq.price*cartReq.quantity;
-            user.cart.total += num;
+            if(!user){
+                const error = new Error("User doesn't exist");
+                error.StatusCode = 404;
+                throw error;
+            }
+            user.addresses.push(userReq);
             return user.save();
         })
-        
         .then(user => {
             res.status(200).json({
-                message: "Item add sucessfully to the cart!",
-                user: user
+                message: "Address add successfull!",
+                user: user.addresses
             })
         })
         .catch(error => {
-            console.log(error)
+            console.log(error);
             return res
                 .status(422)
                 .json({
-                    message: "Add to cart failed. Try again later.",
+                    message: "Validation failed. Please insert correct data.",
                     errors: error
                 })
         })
 
 }
 
-
 exports.Favorite = (req, res, next) => {
-
-    const userId = req.userId;
-    var exists = 0;
-    User.findById(userId)
-    .then(user =>{
-        user.favorite.forEach(e=>{
-            if(e == req.params.id){
-                user.favorite.pull(req.params.id)
-                exists=1;
-            } 
-            
-        })
-        if(exists==0) user.favorite.push(req.params.id)
-
-        return user.save()
-    })
-    .then(result=>{
-        return Product.findById(req.params.id)
-    })
-    .then(product=>{
-
-        if(exists==0) product.favorite.push(req.params.id)
-        else product.favorite.pull(req.params.id)
-        return  product.save()
-    })
-    .then(result=>{
-        res.status(200).json({
-            lll: result.favorite.length,
-            color: exists
-        })
-    })
-    
-    .catch(error => {
-        console.log(error)
-        return res
-            .status(422)
-            .json({
-                message: "Operation failed.Try again later.",
-                errors: error
-            })
-    })
-}
-
-//
-//TESTES
-//
-
-
-//GET user by Id
-exports.GetUserById = (req, res, next) => {
-    
-    const userId = req.params.id;
-
-    User.findById(userId)
-        //Excludes fields
-        .select(['-password'])
-        // Populate gets info from other collections
-        .populate('cart.items.product_id',['price','title','images','_id','category'])
-        .populate('favorite',['title','images','price'])
-        .populate('store')
-        .then(user => {
-            if (!user) {
-                const error = new Error('Could not find the user.')
-                error.StatusCode = 404;
-                throw error;
-            }
-            res.status(200).json(user)
-        })
-        .catch(err => {
-            if (!err.StatusCode) err.StatusCode = 500;
-            next(err);
-        })
-}
-
-exports.NewCart = async (req, res, next) => {
-
-    const cartReq = { ...req.body };
-    const product = await Product.findById(cartReq.product_id)
-    User.findById(cartReq.userId)
-    .then(user => {
-        return user.AddToCart(product)
-    })
-    .then(user => {
-        res.status(201).json( {cart : user.cart})
-    })
-    .catch(error => {
-        console.log(error)
-        return res
-            .status(422)
-            .json({
-                message: "Try again later.",
-                errors: error
-            })
-    })
-}
-
-exports.DeleteCart = async (req, res, next) => {
-
-    //Find Store by ID
-    const product = await Product.findById(req.params.productid)
-    User.findById(req.params.userid)
-    .then(user => {
-        return user.RemoveFromCart(product)
-    })
-    .then(user => {
-        res.status(201).json( {cart : user.cart})
-    })
-    .catch(error => {
-        console.log(error)
-        return res
-            .status(422)
-            .json({
-                message: "Try again later.",
-                errors: error
-            })
-    })
-
-}
-
-
-
-exports.NewFavorite = (req, res, next) => {
     console.log('New Fav')
-    const userId = req.params.userid;
+    const userId = req.userId;
     let exists;
     User.findById(userId)
     .then(user =>{
@@ -393,50 +253,58 @@ exports.NewFavorite = (req, res, next) => {
     })
 }
 
-exports.NewEditProfile = (req, res, next) => {
 
-    var userid = req.params.id
-    const userReq = { ...req.body };
+exports.Cart = async (req, res, next) => {
 
-    //Find User by ID
-    User.findById(userid)
-        .then(user => {
-            //User changes
-            if(!user){
-                const error = new Error("User doesn't exist");
-                error.StatusCode = 404;
-                throw error;
-            }
-            user.first_name = userReq.first_name;
-            user.last_name = userReq.last_name;
-            user.nickname = userReq.nickname;
-            user.profile_pic = req.files[0].path;
-            user.bio = userReq.bio;
-            return user.save();
-        })
-        .then(user => {
-            res.status(200).json({
-                message: "User updated sucessfully!",
-                user: user
+    const cartReq = { ...req.body };
+    const product = await Product.findById(cartReq.product_id)
+    User.findById(req.userId)
+    .then(user => {
+        return user.AddToCart(product)
+    })
+    .then(user => {
+        res.status(201).json( {cart : user.cart})
+    })
+    .catch(error => {
+        console.log(error)
+        return res
+            .status(422)
+            .json({
+                message: "Try again later.",
+                errors: error
             })
-        })
-        .catch(error => {
-            console.log(error);
-            return res
-                .status(422)
-                .json({
-                    message: "Validation failed. Please insert correct data.",
-                    errors: error
-                })
-        })
+    })
+}
+
+exports.DeleteCart = async (req, res, next) => {
+
+    const product = await Product.findById(req.params.productid)
+    User.findById(req.userId)
+    .then(user => {
+        return user.RemoveFromCart(product)
+    })
+    .then(user => {
+        res.status(201).json( {cart : user.cart})
+    })
+    .catch(error => {
+        console.log(error)
+        return res
+            .status(422)
+            .json({
+                message: "Try again later.",
+                errors: error
+            })
+    })
 
 }
+
 
 //User Orders
 exports.UserOrders = (req, res, next) => {
 
     console.log('User Orders')
-    Order.find({user_id : req.params.id})
+
+    Order.find({user_id : req.userId})
         .populate({
             path:'cart.items.product_id',
             select:'title images price category',
@@ -458,4 +326,27 @@ exports.UserOrders = (req, res, next) => {
                 })
         })
 
+}
+
+//User Orders
+exports.DeleteAddress = (req, res, next) => {
+
+    console.log('DELETE user/deleteAddress')
+
+    User.findById(req.userId)
+    .then(user=>{
+        return user.updateOne({ $pull : { addresses: {_id: req.params.addressId}}}).exec()
+    })
+    .then(data=>{
+        res.status(200).send('ok')
+    })
+    .catch(error => {
+        console.log(error);
+        return res
+            .status(422)
+            .json({
+                message: "Validation failed. Please insert correct data.",
+                errors: error
+            })
+    })
 }

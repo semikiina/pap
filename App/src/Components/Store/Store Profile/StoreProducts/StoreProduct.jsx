@@ -20,7 +20,7 @@ const StoreProduct = ({product}) => {
                             <img
                                 src={'http://localhost:8090/'+item.images[0]}
                                 alt={item.title}
-                                sx={{ height:'200'}}
+                                style={{ maxHeight:267}}
                                 loading="lazy"
                                 onClick={()=>{seeProduct(item._id)}}
                             />

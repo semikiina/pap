@@ -14,6 +14,7 @@ const userSchema = new Schema({
     phone : String,
     date_created: Date,
     profile_pic : String,
+    
     store:[{
         type: Schema.Types.ObjectId,
         ref: 'Store'
@@ -34,7 +35,15 @@ const userSchema = new Schema({
             }
         ],
         subtotal: Number,
-    }
+    },
+    addresses:[{
+        address_1: String,
+        address_2: String,
+        zip_code: String,
+        province: String,
+        state: String,
+        country: String
+    }]
 });
 
 userSchema.methods.AddToCart = function(product){

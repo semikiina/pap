@@ -1,8 +1,11 @@
-import { CircularProgress, Container, Typography, Stack, Paper, Divider, Box, TextField, Grid, Button, InputLabel, Input, Avatar } from '@mui/material'
+import { CircularProgress, Container, Typography, Stack, Paper, Divider, Box, TextField, Grid, Button, Autocomplete, Avatar , ListItem, List, ListItemText} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import ProfileEdit from './Profile Edit/ProfileEdit';
 import useAuth from '../Contexts/useAuth';
 import { useForm } from "react-hook-form";
+import {countries} from '../../Services/countrys';
+import api from '../../Services/api';
+import { Delete, Favorite, Star, StarBorder } from '@mui/icons-material';
 
 const Profile = ({setFav,fav}) => {
 
@@ -10,11 +13,78 @@ const Profile = ({setFav,fav}) => {
     const {user,setUser} = useAuth();
     const [open, setOpen] = useState(false);
     const [address, setAddress] = useState(false);
-    const [avatar, setAvatar] = useState(null);
-    const [value, setValue] = useState('1');
+    const [country, setCountry] = useState('');
     
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const AddAddress = (data) => {
+        api.post('user/addAddress',{
+            country : country,
+            state : data.state,
+            zip_code : data.zip_code,
+            province : data.province,
+            address_1 : data.address_1,
+            address_2 : data.address_2
+        })
+        .then( data =>{
+            setAddress(false)
+            setFav(fav+1)
+        })
+        .catch( err=>{
+            console.log(err)
+        })
+    }
+
+    const DeleteAddress = (id) => {
+        console.log(id)
+        api.delete('user/deleteAddress/'+id)
+        .then( data =>{
+            
+            setFav(fav+1)
+        })
+        .catch( err=>{
+            console.log(err)
+        })
+    }
+
+
+    const MyAddresses = () =>{
+        return (
+            <Grid container spacing={4} padding={2}>
+               { user.addresses.map((item)=>{
+                  return <Grid item sm={6}>
+                        <Paper>
+                            <Stack spacing={2} padding={2}>
+                            <List>
+                                <Stack direction="row" justifyContent={'flex-end'} spacing={1}>
+                                    {
+                                        item.favorite ? <Star color="warning"/> : <StarBorder color="warning"/>
+                                    }
+                                    <Delete color="error" onClick={()=> DeleteAddress(item._id)}/>
+                                </Stack>
+                                <ListItem>
+                                    <ListItemText primary="Country" secondary={item.country}></ListItemText>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary="Zip Code" secondary={item.zip_code+', '+ item.province}></ListItemText>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary="Address 1" secondary={item.address_1}></ListItemText>
+                                </ListItem>
+                                {item.address_2 &&
+                                    <ListItem>
+                                        <ListItemText primary="Address 2" secondary={item.address_2}></ListItemText>
+                                    </ListItem>
+                                }
+                            </List>
+                            </Stack>
+                        </Paper>
+                   </Grid>
+                })}
+            </Grid>
+        )
+    }
 
     if(!user) return <CircularProgress/>
     return (
@@ -33,15 +103,15 @@ const Profile = ({setFav,fav}) => {
                    
                     <Grid item sm={12} md={7} lg={9} >
                         <Paper>
-                            <Typography padding={2} variant="h6">Your addresses</Typography>
+                            <Typography padding={2} variant="h6">Your shipping informations</Typography>
                             <Divider></Divider>
                             
                             <Box paddingLeft={2} paddingTop={2}>
-                                <Button onClick={()=>setAddress(true)} variant="outlined" >Add a address</Button>
+                                <Button onClick={()=>setAddress(true)} variant="outlined" >Add a shipping info</Button>
                             </Box>
                             {
-                                user.adresses 
-                                ? <Typography>Very Nice</Typography>
+                                user.addresses?.length 
+                                ? <MyAddresses/>
                                 :   <Stack padding={2} textAlign="center" marginBottom={3}>
                                         <Typography variant="subtitle1" >You don't have any addresses saved!</Typography>
                                         <Typography variant="caption" >Let's start by adding an address!</Typography>
@@ -51,10 +121,27 @@ const Profile = ({setFav,fav}) => {
                                 address && 
                                 
                                 <Box padding={2}>
-                                    <form>
+                                    <form onSubmit={handleSubmit(AddAddress)}>
                                     <Grid container spacing={3}>
                                         <Grid item xs={12} sm={6} marginBottom={3}>
-                                        <TextField  label="Country" {...register("country")} fullWidth required></TextField>
+                                            <Autocomplete
+                                                freeSolo
+                                                disableClearable
+                                                options={countries.map((option) => option.label)}
+                                                onChange={(event, newValue) => {
+                                                    setCountry(newValue);
+                                                }}
+                                                renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Country"
+                                                    InputProps={{
+                                                    ...params.InputProps,
+                                                    type: 'search',
+                                                    }}
+                                                />
+                                                )}
+                                            />
                                         </Grid>
                                         <Grid item xs={12} sm={6} marginBottom={3}>
                                         <TextField  label="State" {...register("state")} fullWidth required></TextField>
@@ -66,15 +153,15 @@ const Profile = ({setFav,fav}) => {
                                         <TextField  label="Province" {...register("province")} fullWidth required></TextField>
                                         </Grid>
                                         <Grid item xs={12}  marginBottom={3}>
-                                        <TextField  label="Adress 1" {...register("address_1")} fullWidth required></TextField>
+                                        <TextField  label="Address 1" {...register("address_1")} fullWidth required></TextField>
                                         </Grid>
                                         <Grid item xs={12} marginBottom={2}>
-                                        <TextField  label="Adress 2" {...register("address_2")} fullWidth ></TextField>
+                                        <TextField  label="Address 2" {...register("address_2")} fullWidth ></TextField>
                                         </Grid>
                                         <Grid item xs={12} sm={12} marginBottom={3}>
                                             <Stack direction="row" spacing={3}>
                                                 <Button onClick={()=>setAddress(false)} fullWidth color="error" variant="contained">Cancel</Button>
-                                                <Button type="submit" fullWidth color="success" variant="contained" >Save</Button>
+                                                <Button type="submit"  fullWidth color="success" variant="contained" >Save</Button>
                                             </Stack>
                                         </Grid>
                                     </Grid>

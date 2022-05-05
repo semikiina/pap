@@ -6,29 +6,20 @@ const Auth = require('../middleware/token');
 
 const User = require('../models/user');
 
-//GET /user
-router.get('/', userController.GetUsers);
-
 //POST /user
 //EDITAR A VALIDAÇÃO!!!
 router.post('/', [
     //Check if email already exists
-    body('email')
-        .isEmail()
-        .withMessage('Enter a valid email.')
-        .custom((value, { req }) => {
+    body('email').isEmail().withMessage('Enter a valid email.').custom((value, { req }) => {
             return User.findOne({ email: value })
                 .then(userF => {
                     if (userF) {
                         return Promise.reject('Email Already exists!')
                     }
                 })
-        })
-        .normalizeEmail(),
+        }).normalizeEmail(),
     //Check if nickname already exists
-    body('nickname')
-        .trim()
-        .custom((value, { req }) => {
+    body('nickname').trim().custom((value, { req }) => {
             return User.findOne({ nickname: value }).then(userF => {
                 if (userF) {
                     return Promise.reject('Nickname Already exists!')
@@ -40,14 +31,23 @@ router.post('/', [
 
 
 
+//GET /user
+router.get('/', userController.GetUsers);
+
 //GET /user/profile
 router.get('/profile', Auth, userController.Profile);
+
+//GET /user/orders
+router.get('/orders', Auth, userController.UserOrders);
 
 //POST /user/login
 router.post('/login', userController.Login);
 
-//PUT /user/profile
+//POST /user/editProfile
 router.post('/editProfile', Auth, userController.EditProfile);
+
+//POST /user/addAddress
+router.post('/addAddress', Auth, userController.AddAddress);
 
 //POST /user/cart
 router.post('/cart', Auth, userController.Cart);
@@ -55,33 +55,10 @@ router.post('/cart', Auth, userController.Cart);
 //POST /user/fav/:id
 router.post('/fav/:id', Auth, userController.Favorite);
 
-    //GET /user/orders/:id
-    router.get('/orders/:id', userController.UserOrders);
+//DELETE /user/cart/:productId
+router.delete('/cart/:productId', Auth, userController.DeleteCart);
 
-
-//
-//TESTES
-//
-
-//GET /user/:id
-router.get('/:id', userController.GetUserById);
-
-
-//GET /user/:id
-router.post('/ncart', userController.NewCart);
-
-//GET /user/:id
-router.delete('/cart/:userid/:productid', userController.DeleteCart);
-
-
-//POST /user/fav/:id
-router.post('/nfav/:userid/:id', userController.NewFavorite);
-
-//POST /user/fav/:id
-router.post('/editUser/:id', userController.NewEditProfile);
-
-
-
-
+//DELETE /user/deleteAddress/:addressId
+router.delete('/deleteAddress/:addressId', Auth, userController.DeleteAddress);
 
 module.exports = router;

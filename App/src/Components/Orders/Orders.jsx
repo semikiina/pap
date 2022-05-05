@@ -11,7 +11,7 @@ const Orders = () => {
 
     useEffect(()=>{
         if(user._id)
-        api.get('user/orders/'+user._id)
+        api.get('user/orders')
         .then(({data})=>{
             setOrders(data.orders)
         })
@@ -25,14 +25,6 @@ const Orders = () => {
         <Container>
             <Typography variant="h5" padding={2}>My Orders</Typography>
             <Divider></Divider>
-            {/* <Stack direction={'row'}>
-                <Box>
-                <Stack direction={'row'}></Stack>
-                </Box>
-                <Box>
-                <Stack direction={'row'}></Stack>
-                </Box>
-            </Stack> */}
             <Grid container marginTop={3} spacing={2}>
                     {
                         orders.map((order) =>(

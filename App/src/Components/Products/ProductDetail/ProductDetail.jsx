@@ -78,8 +78,8 @@ const ProductDetail = ({product, newFav, reviewL,avr}) => {
                     {
                         product.favorite &&
                             product.favorite.includes(user._id)
-                            ? <Favorite onClick={()=>{newFav(product._id)}}></Favorite>
-                            : <FavoriteBorder onClick={()=>{newFav(product._id)}}></FavoriteBorder>
+                            ? <Favorite onClick={()=>{newFav(product._id)}} color="error"></Favorite>
+                            : <FavoriteBorder onClick={()=>{newFav(product._id)}} color="error"></FavoriteBorder>
                     }
                     
                 </Stack>

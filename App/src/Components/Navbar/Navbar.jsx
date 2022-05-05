@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {AppBar, Toolbar, IconButton, Badge, Button, Menu, Typography, Stack, styled, Avatar, Tooltip, Box} from '@mui/material';
-import {ShoppingCart, Favorite, Store} from '@mui/icons-material'
+import {ShoppingCart, Favorite, Store} from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
 import ProfileMenu from './Navbar Items/ProfileMenu';
 import StoreMenu from './Navbar Items/StoreMenu';
 import CartMenu from './Navbar Items/CartMenu';
@@ -9,7 +10,7 @@ import useAuth from '../Contexts/useAuth';
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-const Navbar = ({onRemoveFromCart}) => {
+const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 
 	const {user} = useAuth();
 	const [anchorElUser, setAnchorElUser] = useState(null);
@@ -45,6 +46,15 @@ const Navbar = ({onRemoveFromCart}) => {
 		<>
 			<AppBar position='fixed' color='inherit' >
 				<Toolbar  disableGutters>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={handleDrawerOpen}
+						edge="start"
+						sx={{ ml: 2, ...(openDrawer && { display: 'none' }) }}
+					>
+						<MenuIcon />
+					</IconButton>
 					<Typography variant="h6" color="inherit"  sx={{ mr: 2, display: { xs: 'none', md: 'flex' } , flexGrow: 1 }}>
 						<IconButton href="/">
 							TagMe!
@@ -63,14 +73,14 @@ const Navbar = ({onRemoveFromCart}) => {
 									</Badge> 
 								</IconButton>
 								<CartMenu  handleCloseCartMenu={handleCloseCartMenu} anchorElCart={anchorElCart} cart={user.cart} onRemoveFromCart={onRemoveFromCart}></CartMenu>
-								<Box sx={{ flexGrow: 0 }}>
+								{/* <Box sx={{ flexGrow: 0 }}>
 									<Tooltip title="Store options">
 										<IconButton onClick={handleOpenStoreMenu} >
 											<Store ></Store>
 										</IconButton>
 									</Tooltip>
 									<StoreMenu handleCloseStoreMenu={handleCloseStoreMenu} anchorElStore={anchorElStore} storeid={user.store[0]._id}/>
-								</Box>
+								</Box> */}
 								<Box sx={{ flexGrow: 0 }}>
 									<Tooltip title="Profile options">
 										<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

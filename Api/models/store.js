@@ -13,6 +13,7 @@ const StoreSchema = new Schema({
     date_created: Date,
     store_nickname: String,
     store_description: String,
+    views: Number,
     product:[{
         type: Schema.Types.ObjectId,
         ref:'Product'

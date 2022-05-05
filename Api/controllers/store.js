@@ -47,6 +47,7 @@ exports.NewStore = (req, res, next) => {
         store_nickname: storeReq.store_nickname,
         creator_id: req.userId,
         date_created: Date.now(),
+        views: 0
 
     })
     store.save()
@@ -85,6 +86,10 @@ exports.GetTheStore = (req, res, next) => {
 
     //Find store by ID
     Store.findById(storeid)
+        .then(store => {
+            store.views += 1;
+            store.save()
+        })
         .then(store => {
             res.status(200).json(store)
         })
@@ -172,7 +177,12 @@ exports.GetTheStoreNew = (req, res, next) => {
               active: true,
             }
           })
+        .then(store => { 
+            store.views += 1;
+            return store.save();
+        })
         .then(store => {
+            
             res.status(200).json(store)
         })
         .catch(error => {

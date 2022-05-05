@@ -26,6 +26,7 @@ const StoreProducts = ({storeid}) => {
         if(storeid)
         api.get('product/store/'+storeid)
         .then(data=>{
+            console.log(data)
             setProducts(data.data)
         })
         .catch(err=>{
@@ -135,6 +136,7 @@ const StoreProducts = ({storeid}) => {
                         <Column dataField="title" caption="Title" width={'auto'} />
                         <Column dataField="price" format="currency" width={150} />
                         <Column dataField="category"  width={200} />
+                        <Column dataField="stock"   width={'auto'}/>
                         <Column dataField="date_created" dataType="date" caption="Date Created" width={'auto'}/>
                         <Column dataField="active"  caption="State" width={150} cellRender={StateCell} />
                         <Column caption="Options"   width={'auto'} cellRender={GroupButtons}/>

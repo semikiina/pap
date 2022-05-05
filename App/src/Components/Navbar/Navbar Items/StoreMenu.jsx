@@ -1,30 +1,27 @@
-import React from 'react'
-import { MenuItem, Menu, Typography} from '@mui/material';
-
+import React, { useEffect, useState } from 'react'
+import { MenuItem, Menu, Typography, ListItemIcon, Divider, Avatar} from '@mui/material';
+import { Inventory, LocalShipping, Store, Sync } from '@mui/icons-material';
+import api from '../../../Services/api';
 
 
 
 const NavbarMenu = ({handleCloseStoreMenu, anchorElStore, storeid}) => {
 
-    const settings =[
-        {
-            name: 'Store',
-            href: '../store/'+storeid
-        },
-        {
-            name: 'Your Products',
-            href: '../storeProducts'
-        },
-        {
-            name: 'Dashboard',
-            href: '../dashboard'
-        },
-        {
-            name: 'Orders',
-            href: '../storeOrders'
-        },
-        
-    ];
+    const [store, setStore] = useState({});
+
+    useEffect(()=>{
+        api.get('store/'+storeid)
+        .then(data=>{
+            setStore({
+                store_name: data.data.store_name,
+                store_image :  data.data.store_image
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+    },[])
 
     return (
         <>
@@ -39,16 +36,42 @@ const NavbarMenu = ({handleCloseStoreMenu, anchorElStore, storeid}) => {
                 keepMounted
                 transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'right',
+                    horizontal: 'center',
                 }}
                 open={Boolean(anchorElStore)}
                 onClose={handleCloseStoreMenu}
             >
-                {settings.map((setting) => (
-                    <MenuItem key={setting.href} onClick={()=>{window.location.href=setting.href; handleCloseStoreMenu()}}>
-                    <Typography textAlign="center" >{setting.name}</Typography>
-                    </MenuItem>
-                ))}
+                <MenuItem onClick={handleCloseStoreMenu}>
+                    <ListItemIcon>
+                        <Avatar src={'http://localhost:8090/'+store?.store_image} sx={{width: 30, height: 30}}/>
+                    </ListItemIcon>
+                    <Typography Store textAlign="center" >{store.store_name}</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseStoreMenu}>
+                    <ListItemIcon>
+                        <Store fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../profile'}}>Store</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseStoreMenu}>
+                    <ListItemIcon>
+                        <Inventory fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../account'}}>Products</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseStoreMenu}>
+                    <ListItemIcon>
+                        <LocalShipping fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../orders'}}>Store Orders</Typography>
+                </MenuItem>
+                <Divider/>
+                <MenuItem onClick={handleCloseStoreMenu}>
+                    <ListItemIcon>
+                        <Sync fontSize="small" />
+                    </ListItemIcon>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../orders'}}>Change Store</Typography>
+                </MenuItem>
             </Menu>
         </>
     )

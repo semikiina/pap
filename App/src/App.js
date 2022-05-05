@@ -15,6 +15,7 @@ import RequireAuth from './Components/Contexts/RequireAuth';
 import Exemplo from './Components/Ajuda/Exemplo';
 import useAuth from './Components/Contexts/useAuth';
 import StoreOrders from './Components/Store/Store Orders/StoreOrders';
+import DrawerComponent from './Components/Drawer/DrawerComponent';
 
 const THEME = createTheme({
 	typography: {
@@ -32,17 +33,23 @@ const App = () => {
 
 	const {user,setUser} = useAuth();
 	const [store, setStore] = useState();
-	//const [user, setUser] = useState({});
     const [cart, setCart] = useState([]);
 	const [order, setOrder] = useState({});
 	const [errorMessage, setErrorMessage] = useState('');
 	const [favorite, setFavorite] = useState([]);
 	const [fav, setFav] = useState(0);
-	var userId= '620ac00c85d485580493d87f';
+	const [openDrawer, setOpenDrawer] = useState(false);
+
+	const handleDrawerOpen = () => {
+		setOpenDrawer(true);
+	};
+
+	const handleDrawerClose = () => {
+		setOpenDrawer(false);
+	};
 
     const AddToCart = (productId, quantity)=>{
-        api.post('user/ncart',{
-            userId: userId,
+        api.post('user/cart',{
             product_id:productId,
             quantity: quantity
         })
@@ -54,7 +61,7 @@ const App = () => {
         })
     }
     const RemoveFromCart = (productId)=>{
-        api.delete('user/cart/'+user._id+'/'+productId)
+        api.delete('user/cart/'+productId)
         .then( res=>{
 			setFav(fav+1)
         })
@@ -64,7 +71,7 @@ const App = () => {
     }
 
 	const newFavorite = (id) =>{
-        api.post('user/nfav/'+user._id+'/'+id)
+        api.post('user/fav/'+id)
         .then(data=>{
             setFav(fav+1)
         })
@@ -76,7 +83,6 @@ const App = () => {
 			api.get('user/profile')
 				.then(user=>{
 					setStore(user.data.store[0]._id)
-					//setUser(user.data)
 					setUser(user.data)
 					setCart(user.data.cart)
 					setFavorite(user.data.favorite)
@@ -92,7 +98,8 @@ const App = () => {
 		<ThemeProvider theme={THEME}>
 			<Router>
 
-				<Navbar onRemoveFromCart={RemoveFromCart}></Navbar>
+				<Navbar onRemoveFromCart={RemoveFromCart} handleDrawerOpen={handleDrawerOpen} openDrawer={openDrawer}/>
+				<DrawerComponent handleDrawerClose={handleDrawerClose} openDrawer={openDrawer} storeid={store}/>
 				
 				<Routes>
 					<Route exact path='/login' element={<Login />}/>
