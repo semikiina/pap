@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import {Add, Delete, MoreVert} from '@mui/icons-material';
 import {Column,DataGrid,FilterRow, Paging, Pager,Selection,SearchPanel, HeaderFilter,Item} from 'devextreme-react/data-grid';
 import api from '../../../Services/api';
+import EditProduct from './EditProduct';
 
 const pageSizes = [5,10, 25, 50, 100];
 
@@ -21,6 +22,17 @@ const StoreProducts = ({storeid}) => {
 	const handleCloseMenu = () => {
 		setAnchorElMenu(null);
 	};
+
+    const [openEdit, setOpenEdit] = React.useState(false);
+
+    const handleClickOpenEdit = () => {
+        setOpenEdit(true);
+    };
+
+    const handleCloseEdit = () => {
+        setOpenEdit(false);
+    };
+
 
     useEffect(()=>{
         if(storeid)
@@ -86,9 +98,10 @@ const StoreProducts = ({storeid}) => {
                 }}
                 open={Boolean(anchorElMenu)}
                 onClose={handleCloseMenu}>
-                    <MenuItem onClick={()=>{window.location.href='/'; handleCloseMenu()}}><Typography textAlign="center" >Edit</Typography></MenuItem>
+                    <MenuItem onClick={()=>{handleClickOpenEdit(); handleCloseMenu()}}><Typography textAlign="center" >Edit</Typography></MenuItem>
                     <MenuItem onClick={()=>{RemoveProduct(e.data._id); handleCloseMenu()}}><Typography textAlign="center" >Remove</Typography></MenuItem>
                 </Menu>
+                <EditProduct open={openEdit} handleClose={handleCloseEdit} storeid={e.data._id}/>
             </>
         )
     }
@@ -120,6 +133,7 @@ const StoreProducts = ({storeid}) => {
 
     if(!products) return <CircularProgress></CircularProgress>
     return (
+        <>
         <Container>
                 <Stack direction="row" justifyContent="space-between" padding={2}>
                     <Typography variant="h5">Products</Typography>
@@ -149,6 +163,8 @@ const StoreProducts = ({storeid}) => {
                     rowSelected && <Button variant="outlined" color="error" onClick={RemoveManyProducts}>Remove All<Delete></Delete></Button>
                 }
         </Container>
+        
+        </>
     )
 }
 

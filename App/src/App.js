@@ -16,6 +16,7 @@ import Exemplo from './Components/Ajuda/Exemplo';
 import useAuth from './Components/Contexts/useAuth';
 import StoreOrders from './Components/Store/Store Orders/StoreOrders';
 import DrawerComponent from './Components/Drawer/DrawerComponent';
+import EditProduct from './Components/Store/Store Products/EditProduct';
 
 const THEME = createTheme({
 	typography: {
@@ -116,6 +117,7 @@ const App = () => {
 						<Route exact path='/storeProducts' element={<StoreProduct storeid={store} />}/>
 						<Route exact path='/storeOrders' element={<StoreOrders storeid={store} />}/>
 						<Route exact path='/addProduct' element={<AddProduct storeid={store}/>}/>
+						<Route exact path='/editProduct/:id' element={<EditProduct storeid={store}/>}/>
 						<Route exact path='/dashboard' element={<Dashboard />}/>
 						<Route exact path='/exemplo' element={<Exemplo />}/>
 					</Route>

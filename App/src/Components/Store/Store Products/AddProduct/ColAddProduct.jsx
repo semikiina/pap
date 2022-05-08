@@ -1,4 +1,4 @@
-import { Box,Button, Divider, Paper, Typography, TextField, Grid, FormControlLabel, Checkbox, InputAdornment } from '@mui/material'
+import { Box, Divider, Paper, Typography, TextField, Grid, FormControlLabel, Checkbox, InputAdornment, Autocomplete, Chip } from '@mui/material'
 import React, { useState } from 'react'
 import HtmlEditor, { Toolbar, Item } from 'devextreme-react/html-editor';
 import { DropzoneArea } from 'material-ui-dropzone';
@@ -6,7 +6,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 const sizeValues = ['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt'];
 const fontValues = ['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana'];
 
-const ColAddProduct = ({register,setImages,setHtmlEditor,Shipping,isDisabledShipping}) => {
+const ColAddProduct = ({register,setImages,setHtmlEditor,Shipping,isDisabledShipping, categorys}) => {
 
     const valueChanged= (e)=>{
         setHtmlEditor(e.value)
@@ -25,11 +25,21 @@ const ColAddProduct = ({register,setImages,setHtmlEditor,Shipping,isDisabledShip
                         <Grid item xs={12} md={6} marginBottom={2}>
                             <TextField required {...register("stock")}  label="Stock" type="number"  fullWidth helperText="This is the number of available products for sale. This will not appear to your client."/>
                         </Grid>
+                        <Grid item xs={12}  marginBottom={2}>
+                                <Autocomplete
+                                    id="free-solo-demo"
+                                    freeSolo
+                                    options={categorys}
+                                    renderInput={(params) => <TextField required {...params} {...register("category")} helperText="Search for an existing category or add your own" placeholder='Start Searching here...'  label="Category"/>}
+                                />
+                        </Grid>
                         <Grid item xs={12} marginBottom={2}>
+                            <Typography variant="subtitle1">Description</Typography>
                             <HtmlEditor
                                 height={300}
                                 valueType="html"
                                 onValueChanged={valueChanged}
+                                onKey
                                 >
                                 <Toolbar>
                                     <Item name="undo" />
@@ -59,7 +69,6 @@ const ColAddProduct = ({register,setImages,setHtmlEditor,Shipping,isDisabledShip
                                 </Toolbar>
                             </HtmlEditor>
                         </Grid>
-                        
                     </Grid>
                 </Paper>
             </Box>
