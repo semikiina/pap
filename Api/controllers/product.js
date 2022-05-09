@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Store = require('../models/store');
+var fs = require('fs');
 
 
 exports.GetProducts = (req, res, next) => {
@@ -68,6 +69,59 @@ exports.NewProduct = (req, res, next) => {
                 })
         })
 
+}
+
+exports.UploadImageToProduct = (req,res, next) =>{
+    console.log('Upload Image to product')
+    Product.findById(req.params.id)
+        .then(product => {
+            product.images.push(req.files[0].path)
+            return product.save()
+        })
+        .then(product => {
+            res.status(200).json({
+                message: "Image successfully added!",
+                product: product
+            })
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Validation failed. Please insert correct data.",
+                    errors: error
+                })
+        })
+}
+exports.DeleteImageFromProduct = (req,res, next) =>{
+    console.log('Delete Image from product')
+    let imageReq = req.body.img
+
+    console.log(imageReq)
+    Product.findById(req.params.id)
+        .then(product => {
+            fs.unlinkSync('C:\\Users\\Cristina\\Desktop\\pap\\Api\\'+imageReq);
+            product.images = product.images.filter(src =>{
+                                return src !== imageReq
+                            })
+            return product.save();
+        })
+        .then(product => {
+            res.status(200).json({
+                message: "Image updated!",
+                product: product
+            })
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Validation failed. Please insert correct data.",
+                    errors: error
+                })
+        })
 }
 
 

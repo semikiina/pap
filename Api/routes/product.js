@@ -11,11 +11,17 @@ router.get('/', Product.GetProducts)
 //GET /product/categorys
 router.get('/categorys', Product.DistinctCategorys)
 
-//POST /product/updateState/:id
-router.post('/updateState/:id', Product.UpdateProductState)
+//GET /product/sPrd/:id
+router.get('/sPrd/:id', Product.GetSimilarProducts)
+
+//GET /product/store/:id
+router.get('/store/:id', Product.GetProductsByStore)
 
 //GET /product/:id
 router.get('/:id', Product.GetTheProduct)
+
+//POST /product/updateState/:id
+router.post('/updateState/:id', Product.UpdateProductState)
 
 //POST /product
 router.post('/', Product.NewProduct)
@@ -23,20 +29,16 @@ router.post('/', Product.NewProduct)
 //POST /product/upd/:id
 router.post('/upd/:id', Product.UpdateProduct)
 
-//
-//Examples
-//
+//POST /product/deleteImage/:id
+router.post('/deleteImage/:id', Product.DeleteImageFromProduct)
 
-//GET /product/sPrd/:id
-router.get('/sPrd/:id', Product.GetSimilarProducts)
+//POST /product/uploadImage/:id
+router.post('/uploadImage/:id', Product.UploadImageToProduct)
 
-//GET /product/store/:id
-router.get('/store/:id', Product.GetProductsByStore)
-
-//GET /product/store/:id
+//DELETE /product/deleteMany
 router.delete('/deleteMany', Product.DeleteManyProduct)
 
-//GET /product/store/:id
+//DELETE /product/:id
 router.delete('/:id', Product.DeleteProduct)
 
 

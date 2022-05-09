@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Card, CardActions, CardContent, CardMedia, Button, Typography, Stack, } from '@mui/material';
 import {FavoriteBorder, Favorite} from '@mui/icons-material';
 import useAuth from '../../Contexts/useAuth';
 
 const Product = ({product, onAddToCart, newFav}) => {
 
+    const [src, setSrc] = useState({});
+
+    const HandleHovers = () =>{
+        if(src.image == 0) {
+            if(product.images[1])
+            setSrc({src:"http://localhost:8090/" + product.images[1], image : 1})
+        }
+        else {
+            if(product.images[1]) setSrc({src:"http://localhost:8090/" + product.images[0], image : 0})
+        }  
+    }
+
+    useEffect(()=>{
+        if(product) setSrc({src:"http://localhost:8090/" + product.images[0], image : 0})
+    },[product])
     const {user} = useAuth();
     return (
         <Card sx={{ maxWidth: 345 }} >
             <Button href={'products/'+ product._id} padding={0} >
-                <CardMedia
-                component="img"
-                image={"http://localhost:8090/" + product.images[0]} 
-                sx={{objectFit:'cover',width: 260,height: 260 }}
+                <img 
+                src={src.src}
+                style={{objectFit:'cover',width: 260,height: 260 }}
                 alt={product.title} 
+                onMouseOver={HandleHovers}
+                onMouseOut={HandleHovers} 
                 />
             </Button>
             

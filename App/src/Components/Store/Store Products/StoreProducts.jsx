@@ -23,16 +23,6 @@ const StoreProducts = ({storeid}) => {
 		setAnchorElMenu(null);
 	};
 
-    const [openEdit, setOpenEdit] = React.useState(false);
-
-    const handleClickOpenEdit = () => {
-        setOpenEdit(true);
-    };
-
-    const handleCloseEdit = () => {
-        setOpenEdit(false);
-    };
-
 
     useEffect(()=>{
         if(storeid)
@@ -98,10 +88,9 @@ const StoreProducts = ({storeid}) => {
                 }}
                 open={Boolean(anchorElMenu)}
                 onClose={handleCloseMenu}>
-                    <MenuItem onClick={()=>{handleClickOpenEdit(); handleCloseMenu()}}><Typography textAlign="center" >Edit</Typography></MenuItem>
+                    <MenuItem onClick={()=>{window.location.href="../editProduct/"+e.data._id;handleCloseMenu()}}><Typography textAlign="center" >Edit</Typography></MenuItem>
                     <MenuItem onClick={()=>{RemoveProduct(e.data._id); handleCloseMenu()}}><Typography textAlign="center" >Remove</Typography></MenuItem>
                 </Menu>
-                <EditProduct open={openEdit} handleClose={handleCloseEdit} storeid={e.data._id}/>
             </>
         )
     }
