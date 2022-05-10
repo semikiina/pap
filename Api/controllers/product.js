@@ -101,7 +101,7 @@ exports.DeleteImageFromProduct = (req,res, next) =>{
     console.log(imageReq)
     Product.findById(req.params.id)
         .then(product => {
-            fs.unlinkSync('C:\\Users\\Cristina\\Desktop\\pap\\Api\\'+imageReq);
+            fs.unlinkSync('C:\\Users\\ASUS\\Desktop\\pap\\pap\\Api\\'+imageReq);
             product.images = product.images.filter(src =>{
                                 return src !== imageReq
                             })

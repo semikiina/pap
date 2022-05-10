@@ -15,6 +15,12 @@ router.get('/profile', Auth, SAuth, storeController.GetTheStore)
 //GET /store/orders/:id
 router.get('/orders/:id', storeController.StoreOrders)
 
+//GET /store/login
+router.get('/login', Auth, storeController.Login)
+
+//GET /store/:id
+router.get('/:id', storeController.GetTheStoreNew)
+
 //POST /store
 router.post('/', Auth, [
     //Check if store email already exists
@@ -32,8 +38,13 @@ router.post('/', Auth, [
         .normalizeEmail()
 ], storeController.NewStore)
 
-//GET /store/login
-router.get('/login', Auth, storeController.Login)
+//POST /store/editStore/:id
+router.post('/editStore/:id', storeController.NewUpdateStore)
+
+//POST /store/updateOrder/:id
+router.post('/updateOrderState/:id', storeController.NewOrderState)
+
+
 
 //PUT /store/:id
 router.put('/:id', Auth, SAuth, [
@@ -49,14 +60,9 @@ router.put('/:id', Auth, SAuth, [
         })
 ], storeController.UpdateStore)
 
-//GET /store/:id
-router.get('/:id', storeController.GetTheStoreNew)
 
 
 
-
-//POST /store/editStore/:id
-router.post('/editStore/:id', storeController.NewUpdateStore)
 
 
 module.exports = router;

@@ -6,6 +6,12 @@ const Order = ({order}) => {
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const[page,setPage] = useState(0)
 
+    var chipColor= 'primary';
+    if(order?.state.toString().toLowerCase() == 'payed') chipColor = 'warning';
+    else if(order?.state.toString().toLowerCase() == 'fulfilled') chipColor = 'primary';
+    else chipColor = 'error';
+
+
 
     if(!order) return <CircularProgress></CircularProgress>
     return (
@@ -29,7 +35,7 @@ const Order = ({order}) => {
             <Stack direction="row" justifyContent={'space-between'}>
                 <Typography padding={3} >Total: </Typography>
                 <Box marginRight={2} marginTop={2}>
-                    <Chip  label="Completed" color="success"></Chip>
+                    <Chip  label={order.state} color={chipColor}></Chip>
                 </Box>
             </Stack>
         </Paper>

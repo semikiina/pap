@@ -236,7 +236,7 @@ exports.StoreOrders = (req, res, next) => {
     Order.find()
         .populate({
             path:'cart.items.product_id',
-            select:'title price',
+            select:'title price images',
             populate:{
                 path:"store_id",
                 match:{_id : req.params.id},
@@ -257,7 +257,7 @@ exports.StoreOrders = (req, res, next) => {
                     _id: or._id,
                     cart: or.cart,
                     price : itTtotal,
-                    state : 'Payed'
+                    state : or.state
                 })
             })
             res.status(200).json({orders: newOrders})
@@ -267,10 +267,28 @@ exports.StoreOrders = (req, res, next) => {
             return res
                 .status(422)
                 .json({
-                    message: "Validation failed. Please insert correct data.",
+                    message: "Validation failed.",
                     errors: error
                 })
         })
 
+}
+
+exports.NewOrderState = (req,res, next) =>{
+    console.log('POST order/newState')
+    Order.findById(req.params.id)
+        .then(order => {
+            order.state = req.body.state
+            return order.save()
+        })
+        .then(order => {
+            res.status(200).send('State updated successfully!')
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .send('An error occurred. Please try again later.')
+        })
 }
 

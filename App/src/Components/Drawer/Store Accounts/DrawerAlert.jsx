@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogTitle, DialogContent, ListItemButton, Link, ListItemAvatar, Avatar, List, ListItemText, Typography } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, ListItemButton, Divider, ListItemAvatar, Avatar, List, ListItemText, Typography } from '@mui/material'
 
 const DrawerAlert = ({open,handleClose,storeList}) => {
 
@@ -25,6 +25,8 @@ const DrawerAlert = ({open,handleClose,storeList}) => {
                         
                     }
                 </List>
+                <Divider></Divider>
+                <Typography variant='subtitle2' paddingTop={2}>Sign In or Sign Up to a store <b style={{ cursor: 'pointer'}}>here</b>.</Typography>
             </DialogContent>
         </Dialog>
     )

@@ -141,7 +141,7 @@ exports.EditProfile = (req, res, next) => {
 
     var userid = req.userId
     const userReq = { ...req.body };
-    console.log(userReq)
+    console.log(req.files)
     //Find User by ID
     User.findById(userid)
         .then(user => {
@@ -151,6 +151,7 @@ exports.EditProfile = (req, res, next) => {
                 error.StatusCode = 404;
                 throw error;
             }
+            if(req.files) user.profile_pic = req.files[0].path;
             user.first_name = userReq.first_name;
             user.last_name = userReq.last_name;
             user.nickname = userReq.nickname;

@@ -10,5 +10,4 @@ router.get('/:email', Auth, Order.GetOrder)
 //POST /order
 router.post('/', Order.Checkout)
 
-
 module.exports = router;
