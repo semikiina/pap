@@ -46,7 +46,7 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 		<>
 			<AppBar position='fixed' color='inherit' >
 				<Toolbar  disableGutters>
-					<IconButton
+					{user._id && <IconButton
 						color="inherit"
 						aria-label="open drawer"
 						onClick={handleDrawerOpen}
@@ -54,7 +54,7 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 						sx={{ ml: 2, ...(openDrawer && { display: 'none' }) }}
 					>
 						<MenuIcon />
-					</IconButton>
+					</IconButton>}
 					<Typography variant="h6" color="inherit"  sx={{ mr: 2, display: { xs: 'none', md: 'flex' } , flexGrow: 1 }}>
 						<IconButton href="/">
 							TagMe!

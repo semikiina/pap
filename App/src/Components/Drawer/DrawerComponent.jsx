@@ -1,5 +1,5 @@
 import React, {useEffect,useState} from 'react'
-import { List, ListItem, ListItemIcon, Drawer, IconButton, Divider, ListItemText, MenuItem , Avatar, Typography, Tooltip} from '@mui/material';
+import { List, ListItem, ListItemIcon, Drawer, IconButton, Divider, ListItemText, MenuItem , Avatar, Typography, Tooltip, Button} from '@mui/material';
 import { ChevronLeft, Close, Inbox, LocalShipping, Settings, Storage, Store, Sync } from '@mui/icons-material';
 import { styled, useTheme } from '@mui/material/styles';
 import api from '../../Services/api';
@@ -95,21 +95,21 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
                 anchor="left"
                 open={openDrawer}
             >
-                <DrawerHeader >
-                    <MenuItem >
+                <DrawerHeader justifyContent="flex-end">
+                    {store.store_name && <MenuItem >
                         <ListItemIcon>
                             <Avatar src={'http://localhost:8090/'+store?.store_image} sx={{mr:2}}/>
                         </ListItemIcon>
                         <Typography  textAlign="center" >{store?.store_name}</Typography>
-                    </MenuItem>
-                    <IconButton onClick={handleDrawerClose}  >
+                    </MenuItem>}
+                    <IconButton onClick={handleDrawerClose} >
                         <Tooltip title="close menu"  disableFocusListener disableTouchListener>
                             <Close />
                         </Tooltip>
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                {drawer}
+                {store.store_name ? drawer : <Button variant="outlined" href="./newStore">CREATE A STORE</Button>}
             </Drawer>
             <DrawerAlert open={open} handleClose={handleClose} storeList={user.store}/>
         </>

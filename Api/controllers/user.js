@@ -4,7 +4,8 @@ const Product = require('../models/product');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const transporter = require('../mailer');
+var crypto = require('crypto');
 
 //POST new User
 exports.NewUser = (req, res, next) => {
@@ -20,6 +21,8 @@ exports.NewUser = (req, res, next) => {
         throw error;
     }
 
+    var tempToken = crypto.randomBytes(20).toString('hex');
+
     //Encrypt user's password
     bcrypt.hash(userReq.password, 12).then(hashedPw => {
 
@@ -29,12 +32,24 @@ exports.NewUser = (req, res, next) => {
             email: userReq.email,
             password: hashedPw,
             nickname: userReq.nickname,
-            phone_code : userReq.phone_code,
-            phone : userReq.phone,
+            tempToken : tempToken,
             date_created: Date.now(),
+            active: false,
         }
         );
         user.save()
+            .then(result => {
+                return transporter.sendMail({
+                    from: 'tagmetheapp@gmail.com', // sender address
+                    to: userReq.email, // list of receivers
+                    subject: "TagMe! - Account confirmation ✔", // Subject line
+                    html: "<body style='font-family:Futura;font-size:20px'><p>Hello "+userReq.first_name+",</p>"+
+                    "<p>Please confirm your email address to complete your TagMe account.</p><br>"+
+                    "<a style='width:100%;background-color:green;padding:10px;text-decoration:none;color:white;font-size:30px;border-radius:10px;' href='http://localhost:8090/user/confirmAccount/"+userReq.nickname+"/"+tempToken+"'>Confirm Email address</a>"+
+                    "<p>Thank you,</p><p>TagMe!</p></body>", // html body
+                    
+                  });
+            })
             .then(result => {
                 res.status(201).json({
                     message: "User created!",
@@ -54,6 +69,24 @@ exports.NewUser = (req, res, next) => {
 
 }
 
+//GET all users
+exports.ConfirmAccount = (req, res, next) => {
+
+    console.log('POST /user')
+    User.findOne({nickname: req.params.nickname})
+        .then(user => {
+            if(user.tempToken == req.params.token) user.active = true
+            else throw new Error('Token is invalid.');
+            return user.save();
+        })
+        .then(user => {
+            res.redirect('http://localhost:3000');
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
+}
 //GET all users
 exports.GetUsers = (req, res, next) => {
 

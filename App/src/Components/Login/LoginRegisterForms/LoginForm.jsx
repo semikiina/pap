@@ -22,12 +22,12 @@ const LoginForm = ({login, errors}) => {
             }
         </Collapse>
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Typography variant="h3" marginBottom={4} textAlign="center">Login</Typography>
+            <Typography variant="h4" marginBottom={4} textAlign="center">Login</Typography>
             <Box marginBottom={2} >
-                <TextField helperText="Please enter your email" id="demo-helper-text-misaligned" label="Email" fullWidth {...register("email")}/>
+                <TextField helperText="Please enter your email" label="Email" fullWidth {...register("email")}/>
             </Box>
             <Box marginBottom={2} >
-                <TextField helperText="Please enter your password" id="demo-helper-text-misaligned" label="Password" fullWidth {...register("password")}/>
+                <TextField helperText="Please enter your password"  label="Password" fullWidth {...register("password")}/>
             </Box>
             <Button color="secondary" fullWidth variant="outlined" type="submit">Login</Button>
            

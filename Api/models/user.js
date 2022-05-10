@@ -14,7 +14,8 @@ const userSchema = new Schema({
     phone : String,
     date_created: Date,
     profile_pic : String,
-    
+    active:Boolean,
+    tempToken: String,
     store:[{
         type: Schema.Types.ObjectId,
         ref: 'Store'

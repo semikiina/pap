@@ -40,6 +40,9 @@ router.get('/profile', Auth, userController.Profile);
 //GET /user/orders
 router.get('/orders', Auth, userController.UserOrders);
 
+//GET /user/confirmAccount
+router.get('/confirmAccount/:nickname/:token', userController.ConfirmAccount);
+
 //POST /user/login
 router.post('/login', userController.Login);
 

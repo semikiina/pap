@@ -2,7 +2,6 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 const User = require('../models/user');
 var easyinvoice = require('easyinvoice');
-const fs = require('fs');
 const transporter = require('../mailer');
 
 exports.GetOrder = (req, res, next) => {

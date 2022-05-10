@@ -5,17 +5,15 @@ import api from '../../Services/api';
 import {useLocation, useNavigate} from 'react-router-dom';
 import { Container, Grid, Stack } from '@mui/material';
 
+
 const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
 
-    const [user, setUser] = useState({});
     const [error, setError] = useState(false);
 
-    const GetUser = (user)=>{
-        setUser(user)
-    }
+
 
     const Login = async (user)=>{
         try{
@@ -36,7 +34,10 @@ const Login = () => {
 
     const Register = async (user)=>{
         try{
-            const Register = await api.post('user/login',{
+            const Register = await api.post('user',{
+                first_name: user.first_name,
+                last_name: user.last_name,
+                nickname : user.nickname,
                 email: user.email,
                 password: user.password,
             })
@@ -53,8 +54,7 @@ const Login = () => {
         <Container>
             <Grid container>
                 <Grid item xs={12} md={6}><LoginForm login={Login} errors={error}/></Grid>
-                <Grid item xs={12} md={6}><RegisterForm register={GetUser} errors={error}/></Grid>
-                
+                <Grid item xs={12} md={6}><RegisterForm registerUser={Register} errors={error}/></Grid>
             </Grid>
         </Container>
     )
