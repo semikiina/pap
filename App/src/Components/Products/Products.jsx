@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from 'react'
-import {Grid, Container, Paper, Typography, Stack, Box, Select, MenuItem, FormControl, InputLabel, Button} from '@mui/material';
+import {Grid, Container, Paper, Typography, Stack, Box, Select, MenuItem, FormControl, InputLabel, Button, Collapse, Alert} from '@mui/material';
 import Product from './Product/Product';
 import api from '../../Services/api';
 
@@ -8,7 +8,9 @@ import api from '../../Services/api';
 const Products = ({onAddToCart, newFav}) => {
 
     const [products, setProducts] = useState([]);
-    const [filter, setFilter] =useState('');
+    const [openAlert, setOpenAlert] = useState(false);
+    const [error, setError] = useState(false);
+    const [filter, setFilter] =useState("");
     const [categorys,setCategorys] = useState([])
     var dproducts =[];
 
@@ -71,12 +73,18 @@ const Products = ({onAddToCart, newFav}) => {
             setCategorys(cats.data)
         })
         .catch(err=>{
+            setOpenAlert(true)
             console.log(err)
         })
     },[])
 
     return (
        <Container>
+            <Collapse in={openAlert} marginBottom={2}>
+                <Alert onClose={() => {
+                    setOpenAlert(false);
+                }} severity="error">An error occured, try again later!</Alert>
+            </Collapse>
            <Grid container spacing={2}>
                 <Grid item sm={12} md={3}>
                     <Paper>

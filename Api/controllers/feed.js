@@ -1,4 +1,3 @@
-const Store = require('../models/store');
 const Product = require('../models/product');
 
 

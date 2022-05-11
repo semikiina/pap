@@ -6,7 +6,6 @@ import { Check, CheckCircle, Visibility, VisibilityOff } from '@mui/icons-materi
 
 const RegisterForm = ({registerUser, errors}) => {
 
-    const [open, setOpen] = useState(true);
     const [passError, setPassError] = useState(false);
     const {  handleSubmit, register } = useForm();
     const onSubmit = data => {
@@ -24,13 +23,6 @@ const RegisterForm = ({registerUser, errors}) => {
 
     return (
         <Container>
-            <Collapse in={open}>
-                {
-                    errors && <Alert onClose={() => {
-                        setOpen(false);
-                    }} severity="error">This is a success alert — check it out!</Alert>
-                }
-            </Collapse>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h4" marginBottom={4} textAlign="center">Register</Typography>
                 <Stack marginBottom={2} direction="row" spacing={1}>

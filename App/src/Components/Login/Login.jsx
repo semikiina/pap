@@ -3,7 +3,7 @@ import LoginForm from './LoginRegisterForms/LoginForm'
 import RegisterForm from './LoginRegisterForms/RegisterForm'
 import api from '../../Services/api';
 import {useLocation, useNavigate} from 'react-router-dom';
-import { Container, Grid, Stack } from '@mui/material';
+import { Container, Grid, Collapse, Alert } from '@mui/material';
 
 
 const Login = () => {
@@ -11,8 +11,8 @@ const Login = () => {
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
 
-    const [error, setError] = useState(false);
-
+    const [errors, setErrors] = useState(false);
+    const [open, setOpen] = useState(true);
 
 
     const Login = async (user)=>{
@@ -27,7 +27,7 @@ const Login = () => {
         }
         catch(err){
             console.log(err)
-            setError(true);
+            setErrors(true);
         }
         
     }
@@ -45,16 +45,23 @@ const Login = () => {
         }
         catch(err){
             console.log(err)
-            setError(true);
+            setErrors(true);
         }
         
     }
 
     return (
         <Container>
+               <Collapse in={open}>
+                {
+                    errors && <Alert onClose={() => {
+                        setOpen(false);
+                    }} severity="error">This is a success alert — check it out!</Alert>
+                }
+            </Collapse>
             <Grid container>
-                <Grid item xs={12} md={6}><LoginForm login={Login} errors={error}/></Grid>
-                <Grid item xs={12} md={6}><RegisterForm registerUser={Register} errors={error}/></Grid>
+                <Grid item xs={12} md={6}><LoginForm login={Login} errors={errors}/></Grid>
+                <Grid item xs={12} md={6}><RegisterForm registerUser={Register} errors={errors}/></Grid>
             </Grid>
         </Container>
     )

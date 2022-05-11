@@ -72,10 +72,13 @@ exports.NewUser = (req, res, next) => {
 //GET all users
 exports.ConfirmAccount = (req, res, next) => {
 
-    console.log('POST /user')
+    console.log('POST /user/confirmAccount')
     User.findOne({nickname: req.params.nickname})
         .then(user => {
-            if(user.tempToken == req.params.token) user.active = true
+            if(user.tempToken == req.params.token){
+                user.active = true;
+                user.tempToken = "";
+            } 
             else throw new Error('Token is invalid.');
             return user.save();
         })
@@ -87,6 +90,7 @@ exports.ConfirmAccount = (req, res, next) => {
             next(err);
         })
 }
+
 //GET all users
 exports.GetUsers = (req, res, next) => {
 
