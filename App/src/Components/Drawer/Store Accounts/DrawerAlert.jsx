@@ -26,7 +26,7 @@ const DrawerAlert = ({open,handleClose,storeList}) => {
                     }
                 </List>
                 <Divider></Divider>
-                <Typography variant='subtitle2' paddingTop={2}>Sign In or Sign Up to a store <b style={{ cursor: 'pointer'}}>here</b>.</Typography>
+                <Typography variant='subtitle2' paddingTop={2}>Sign In or Sign Up to a store <b style={{ cursor: 'pointer'}} onClick={()=>window.location.href= "../newStore"}>here</b>.</Typography>
             </DialogContent>
         </Dialog>
     )

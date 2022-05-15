@@ -26,12 +26,15 @@ const EditProduct = ({storeid}) => {
       })
 
     const Shipping = (e)=>{
-        if(!e.target.checked) setIsDisabledShipping(true)
-        else setIsDisabledShipping(false)
+        if(!e.target.checked) setIsDisabledShipping(false)
+        else setIsDisabledShipping(true)
     }
 
     const onSubmit = data => {
         var formData = new FormData();
+        var shippingData;
+        if(!isDisabledShipping) shippingData = data.shipping
+        else shippingData = 0;
         var ins = images.length;
         for (var x = 0; x < ins; x++) {
             formData.append("image", images[x]);
@@ -43,16 +46,15 @@ const EditProduct = ({storeid}) => {
         formData.append("category", data.category)
         formData.append("description", htmlEditor)
         formData.append("store_id", storeid)
-        if(!isDisabledShipping)formData.append("shipping", data.shipping)
-        else formData.append("shipping", 0)
+        formData.append("shipping", shippingData)
 
-        api.post('product/upd'+id,formData,{
+        api.post('product/upd/'+id,formData,{
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
         .then(data=>{
-            console.log(data)
+            window.location.href="../products/"+id
         })
         .catch(err=>{
             console.log(err) 

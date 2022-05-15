@@ -38,6 +38,9 @@ router.post('/', Auth, [
         .normalizeEmail()
 ], storeController.NewStore)
 
+//POST /store/confirmAccount/:email
+router.post('/confirmAccount/:email', Auth, storeController.ConfirmAccount)
+
 //POST /store/editStore/:id
 router.post('/editStore/:id', storeController.NewUpdateStore)
 

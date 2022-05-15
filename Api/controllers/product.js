@@ -37,10 +37,13 @@ exports.NewProduct = (req, res, next) => {
         description: productReq.description,
         store_id: productReq.store_id,
         price: productReq.price,
-        shipping: productReq.shipping,
+        stock: productReq.stock,
+        category : productReq.category,
+        shipping: parseInt(productReq.shipping) ,
         date_created: Date.now(),
         images:images,
         active:productReq.active,
+        variants: productReq.variants
     })
     product.save()
         .then(result =>{

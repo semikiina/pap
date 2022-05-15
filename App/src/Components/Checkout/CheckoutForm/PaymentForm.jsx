@@ -1,16 +1,21 @@
 import { Divider, Typography, Button,Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Review from './Review'
 import api from '../../../Services/api';
 
-const PaymentForm = ({shippingData, cart,userId}) => {
-    const [open, setOpen] = React.useState(false);
+const PaymentForm = ({shippingData, cart, backStep}) => {
+
+    const [open, setOpen] = useState(false);
+    const paypal = useRef()
     var cartItems=[];
     var totalitems=0;
     const handleClickOpen = () => {
       setOpen(true);
     };
-  
+    const handleClose = () => {
+        setOpen(false);
+      };
+
     useEffect(()=>{
         cart.items.forEach((item)=>{
             cartItems.push(
@@ -22,13 +27,7 @@ const PaymentForm = ({shippingData, cart,userId}) => {
             )
             totalitems += item.product_id.price * item.quantity
         })
-        console.log(cartItems)
     },[])
-
-    const handleClose = () => {
-      setOpen(false);
-    };
-    const paypal = useRef()
 
     useEffect(() =>{
         window.paypal.Buttons({
@@ -69,54 +68,43 @@ const PaymentForm = ({shippingData, cart,userId}) => {
                 })
             },
             onApprove: async (data, actions) =>{
-                const order = await actions.order.capture()
-                const postOrder = await api.post('order',{
-                    user_id:userId,
-                    email:shippingData.email,
-                    first_name: shippingData.first_name,
-                    last_name: shippingData.last_name,
-                    country: shippingData.country,
-                    zip_code: shippingData.zip_code,
-                    city: shippingData.city,
-                    address_1: shippingData.address_1,
-                    paypal_id: order.id,
-                })
-                console.log(postOrder)
-                setOpen(true)
+                try {
+                    const order = await actions.order.capture()
+                    const postOrder = await api.post('order',{
+                        email:shippingData.email,
+                        first_name: shippingData.first_name,
+                        last_name: shippingData.last_name,
+                        phone_code: shippingData.phone_code,
+                        phone: shippingData.phone,
+                        country: shippingData.country,
+                        zip_code: shippingData.zip_code,
+                        city: shippingData.city,
+                        address_1: shippingData.address_1,
+                        address_2: shippingData.address_2,
+                        paypal_id: order.id,
+                    })
+                    setOpen(true)
+                }
+                catch(err){
+                    console.log(err)
+                }
             },
             onError: (err) =>{
                 console.log(err)
             },
             onCancel : () =>{
-                //redirect user
+                window.location.href="../cart"
             }
         }).render(paypal.current)
     },[])
 
     return (
         <>
-        <Review cart={cart} data={shippingData}/>
+        <Review cart={cart} data={shippingData} backStep={backStep} />
         <Divider></Divider>
         <Typography variant="h4" marginTop={3} marginBottom={3}> Payment method</Typography>
-        <div ref={paypal}></div>
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">
-            {"Order placed Successfully!"}
-            </DialogTitle>
-            <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                Thanks For Purchasing with TagMe!
-            </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={()=>{ window.location.href ="../"}}>Return</Button>
-            </DialogActions>
-        </Dialog>
+            <div ref={paypal}></div>
+        
         </>
     )
 }

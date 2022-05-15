@@ -3,6 +3,8 @@ const Store = require('../models/store');
 const Order = require('../models/order');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const transporter = require('../mailer');
+var crypto = require('crypto');
 
 //Store Get All
 exports.GetStores = (req, res, next) => {
@@ -29,6 +31,8 @@ exports.NewStore = (req, res, next) => {
 
     console.log('POST store')
     let storeReq = { ...req.body };
+    const n = crypto.randomInt(0, 1000000);
+    console.log(n);
 
     //Check if validation returned errors
     const errors = validationResult(req);
@@ -39,32 +43,41 @@ exports.NewStore = (req, res, next) => {
         throw error;
     }
 
+    var storeimg;
+    console.log(req.files)
+    if(req.files) storeimg= req.files[0].path
+
     //Create new store
     const store = new Store({
+        store_image: storeimg,
         store_name: storeReq.store_name,
-        store_description: storeReq.store_description,
         store_email: storeReq.store_email,
-        store_nickname: storeReq.store_nickname,
+        active : false,
         creator_id: req.userId,
         date_created: Date.now(),
+        tempCode: n,
         views: 0
 
     })
     store.save()
-        .then(result => {
-
-            return User.findById(req.userId) ;
-        })
-        .then((user)=>{
-
-            if(user) user.store.push(store)
-            return user.save()
+        .then( result =>{
+           
+            return transporter.sendMail({
+                from: 'tagmetheapp@gmail.com', // sender address
+                to: storeReq.store_email, // list of receivers
+                subject: "TagMe! - Store account confirmation ✔", // Subject line
+                html: "<body style='font-family:Futura;font-size:20px'>"+
+                "<p>Please confirm your email address to complete your TagMe account.</p><br>"+
+                "<p>Use this code to confirm your account</p><br><p style='font-size:30px'><b>"+n+"</b></p>"+
+                "<p>Thank you,</p><p>TagMe!</p></body>", // html body
+              });
         })
         .then( result =>{
 
             //Create a token
-            const token = jwt.sign({ store_email: store.store_email, id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
-            res.status(201).json({ id: store._id.toString() ,stoken:token, creatorid: result._id.toString()});
+            //const token = jwt.sign({ store_email: store.store_email, id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
+            //res.status(201).json({ id: store._id.toString() ,stoken:token, creatorid: result._id.toString()});
+            res.status(201).send('Store Created sucessfully!');
         })
         .catch(error => {
             console.log(error);
@@ -76,6 +89,39 @@ exports.NewStore = (req, res, next) => {
                 })
         })
 
+}
+
+//GET all users
+exports.ConfirmAccount = (req, res, next) => {
+
+    var storeForUser = "";
+    console.log('POST /store/confirmAccount')
+    console.log(req.params.email)
+    Store.findOne({store_email: req.params.email})
+        .then(store => {
+            storeForUser = store._id
+            if(store.tempCode == req.body.code){
+                store.active = true;
+                store.tempCode = null;
+            } 
+            else throw new Error('Code is invalid.');
+            return store.save();
+        })
+         .then(result => {
+            return User.findById(req.userId) ;
+        })
+        .then((user)=>{
+
+            if(user) user.store.push(storeForUser)
+            return user.save()
+        })
+        .then(store => {
+            res.status(201).send(storeForUser);
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
 }
 
 //Store Get Info
@@ -233,44 +279,48 @@ exports.NewUpdateStore = (req, res, next) => {
 exports.StoreOrders = (req, res, next) => {
 
     console.log('Store Orders')
-    Order.find()
-        .populate({
-            path:'cart.items.product_id',
-            select:'title price images',
-            populate:{
-                path:"store_id",
-                match:{_id : req.params.id},
-                select:'store_name -_id'
-            }
-        })
-        .then(orders => {
-            var newOrders = [];
-            orders.forEach((or) =>{
-                var itTtotal = 0;
-                or.cart.items.forEach((i) =>{
-                    itTtotal += i.product_id.price *i.quantity
-                })
-                newOrders.push({
-                    name: or.first_name +' '+ or.last_name,
-                    address: or.address_1 +', '+ or.zip_code +', '+ or.city +', '+ or.country,
-                    date_created : or.date_created,
-                    _id: or._id,
-                    cart: or.cart,
-                    price : itTtotal,
-                    state : or.state
-                })
+    Store.findById(req.params.id)
+    //.populate('cart.items.product_id',['price','title','images','_id','category'])
+    .populate({
+        path: 'orders.orderid',
+        select : ' first_name last_name address_1 address_2 zip_code province city country status date_created'
+    })
+    .populate({
+        path: 'orders.items.product_id',
+        select : 'title images price'
+    })
+    .then(store =>{
+        var orderArray=[];
+        store.orders.map((order)=>{
+
+            var totalPrice= 0;
+
+            order.items.map((item)=>{
+                totalPrice += item.product_id.price * item.quantity
             })
-            res.status(200).json({orders: newOrders})
+            
+            orderArray.push({
+                orderid:order.orderid._id,
+                address: order.orderid.address_1 +", "+ order.orderid.zip_code +", "+ order.orderid.province +", "+ order.orderid.city +", "+ order.orderid.country,
+                address_2 : order.orderid.address_2,
+                name: order.orderid.first_name +" "+ order.orderid.last_name,
+                status: order.orderid.status,
+                date_created: order.orderid.date_created,
+                items: order.items,
+                price: totalPrice
+            })
         })
-        .catch(error => {
-            console.log(error);
-            return res
-                .status(422)
-                .json({
-                    message: "Validation failed.",
-                    errors: error
-                })
-        })
+        res.status(200).json({orders : orderArray})
+    })
+    .catch(error => {
+        console.log(error);
+        return res
+            .status(422)
+            .json({
+                message: "Validation failed.",
+                errors: error
+            })
+    })
 
 }
 
@@ -278,7 +328,7 @@ exports.NewOrderState = (req,res, next) =>{
     console.log('POST order/newState')
     Order.findById(req.params.id)
         .then(order => {
-            order.state = req.body.state
+            order.status = req.body.status
             return order.save()
         })
         .then(order => {

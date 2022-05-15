@@ -95,7 +95,7 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
                 anchor="left"
                 open={openDrawer}
             >
-                <DrawerHeader justifyContent="flex-end">
+                <DrawerHeader >
                     {store.store_name && <MenuItem >
                         <ListItemIcon>
                             <Avatar src={'http://localhost:8090/'+store?.store_image} sx={{mr:2}}/>

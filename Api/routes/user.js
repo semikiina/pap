@@ -55,6 +55,9 @@ router.post('/addAddress', Auth, userController.AddAddress);
 //POST /user/cart
 router.post('/cart', Auth, userController.Cart);
 
+//POST /user/cart/:id
+router.post('/removeq/:id', Auth, userController.RemoveProductQuantity);
+
 //POST /user/fav/:id
 router.post('/fav/:id', Auth, userController.Favorite);
 

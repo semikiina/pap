@@ -23,8 +23,15 @@ const ProductSchema = new Schema({
     favorite:[{
         type: Schema.Types.ObjectId,
         ref:'User'
+    }],
+    variants:[{
+        color:[{
+            type:String,
+        }],
+        size:[{
+            type:String,
+        }],
     }]
-
 });
 
 module.exports = mongoose.model("Product",ProductSchema);

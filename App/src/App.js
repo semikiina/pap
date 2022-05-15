@@ -72,6 +72,16 @@ const App = () => {
         })
     }
 
+    const RemoveQuantity = (productId)=>{
+        api.post('user/removeq/'+productId)
+        .then( res=>{
+			setFav(fav+1)
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+    }
+
 	const newFavorite = (id) =>{
         api.post('user/fav/'+id)
         .then(data=>{
@@ -85,7 +95,7 @@ const App = () => {
 			api.get('user/profile')
 				.then(user=>{
 					console.log(user.data)
-					if(user?.store)setStore(user.data.store[0]._id)
+					if(user.data.store)setStore(user.data.store[0]._id)
 					setUser(user.data)
 					setCart(user.data.cart)
 					setFavorite(user.data.favorite)
@@ -106,10 +116,10 @@ const App = () => {
 				
 				<Routes>
 					<Route exact path='/login' element={<Login />}/>
-						<Route exact path='/' element={<Products onAddToCart={AddToCart}  newFavorite={newFavorite} />}/>
+						<Route exact path='/' element={<Products onAddToCart={AddToCart}  newFav={newFavorite} fav={fav} />}/>
 						<Route exact path='/products/:id' element={<DetailsP newFavorite={newFavorite} fav={fav} />}/>
 					<Route element={<RequireAuth/>}>
-						<Route exact path='/cart' element={<Cart Cart={cart} onRemoveFromCart={RemoveFromCart}/>}/>
+						<Route exact path='/cart' element={<Cart Cart={cart} onRemoveFromCart={RemoveFromCart} onAddToCart={AddToCart} onRemoveQuantity={RemoveQuantity}/>}/>
 						<Route exact path='/checkout' element={<Checkout Cart={cart} />}/>
 						<Route exact path='/favorite' element={<Favorite favorite={favorite}  newFavorite={newFavorite}/>}/>
 						<Route exact path='/profile' element={<Profile setFav={setFav} fav={fav} />}/>

@@ -11,12 +11,28 @@ const StoreSchema = new Schema({
     },
     store_image : String,
     date_created: Date,
-    store_nickname: String,
+    private: Boolean,
+    active: Boolean,
     store_description: String,
     views: Number,
+    tempCode: Number,
     product:[{
         type: Schema.Types.ObjectId,
         ref:'Product'
+    }],
+    orders :[{
+        orderid:{
+            type: Schema.Types.ObjectId,
+            ref:'Order'
+        },
+        items:[{
+            product_id :{
+                type: Schema.Types.ObjectId,
+                ref:'Product'
+            },
+            status : String,
+            quantity: String
+        }]
     }]
 })
 

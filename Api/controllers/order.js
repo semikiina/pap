@@ -1,8 +1,51 @@
+const Store = require('../models/store');
 const Product = require('../models/product');
 const Order = require('../models/order');
 const User = require('../models/user');
 var easyinvoice = require('easyinvoice');
 const transporter = require('../mailer');
+
+
+function OrderInvoice (CheckoutReq, cartItems) {
+    return data = {
+
+        "customize": {
+            //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
+        },
+        "images": {
+            "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png",
+        },
+        // Your own data
+        "sender": {
+            "company": "TagMe!",
+            "address": "Sample Street 123",
+            "zip": "1234 AB",
+            "city": "Sampletown",
+            "country": "Portugal"
+        },
+        // Your recipient
+        "client": {
+            "company": CheckoutReq.first_name +" "+ CheckoutReq.last_name,
+            "address": CheckoutReq.address_1,
+            "zip": CheckoutReq.zip_code,
+            "city": CheckoutReq.city,
+            "country": CheckoutReq.country
+        },
+        "information": {
+            // Invoice number
+            "number": CheckoutReq.paypal_id,
+            // Invoice data
+            "date": new Date(Date.now()).toLocaleDateString(),
+        },
+        "products": cartItems,
+        "bottom-notice": "Thanks for purchasing with TagMe!.",
+        "settings": {
+            "currency": "EUR", 
+        },
+    };
+}
+
+
 
 exports.GetOrder = (req, res, next) => {
     Order.find({email: req.params.email})
@@ -23,128 +66,146 @@ exports.GetOrder = (req, res, next) => {
 }
 
 
-exports.Checkout = (req, res, next) => {
+exports.Checkout = async (req, res, next) => {
     
     console.log('POST /order')
+
     let CheckoutReq = { ...req.body };
-    var cartItems=[];
-    User.findById(CheckoutReq.user_id)
-        .populate('cart.items.product_id',['price','title','images','category','store_id'])
-        .then(user =>{
 
-            user.cart.items.forEach((e) =>{
-                cartItems.push({
-                    "quantity": e.quantity,
-                    "description": e.product_id.title,
-                    "price": e.product_id.price,
-                    "tax-rate": 0,
-                })
+   try{ 
+       const user =  await User.findById(req.userId)
+        .populate({
+            path:'cart.items.product_id',
+            select: 'price title',
+            populate : {
+                path: 'store_id',
+                select:'_id'
+            }
+        })
+    
+        var cartItems = [];
+
+        user.cart.items.map((item)=>{
+            cartItems.push({
+                "quantity": item.quantity,
+                "description": item.product_id.title,
+                "price": item.product_id.price,
+                "tax-rate": 0,
+            })
+        })
+            
+        const uniques = Array.from(new Set(user.cart.items.map(item => item.product_id.store_id)))
+        
+        const order = new Order({
+            status: "Payed",
+            paypal_id: CheckoutReq.paypal_id,
+            user_id: req.userId,
+            email : CheckoutReq.email,
+            first_name: CheckoutReq.first_name,
+            last_name: CheckoutReq.last_name,
+            phone_code : CheckoutReq.phone_code,
+            phone: CheckoutReq.phone,
+            address_1: CheckoutReq.address_1,
+            address_2: CheckoutReq.address_2,
+            zip_code: CheckoutReq.zip_code,
+            province: CheckoutReq.province,
+            city: CheckoutReq.city,
+            country: CheckoutReq.country,
+            cart: user.cart,
+            date_created : Date.now(),
+        })
+
+        const orderSave = await order.save()
+
+        const un =  await Promise.all(uniques.map(async (e,i) => {
+
+            var orderItems=[];
+
+            const store =  await Store.findById(e)
+
+            user.cart.items.map((item)=>{
+                if(item.product_id.store_id._id.toString() == store._id)
+                {
+                    orderItems.push({
+                        product_id: item.product_id._id,
+                        status: 'payed',
+                        quantity: item.quantity
+                    })
+                }
             })
 
-            const order = new Order({
-                user_id: CheckoutReq.user_id,
-                email : CheckoutReq.email,
-                first_name: CheckoutReq.first_name,
-                last_name: CheckoutReq.last_name,
-                country: CheckoutReq.country,
-                zip_code: CheckoutReq.zip_code,
-                province: CheckoutReq.province,
-                paypal_id: CheckoutReq.paypal_id,
-                phone_code : CheckoutReq.phone_code,
-                phone: CheckoutReq.phone,
-                city: CheckoutReq.city,
-                state: "Payed",
-                address_1: CheckoutReq.address_1,
-                address_2: CheckoutReq.address_2,
-                state: 'Payed',
-                cart: user.cart,
-                date_created : Date.now(),
+            store.orders.push({
+                orderid: orderSave._id,
+                items: orderItems
             })
+            const storeSave= await store.save()
 
-            user.cart=[]
-            user.save().exec()
+        }))
+    
+        user.cart=[];
 
-            return order.save()
-        })
-        .then(result => {
+        const userSave= await user.save();
 
-        })
-        .then(result => {
-            var data = {
-                // Customize enables you to provide your own templates
-                // Please review the documentation for instructions and examples
-                "customize": {
-                    //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
-                },
-                "images": {
-                    // The logo on top of your invoice
-                    "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png",
-                },
-                // Your own data
-                "sender": {
-                    "company": "TagMe!",
-                    "address": "Sample Street 123",
-                    "zip": "1234 AB",
-                    "city": "Sampletown",
-                    "country": "Portugal"
-                },
-                // Your recipient
-                "client": {
-                    "company": CheckoutReq.first_name +" "+ CheckoutReq.last_name,
-                    "address": CheckoutReq.address_1,
-                    "zip": CheckoutReq.zip_code,
-                    "city": CheckoutReq.city,
-                    "country": CheckoutReq.country
-                },
-                "information": {
-                    // Invoice number
-                    "number": CheckoutReq.paypal_id,
-                    // Invoice data
-                    "date": new Date(Date.now()).toLocaleDateString(),
-                },
-                // The products you would like to see on your invoice
-                // Total values are being calculated automatically
-                "products": cartItems,
-                "bottom-notice": "Thanks for purchasing with TagMe!.",
-                "settings": {
-                    "currency": "EUR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
-                },
-            };
-           return easyinvoice.createInvoice(data);
-        })
-        .then(result => {
+        const data = OrderInvoice(CheckoutReq,cartItems)
+            
+        const newInvoice= await easyinvoice.createInvoice(data);
 
-            return transporter.sendMail({
-                from: 'tagmetheapp@gmail.com', // sender address
-                to: CheckoutReq.email, // list of receivers
-                subject: "Your Order was placed successfully ✔", // Subject line
-                text: "Than", // plain text body
+        const newEmail = await transporter.sendMail({
+                from: 'tagmetheapp@gmail.com',
+                to: CheckoutReq.email, 
+                subject: "Your Order was placed successfully ✔", 
+                text: "Than", 
                 html: "<p>Hello "+CheckoutReq.first_name+",</p><p>Thanks for your purchase.</p>", // html body
                 attachments: [
                     {
-                      filename: `invoice.pdf`,
-                      content: result.pdf,
-                      encoding: 'base64',
+                    filename: `invoice.pdf`,
+                    content: newInvoice.pdf,
+                    encoding: 'base64',
                     },
-                  ],
-              });
-        })
-       
-     
-        .then(result => {
+                ],
+            });
 
+        res.status(201).json({
+            message: "Order Placed Successfully!"
+        })
+    }
+    catch( error){
+        return res
+            .status(422)
+            .json({
+                message: "Validation failed. Please insert correct data.",
+                errors: error
+            })
+    }
+
+}
+
+
+exports.VerifyStock = (req, res, next) => {
+    
+    console.log('POST /order/stock')
+    User.findById(req.userId)
+        .populate('cart.items.product_id',['price','title','images','category','store_id',"stock"])
+        .then(user =>{
+            user.cart.items.forEach((e) =>{
+
+                if(e.quantity > e.product_id.stock) throw new Error("This product doesn't have enough stock")
+            })
+
+            return user.save()
+
+        })
+        .then(result => {
             res.status(201).json({
                 message: "Order Placed Successfully!",
                 email: result
             })
         })
-     
         .catch(error => {
             console.log(error);
             return res
                 .status(422)
                 .json({
-                    message: "Validation failed. Please insert correct data.",
                     errors: error
                 })
         })

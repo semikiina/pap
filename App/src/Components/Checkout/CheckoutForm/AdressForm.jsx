@@ -1,55 +1,41 @@
-import { Grid, Typography , TextField, Button} from '@mui/material';
-import React from 'react'
+import { Grid, Typography , Stack, Button} from '@mui/material';
+import React, { useState } from 'react'
 import { useForm } from "react-hook-form";
+import NewAddress from './Address Form/NewAddress';
+import ListOfAddresses from './Address Form/ListOfAddresses';
+import useAuth from '../../Contexts/useAuth';
 
 const AdressForm = ({next}) => {
-  const {  handleSubmit, register } = useForm();
-  const onSubmit = data => next(data);
 
-  return (
-    <>
-    <Typography variant="h5" marginTop={4} marginBottom={3}>Shipping Address</Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="First Name" {...register("first_name")} fullWidth required></TextField>
+    const {  handleSubmit, register } = useForm();
+    const onSubmit = data => next(data);
+    const { user } = useAuth();
+
+    const [newAddress, setNewAddress] = useState(true);
+    const [exAddress, setExAddress] = useState('');
+    
+    const handleClick = () =>{
+        next(user.addresses.filter(o => o._id === exAddress)[0])
+    }
+
+    return (
+        <>
+            <Typography variant="h5" marginTop={4} marginBottom={3}>Shipping Address</Typography>
+            <Grid container spacing={2}>
+                <Grid item sm={12}>
+                    <Typography variant="subtitle1" paddingLeft={2}><b>My addresses</b></Typography>
+                    <ListOfAddresses setNewAddress={setNewAddress} setExAddress={setExAddress} />
                 </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="Last Name" {...register("last_name")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="Email" {...register("email")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="Phone" {...register("phone")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="Country" {...register("country")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="State" {...register("state")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="Zip Code" {...register("zip_code")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} marginBottom={3}>
-                  <TextField  label="Province" {...register("province")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12}  marginBottom={3}>
-                  <TextField  label="Adress 1" {...register("address_1")} fullWidth required></TextField>
-                </Grid>
-                <Grid item xs={12} marginBottom={3}>
-                  <TextField  label="Adress 2" {...register("address_2")} fullWidth ></TextField>
-                </Grid>
-                <Grid item xs={12} sm={12} marginBottom={3}>
-                  <Button type='submit' variant='contained' color='secondary' fullWidth>Submit</Button>
-                </Grid>
-                
             </Grid>
-        </form>
-     
-    </>
-  )
+            {
+                newAddress 
+                ? <NewAddress handleSubmit={handleSubmit} register={register} onSubmit={onSubmit}  ></NewAddress>
+                : <Button variant='contained' color='secondary' fullWidth onClick={handleClick}>Continue</Button>
+            }
+            
+       
+        </>
+    )
 }
 
 export default AdressForm

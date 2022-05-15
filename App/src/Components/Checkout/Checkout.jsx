@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Paper, Typography, Stepper, Step, CircularProgress, StepLabel, Container,Box,Button  } from '@mui/material';
+import {Paper, Typography, Stepper, Step, CircularProgress, StepLabel, Container,Box,Stack  } from '@mui/material';
 import AdressForm from './CheckoutForm/AdressForm';
 import PaymentForm from './CheckoutForm/PaymentForm';
 
@@ -24,24 +24,26 @@ const Checkout = ({Cart,userId}) => {
        nextStep();
     }
 
+
+
     const Form = () => activeStep == 0 
         ? <AdressForm next={next}/>
-        : <PaymentForm shippingData ={shippingData} cart={Cart} userId={userId}/>
+        : <PaymentForm shippingData ={shippingData} cart={Cart} userId={userId} backStep={backStep}/>
 
     return (
         <Container>
             <Paper >
                 <Typography paddingTop={4} variant="h3" align="center">Checkout</Typography>
                     <Box  padding={4}>
-                        <Stepper activeStep={activeStep} >
-                            {steps.map((label) => {
-                                return (
-                                <Step key={label} >
-                                    <StepLabel>{label}</StepLabel>
-                                </Step>
-                                );
-                            })}
-                        </Stepper>
+                            <Stepper activeStep={activeStep} >
+                                {steps.map((label, index) => {
+                                    return (
+                                    <Step key={label} >
+                                        <StepLabel>{label}</StepLabel>
+                                    </Step>
+                                    );
+                                })}
+                            </Stepper>
                         {activeStep == steps.length ? <Confirmation/> : <Form/>}
                     </Box>
                 </Paper>

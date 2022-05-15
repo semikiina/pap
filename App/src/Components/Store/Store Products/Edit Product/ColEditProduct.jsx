@@ -61,7 +61,7 @@ const ColEditProduct = ({product,setProduct, register,setUpdate,update,setHtmlEd
                             <TextField required {...register("title")} label="Title" fullWidth value={product.title}  onChange={(e) => setProduct( {...product , title: e.target.value})}/>
                         </Grid>
                         <Grid item xs={12} md={6} marginBottom={2}>
-                            <TextField required {...register("stock")}  label="Stock" type="number"  fullWidth value={product.stocky}  onChange={(e) => setProduct( {...product , stock: e.target.value})} helperText="This is the number of available products for sale. This will not appear to your client."/>
+                            <TextField required {...register("stock")}  label="Stock" type="number"  fullWidth value={product.stock}  onChange={(e) => setProduct( {...product , stock: e.target.value})} helperText="This is the number of available products for sale. This will not appear to your client."/>
                         </Grid>
                         <Grid item xs={12}  marginBottom={2}>
                                 <Autocomplete
@@ -139,10 +139,10 @@ const ColEditProduct = ({product,setProduct, register,setUpdate,update,setHtmlEd
                     <Divider></Divider>
                     <Grid padding={2} container spacing={2} >
                         <Grid item xs={12} >
-                            <FormControlLabel control={<Checkbox  onChange={Shipping} defaultChecked={isDisabledShipping}/> } label="Free shipping" />
+                            <FormControlLabel control={<Checkbox  onChange={Shipping} checked={isDisabledShipping}/> } label="Free shipping" />
                         </Grid>
                         {
-                            product.shipping && 
+                            !isDisabledShipping && 
                             <Grid item xs={12} marginBottom={2}>
                                 <TextField {...register("shipping")} value={product.shipping}  onChange={(e) => setProduct( {...product , shipping: e.target.value})}  InputProps={{startAdornment: <InputAdornment position="start">€</InputAdornment>,}}  label="Shipping price" type="number" fullWidth />
                             </Grid>

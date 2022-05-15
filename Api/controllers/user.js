@@ -178,16 +178,9 @@ exports.EditProfile = (req, res, next) => {
 
     var userid = req.userId
     const userReq = { ...req.body };
-    console.log(req.files)
-    //Find User by ID
     User.findById(userid)
         .then(user => {
-            //User changes
-            if(!user){
-                const error = new Error("User doesn't exist");
-                error.StatusCode = 404;
-                throw error;
-            }
+            
             if(req.files) user.profile_pic = req.files[0].path;
             user.first_name = userReq.first_name;
             user.last_name = userReq.last_name;
@@ -217,6 +210,7 @@ exports.AddAddress = (req, res, next) => {
     console.log('POST user/addAdress')
     var userid = req.userId
     const userReq = { ...req.body };
+    console.log(userReq)
     User.findById(userid)
         .then(user => {
             if(!user){
@@ -298,7 +292,55 @@ exports.Cart = async (req, res, next) => {
     const product = await Product.findById(cartReq.product_id)
     User.findById(req.userId)
     .then(user => {
-        return user.AddToCart(product)
+        return user.AddToCart(product,cartReq.quantity)
+    })
+    .then(user => {
+        res.status(201).json( {cart : user.cart})
+    })
+    .catch(error => {
+        console.log(error)
+        return res
+            .status(422)
+            .json({
+                message: "Try again later.",
+                errors: error
+            })
+    })
+}
+
+exports.RemoveProductQuantity = async (req, res, next) => {
+;
+    const product = await Product.findById(req.params.id)
+    User.findById(req.userId)
+    .then(user => {
+
+        const CartItemIndex = user.cart.items.findIndex( item =>{
+            return item.product_id.toString() == product._id.toString()
+        })
+
+        let newQuantity = 1;
+        const updatedCart =[...user.cart.items];
+        
+        if(user.cart.items[CartItemIndex].quantity>=1){
+
+            newQuantity= user.cart.items[CartItemIndex].quantity - 1;
+            updatedCart[CartItemIndex].quantity = newQuantity;
+        }
+        else{
+            return user.RemoveFromCart(product)
+        }
+        let subtotal = 0;
+    
+        updatedCart.forEach(i =>{
+            subtotal += parseInt(i.quantity* i.price) ;
+        })
+        const nupdatedCart ={
+            items : updatedCart,
+            subtotal : subtotal
+        }
+        user.cart = nupdatedCart;
+    
+        return user.save();
     })
     .then(user => {
         res.status(201).json( {cart : user.cart})
@@ -316,7 +358,7 @@ exports.Cart = async (req, res, next) => {
 
 exports.DeleteCart = async (req, res, next) => {
 
-    const product = await Product.findById(req.params.productid)
+    const product = await Product.findById(req.params.productId)
     User.findById(req.userId)
     .then(user => {
         return user.RemoveFromCart(product)

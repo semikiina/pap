@@ -1,11 +1,20 @@
-import { Grid, List, ListItem, ListItemText, Typography, Paper, Box, Divider } from '@mui/material'
+import { Grid, List, ListItem, ListItemText, Typography, Paper, Box, Divider, Tooltip, IconButton } from '@mui/material'
 import React from 'react'
+import { ArrowBack } from '@mui/icons-material'
 
-const Review = ({cart, data}) => {
+const Review = ({cart, data , backStep}) => {
     return (
         <>
             <Grid container spacing={3}>
-                <Grid item xs={12} lg={6} marginBottom={4}>
+               <Grid item xs={12} lg={1} marginTop={4}>
+                   <Tooltip title="Back">
+                       <IconButton onClick={backStep}>
+                            <ArrowBack/>
+                       </IconButton>
+                   </Tooltip>
+               </Grid>
+                <Grid item xs={12} lg={5} marginBottom={4}>
+                    
                 <Paper elevation={3}>
                     <Typography variant="h4" marginTop={4} marginBottom={1} padding={2}>Order Summary</Typography>
                     <List>

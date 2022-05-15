@@ -1,19 +1,35 @@
 import React from 'react'
-import {Stack, Typography, Box, Button, CircularProgress, Skeleton } from '@mui/material';
+import {Stack, Typography, Box, Button, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemIcon, IconButton, ButtonGroup } from '@mui/material';
+import {AddBox, Delete, Favorite, IndeterminateCheckBox, PlusOne} from '@mui/icons-material'
 
-const CartItem = ({CartItem, onRemoveFromCart}) => {
+const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
 	return (
-			<Stack direction="row" marginBottom={3} border={'1px solid grey'}>
-				<img src={'http://localhost:8090/'+CartItem.product_id.images[0]} height={150}/>
-				<Box padding={1} alignItems={'flex-end'}>
-					<Typography variant="h5" >{CartItem.product_id.title}</Typography>
-					<Box >
-						<Typography   variant="h6">{CartItem.product_id.price} €</Typography>
-						<Typography   variant="h6"> Qtt. {CartItem.quantity}</Typography>
-					</Box>
-					<Button variant="outlined" color="error" onClick={()=> {onRemoveFromCart(CartItem.product_id._id)}}>Remove</Button>
-				</Box>
-			</Stack>
+		<ListItem alignItems="center" divider  >
+			<ListItemIcon onClick={()=>onRemoveFromCart(CartItem.product_id._id)}>
+				<IconButton>
+					<Delete  edge="start" color="error" />
+				</IconButton>
+			</ListItemIcon>
+			<ListItemAvatar>
+				<Avatar variant="square" src={'http://localhost:8090/'+CartItem.product_id.images[0]}  sx={{ height: 80, width: 80, objectFit: 'cover'}}/>
+			</ListItemAvatar>
+			<ListItemText 
+				primary={CartItem.product_id.title}
+				secondary={CartItem.product_id.category}
+				sx={{width: 150, paddingLeft: 2}}
+			/>
+			<ButtonGroup  disableElevation >
+				<Button variant="contained" color="info" disabled={CartItem.quantity>1 ? false : true } onClick={()=>onRemoveQuantity(CartItem.product_id._id)}>-</Button>
+				<Button disabled>{CartItem.quantity}</Button>
+				<Button variant="contained" color="info" onClick={()=>onAddToCart(CartItem.product_id._id)}>+</Button>
+			</ButtonGroup>
+			
+			<ListItemText 
+				sx={{ marginLeft: 5}}
+				primary={CartItem.product_id.price + " €"}
+			/>
+	
+		</ListItem>
 	)
 }
 

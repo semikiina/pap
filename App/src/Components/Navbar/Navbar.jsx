@@ -55,12 +55,12 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 					>
 						<MenuIcon />
 					</IconButton>}
-					<Typography variant="h6" color="inherit"  sx={{ mr: 2, display: { xs: 'none', md: 'flex' } , flexGrow: 1 }}>
+					<Typography variant="h6" color="inherit"  sx={{ mr: 2 , flexGrow: 1 }}>
 						<IconButton href="/">
 							TagMe!
 						</IconButton>
 					</Typography>
-					<Stack direction="row" sx={{ flexGrow: 0, mr:2 }} spacing={2}>
+					<Stack direction="row" spacing={2}>
 						{
 							user._id ?
 							<>
@@ -73,15 +73,7 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 									</Badge> 
 								</IconButton>
 								<CartMenu  handleCloseCartMenu={handleCloseCartMenu} anchorElCart={anchorElCart} cart={user.cart} onRemoveFromCart={onRemoveFromCart}></CartMenu>
-								{/* <Box sx={{ flexGrow: 0 }}>
-									<Tooltip title="Store options">
-										<IconButton onClick={handleOpenStoreMenu} >
-											<Store ></Store>
-										</IconButton>
-									</Tooltip>
-									<StoreMenu handleCloseStoreMenu={handleCloseStoreMenu} anchorElStore={anchorElStore} storeid={user.store[0]._id}/>
-								</Box> */}
-								<Box sx={{ flexGrow: 0 }}>
+								<Box >
 									<Tooltip title="Profile options">
 										<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 											<Avatar alt={user.nickname} src={'http://localhost:8090/'+user.profile_pic} />

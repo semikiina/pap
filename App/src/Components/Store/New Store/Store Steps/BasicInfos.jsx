@@ -1,17 +1,15 @@
-import { Container, Divider, Grid, Typography, Paper, TextField, Stack, Button, Box, Stepper, Step, StepLabel } from '@mui/material'
+import { Typography, TextField, Button} from '@mui/material'
 import React , {useState} from 'react'
 
-const BasicInfos = () => {
-  return (
-    <Paper elevation={6}>
-        <Stack padding={2} spacing={2}>
+const BasicInfos = ({handleNext,storeName,setStoreName,storeEmail,setStoreEmail}) => {
+    return (
+        <>
             <Typography textAlign={'center'} variant="h6">Let's start with some basic informations</Typography>
-            <TextField label="Store Name" fullWidth></TextField>
-            <TextField label="Store Email" fullWidth></TextField>
-            <Button variant="contained"> Continue</Button>
-        </Stack>
-    </Paper>
-  )
+            <TextField label="Store Name" fullWidth defaultValue={storeName} onBlur={(e) => setStoreName(e.target.value)}></TextField>
+            <TextField label="Store Email" fullWidth defaultValue={storeEmail} onBlur={(e) => setStoreEmail(e.target.value)}></TextField>
+            <Button variant="contained" onClick={handleNext} fullWidth> next</Button>
+        </>   
+    )
 }
 
 export default BasicInfos

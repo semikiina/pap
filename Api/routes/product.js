@@ -20,11 +20,11 @@ router.get('/store/:id', Product.GetProductsByStore)
 //GET /product/:id
 router.get('/:id', Product.GetTheProduct)
 
-//POST /product/updateState/:id
-router.post('/updateState/:id', Product.UpdateProductState)
-
 //POST /product
 router.post('/', Product.NewProduct)
+
+//POST /product/updateState/:id
+router.post('/updateState/:id', Product.UpdateProductState)
 
 //POST /product/upd/:id
 router.post('/upd/:id', Product.UpdateProduct)

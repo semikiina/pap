@@ -38,26 +38,35 @@ const userSchema = new Schema({
         subtotal: Number,
     },
     addresses:[{
+        first_name: String,
+        last_name: String,
+        email: String,
+        phone_code: String,
+        phone: String,
         address_1: String,
         address_2: String,
         zip_code: String,
         province: String,
-        state: String,
+        city: String,
         country: String
     }]
 });
 
-userSchema.methods.AddToCart = function(product){
+userSchema.methods.AddToCart = function(product,quantity){
+
     const CartItemIndex = this.cart.items.findIndex( item =>{
         return item.product_id.toString() == product._id.toString()
     })
-    let newQuantity = 1;
+
+    let newQuantity = quantity || 1;
+    
     const updatedCart =[...this.cart.items];
 
     if(CartItemIndex >=0){
         newQuantity= this.cart.items[CartItemIndex].quantity +1;
         updatedCart[CartItemIndex].quantity = newQuantity;
     }
+
     else{
         updatedCart.push({
             product_id : product._id,
@@ -65,11 +74,13 @@ userSchema.methods.AddToCart = function(product){
             price : product.price
         });
     }
+
     let subtotal = 0;
 
     updatedCart.forEach(i =>{
         subtotal += parseInt(i.quantity* i.price) ;
     })
+
     const nupdatedCart ={
         items : updatedCart,
         subtotal : subtotal
@@ -78,19 +89,26 @@ userSchema.methods.AddToCart = function(product){
 
     return this.save();
 }
+
 userSchema.methods.RemoveFromCart = function(product){
+
     const updatedCartItems = this.cart.items.filter( item =>{
         return item.product_id.toString() !== product._id.toString()
     })
+
     let subtotal = 0;
+
     updatedCartItems.forEach(i =>{
         subtotal += parseInt(i.quantity* i.price) ;
     })
+
     const nupdatedCart ={
         items : updatedCartItems,
         subtotal : subtotal
     }
+
     this.cart = nupdatedCart;
+
     return this.save();
 }
 
