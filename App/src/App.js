@@ -98,7 +98,6 @@ const App = () => {
 		if(localStorage.getItem('UAuthorization')){
 			api.get('user/profile')
 				.then(user=>{
-					console.log(user.data)
 					if(user.data.store)setStore(user.data.store[0]._id)
 					setUser(user.data)
 					setCart(user.data.cart)
@@ -121,7 +120,7 @@ const App = () => {
 				<Routes>
 					<Route exact path='/login' element={<Login />}/>
 						<Route exact path='/' element={<Products onAddToCart={AddToCart}  newFav={newFavorite} fav={fav} />}/>
-						<Route exact path='/products/:id' element={<DetailsP newFavorite={newFavorite} fav={fav} />}/>
+						<Route exact path='/products/:id' element={<DetailsP newFavorite={newFavorite} fav={fav} onAddToCart={AddToCart}/>}/>
 					<Route element={<RequireAuth/>}>
 						<Route exact path='/cart' element={<Cart Cart={cart} onRemoveFromCart={RemoveFromCart} onAddToCart={AddToCart} onRemoveQuantity={RemoveQuantity}/>}/>
 						<Route exact path='/checkout' element={<Checkout Cart={cart} />}/>

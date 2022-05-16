@@ -63,8 +63,11 @@ const Products = ({onAddToCart, newFav, fav}) => {
     })
 
     useEffect(()=>{
+
         setFilter("");
+
         setOrder(1);
+
         api.get('product')
         .then(products =>{
             setProducts(products.data)
@@ -72,6 +75,7 @@ const Products = ({onAddToCart, newFav, fav}) => {
         .catch(err=>{
             console.log(err)
         })
+
         api.get('product/categorys')
         .then(cats=>{
             setCategorys(cats.data)
@@ -80,6 +84,16 @@ const Products = ({onAddToCart, newFav, fav}) => {
             setOpenAlert(true)
             console.log(err)
         })
+
+        api.get('feed/newStores')
+        .then( response=>{
+            console.log(response.data)
+        })
+        .catch(err=>{
+            setOpenAlert(true)
+            console.log(err)
+        })
+
     },[fav, defProducts])
 
     return (

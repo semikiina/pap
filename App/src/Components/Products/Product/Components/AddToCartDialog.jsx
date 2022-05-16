@@ -7,7 +7,6 @@ const AddToCartDialog = ({open, handleClose, product, onAddToCart}) => {
     const[prQuantity, setPrQuantity] = useState(1);
     const[selectedColor, setSelectedColor] = useState(0);
     const[selectedSize, setSelectedSize] = useState(0);
-
     return (
         <Dialog open={open == product._id} onClose={handleClose}  fullWidth={true} maxWidth={'sm'}>
             <DialogTitle> Choose your options</DialogTitle>
@@ -41,7 +40,7 @@ const AddToCartDialog = ({open, handleClose, product, onAddToCart}) => {
                                     <ButtonGroup  disableElevation >
                                         <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>
                                         <Button disabled>{prQuantity}</Button>
-                                        <Button variant="contained" color="info" onClick={()=>setPrQuantity(prQuantity+1)} disabled={prQuantity==product.stock ? false : true } >+</Button>
+                                        <Button variant="contained" color="info" onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
                                     </ButtonGroup>
                                     <Typography variant="h6">{product.price * prQuantity + " €"}</Typography>
                                 </Stack>
@@ -54,7 +53,7 @@ const AddToCartDialog = ({open, handleClose, product, onAddToCart}) => {
                 </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={()=> onAddToCart(product._id,prQuantity,selectedSize,selectedColor)} autoFocus variant="outlined" color="secondary">Add to cart</Button>
+                <Button onClick={()=> {onAddToCart(product._id,prQuantity,selectedSize,selectedColor) ; window.location.href="../cart"}} autoFocus variant="outlined" color="secondary">Add to cart</Button>
             </DialogActions>
         </Dialog>
     )

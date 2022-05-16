@@ -18,50 +18,18 @@ router.get('/orders/:id', storeController.StoreOrders)
 //GET /store/login
 router.get('/login', Auth, storeController.Login)
 
-//GET /store/:id
-router.get('/:id', storeController.GetTheStoreNew)
-
 //POST /store
-router.post('/', Auth, [
-    //Check if store email already exists
-    body('store_email')
-        .isEmail()
-        .withMessage('Valid email please!')
-        .custom((value, { req }) => {
-            return Store.findOne({ store_email: value })
-                .then(storeF => {
-                    if (storeF) {
-                        return Promise.reject('Email Already exists!')
-                    }
-                })
-        })
-        .normalizeEmail()
-], storeController.NewStore)
+router.post('/', Auth, storeController.NewStore)
 
 //POST /store/confirmAccount/:email
 router.post('/confirmAccount/:email', Auth, storeController.ConfirmAccount)
 
-//POST /store/editStore/:id
-router.post('/editStore/:id', storeController.NewUpdateStore)
+//POST /store/editStore
+router.post('/editStore', Auth , SAuth, storeController.NewUpdateStore)
 
 //POST /store/updateOrder/:id
 router.post('/updateOrderState/:id', storeController.NewOrderState)
 
-
-
-//PUT /store/:id
-router.put('/:id', Auth, SAuth, [
-    //Check if store exists
-    body('id')
-        .trim()
-        .custom((value, { req }) => {
-            return Store.findOne({ _id: value }).then(storeF => {
-                if (!storeF) {
-                    return Promise.reject("id store doesn't exist!")
-                }
-            })
-        })
-], storeController.UpdateStore)
 
 
 

@@ -22,7 +22,7 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
 
     useEffect(()=>{
         if(storeid)
-        api.get('store/'+storeid)
+        api.get('feed/store/'+storeid)
         .then(data=>{
             setStore({
                 store_name: data.data.store_name,

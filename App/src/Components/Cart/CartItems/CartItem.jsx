@@ -16,14 +16,14 @@ const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) =
 			<ListItemText 
 				primary={CartItem.product_id.title}
 				secondary={
-					<Stack spacing={1}>
+					<Stack spacing={1} component={"span"}>
 						{CartItem.product_id.category}
-						<Stack direction="row" spacing={1} marginTop={1}>
+						<Stack direction="row" spacing={1} marginTop={1} component={"span"}>
 							{
-								CartItem.variants?.color && <Chip avatar={ <Box component="span" sx={{ bgcolor:`${CartItem.variants?.color.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant={"outlined"} label={CartItem.variants.color} />
+								CartItem.variants?.color && <Chip component={"span"} avatar={ <Box component="span" sx={{ bgcolor:`${CartItem.variants?.color.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant={"outlined"} label={CartItem.variants.color} />
 							}
 							{
-								CartItem.variants?.size && <Chip variant={"outlined"} label={CartItem.variants.size} />
+								CartItem.variants?.size && <Chip  component={"span"} variant={"outlined"} label={CartItem.variants.size} />
 							}
 						</Stack>
 					</Stack>

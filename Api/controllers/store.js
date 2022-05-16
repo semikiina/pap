@@ -95,8 +95,10 @@ exports.NewStore = (req, res, next) => {
 exports.ConfirmAccount = (req, res, next) => {
 
     var storeForUser = "";
+
     console.log('POST /store/confirmAccount')
-    console.log(req.params.email)
+
+
     Store.findOne({store_email: req.params.email})
         .then(store => {
             storeForUser = store._id
@@ -116,7 +118,10 @@ exports.ConfirmAccount = (req, res, next) => {
             return user.save()
         })
         .then(store => {
-            res.status(201).send(storeForUser);
+            
+            const token = jwt.sign({ id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
+
+            res.status(201).json({ id: store._id.toString() ,stoken:token});
         })
         .catch(err => {
             if (!err.StatusCode) err.StatusCode = 500;
@@ -127,16 +132,17 @@ exports.ConfirmAccount = (req, res, next) => {
 //Store Get Info
 exports.GetTheStore = (req, res, next) => {
 
-    console.log('store/profile')
-    var storeid = req.storeId
-
-    //Find store by ID
-    Store.findById(storeid)
+    console.log('GET store (token)')
+    
+    Store.findById( req.storeId)
+        .populate({
+            path: 'product',
+            match: {
+              active: true,
+            }
+          })
         .then(store => {
-            store.views += 1;
-            store.save()
-        })
-        .then(store => {
+            
             res.status(200).json(store)
         })
         .catch(error => {
@@ -144,8 +150,9 @@ exports.GetTheStore = (req, res, next) => {
             return res
                 .status(422)
                 .json({
-                    message: "Can't find the store.",
-                    errors: error.array()
+                    message: "Can't find any store.",
+                    errors: error
+
                 })
         })
 }
@@ -177,79 +184,14 @@ exports.Login = (req, res, next) => {
 }
 
 //Store Update
-exports.UpdateStore = (req, res, next) => {
-    console.log('PUT store')
-    var storeid = req.params.id
-    const storeReq = { ...req.body };
-
-    //Find Store by ID
-    Store.findById(storeid)
-        .then(store => {
-            //Store changes
-            store.name = storeReq.store_name;
-            store.description = storeReq.store_description;
-            return store.save();
-        })
-        .then(store => {
-            res.status(200).json({
-                message: "Store ok!",
-                store: store
-            })
-        })
-        .catch(error => {
-            console.log(error);
-            return res
-                .status(422)
-                .json({
-                    message: "Validation failed. Please insert correct data.",
-                    errors: error.array()
-                })
-        })
-
-}
-
-
-
-
-//Store Get All
-exports.GetTheStoreNew = (req, res, next) => {
-
-    console.log('GET store By User')
-    //Find all stores
-    Store.findById( req.params.id)
-        .populate({
-            path: 'product',
-            match: {
-              active: true,
-            }
-          })
-        .then(store => { 
-            store.views += 1;
-            return store.save();
-        })
-        .then(store => {
-            
-            res.status(200).json(store)
-        })
-        .catch(error => {
-            console.log(error);
-            return res
-                .status(422)
-                .json({
-                    message: "Can't find any store.",
-                    errors: error
-
-                })
-        })
-}
-
-//Store Update
 exports.NewUpdateStore = (req, res, next) => {
 
-    console.log('New Store Update')
+    console.log('POST store/editStore')
+
     const storeReq = { ...req.body};
+
     //Find Store by ID
-    Store.findById(req.params.id)
+    Store.findById(req.storeId)
         .then(store => {
             //Store changes
             store.store_name = storeReq.store_name;

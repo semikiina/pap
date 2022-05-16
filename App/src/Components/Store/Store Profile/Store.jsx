@@ -70,7 +70,7 @@ const Store = () => {
     })
 
     useEffect(()=>{
-        api.get('store/'+id)
+        api.get('feed/store/'+id)
         .then(({data})=>{
             setStore(data)
             setStoreName(data.store_name)

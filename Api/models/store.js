@@ -33,6 +33,10 @@ const StoreSchema = new Schema({
             status : String,
             quantity: String
         }]
+    }],
+    admins:[{
+        type: Schema.Types.ObjectId,
+        ref:'User'
     }]
 })
 

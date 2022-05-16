@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, Container,Stack, Box, Divider, Avatar, CircularProgress, Rating} from '@mui/material';
+import {CardMedia, Button, Typography, Grid, ButtonGroup,Stack, Box, Divider, Avatar, CircularProgress, Rating, Chip} from '@mui/material';
 import {Favorite,FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
 import useAuth from '../../Contexts/useAuth';
 
-const ProductDetail = ({product, newFav, reviewL,avr}) => {
+const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
     
     const {user} = useAuth();
-    const [currentPhoto, setCurrentPhoto] = useState()
+
+    const [currentPhoto, setCurrentPhoto] = useState();
+
+    const[prQuantity, setPrQuantity] = useState(1);
+
+    const[selectedColor, setSelectedColor] = useState(0);
+
+    const[selectedSize, setSelectedSize] = useState(0);
+
     let i=0;
     
     const ChangedPhoto = (photo)=>{
@@ -73,13 +81,32 @@ const ProductDetail = ({product, newFav, reviewL,avr}) => {
                 </Stack>
                 <Typography variant="h5" marginBottom={1}  marginTop={3}>{product.price}€</Typography>
 
+                <Stack direction="row" spacing={2} marginY={1}>
+                    { 
+                        product.variants?.color?.map((option, index) => (
+                            <Chip key={index} avatar={ <Box component="span" sx={{ bgcolor:`${option.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant={selectedColor == option ? "": "outlined"} label={option} onClick={()=>setSelectedColor(option)} />
+                        ))
+                    }
+                    </Stack>
+                    <Stack direction="row" spacing={2} marginY={1}>
+                    { 
+                        product.variants?.size?.map((option, index) => (
+                            <Chip key={index}  variant={selectedSize == option ? "contained": "outlined"} label={option} onClick={()=>setSelectedSize(option)}/>
+                        ))
+                    }
+                </Stack>
+
                 <Stack direction="row" spacing={2}  alignItems={'center'} marginBottom={3}>
-                    <Button variant="outlined" color="secondary" fullWidth>Add to cart</Button>
+                    <ButtonGroup  disableElevation >
+                        <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>
+                        <Button disabled>{prQuantity}</Button>
+                        <Button variant="contained" color="info" onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
+                    </ButtonGroup>
+                    <Button variant="outlined" color="secondary" fullWidth onClick={()=> {onAddToCart(product._id,prQuantity,selectedSize,selectedColor) ; window.location.href="../cart"}}>Add to cart</Button>
                     {
-                        product.favorite &&
-                            product.favorite.includes(user._id)
-                            ? <Favorite onClick={()=>{newFav(product._id)}} color="error"></Favorite>
-                            : <FavoriteBorder onClick={()=>{newFav(product._id)}} color="error"></FavoriteBorder>
+                            product.favorite?.includes(user._id)
+                            ? <Favorite onClick={()=>{newFav(product._id)}} ></Favorite>
+                            : <FavoriteBorder onClick={()=>{newFav(product._id)}} ></FavoriteBorder>
                     }
                     
                 </Stack>

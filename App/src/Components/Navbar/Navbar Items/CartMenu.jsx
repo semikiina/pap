@@ -1,5 +1,5 @@
 import React from 'react'
-import { MenuItem, Menu, Typography, CircularProgress, Stack, Avatar, Button, Divider, ListItem, ListItemText, ListItemIcon, ListItemAvatar} from '@mui/material';
+import { MenuItem, Menu, Typography, CircularProgress, Stack, Avatar, Button, Divider, ListItem, ListItemText, ListItemIcon, ListItemAvatar, List, ListItemButton} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {AddShoppingCart , Delete} from '@mui/icons-material';
 import { Box } from '@mui/system';
@@ -55,32 +55,33 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
                     },
                   }}
             >
+                <List>
                 {cart.items && cart.items.map((item) => (
-                    <MenuItem key={item.product_id._id}  >
-                        <ListItem>
-                            <ListItemIcon><Delete color="error" onClick={()=>onRemoveFromCart(item.product_id._id)}/></ListItemIcon>
+                    <ListItem key={item.product_id._id} divider >
+                        <ListItemButton >
+                            <ListItemIcon><Delete edge="start" color="error" onClick={()=>onRemoveFromCart(item.product_id._id)}/></ListItemIcon>
                             <ListItemAvatar>
                                 <Avatar src={'http://localhost:8090/'+item.product_id.images[0]} sx={{width:50, height:50, objectFit: 'cover'}} variant="square" />
                             </ListItemAvatar>
                             <ListItemText
                                 primary={item.product_id.title}
                                 secondary={
-                                    <Stack spacing={1}>
+                                    <Stack spacing={1}  component="span">
                                         {item.product_id.category}
                                         <br/>
-                                        Qtt. {item.quantity}
+                                            Qtt. {item.quantity}
                                         {item.variants && <Typography variant="caption">{item.variants?.color + ", "+ item.variants?.size}</Typography>}
                                     </Stack>
                                 }
                             />
-                            <Box marginLeft={2}>
-                                <ListItemText  primary={item.product_id.price+" €"} />
+                            <Box marginLeft={2} edge="end">
+                                <Typography>{item.product_id.price+" €"}</Typography>
                             </Box>
-                        </ListItem>
-                    </MenuItem>
+                        </ListItemButton>
+                    </ListItem>
                 ))}
-                <Divider/>
-                <Stack direction="row" spacing={1} paddingLeft={2} >
+                </List>
+                <Stack direction="row" spacing={1} padding={2}>
                         <Typography>Subtotal :</Typography>
                         <Typography >{cart.subtotal}€</Typography>
                 </Stack>

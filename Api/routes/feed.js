@@ -5,11 +5,18 @@ const feedController = require('../controllers/feed');
 //GET /store
 router.get('/', feedController.GetAll)
 
+//GET /store/:id
+router.get('/newStores' , feedController.LastWeekStores)
+
+//GET /store/:id
+router.get('/store/:id' , feedController.GetTheStore)
+
 // //GET /store/:id
 router.get('/:id' , feedController.GetTheProduct)
 
-// //GET /store/:id
-// router.get('/profile' , feedController.GetTheStore)
+
+
+
 
 
 // //GET /store/login
