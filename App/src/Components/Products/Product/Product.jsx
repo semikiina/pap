@@ -75,7 +75,7 @@ const Product = ({product, onAddToCart, newFav}) => {
                 </CardActions>
             </Card>
 
-            <AddToCartDialog open={open} handleClose={handleClose} product={product} />
+            <AddToCartDialog open={open} handleClose={handleClose} product={product} onAddToCart={onAddToCart}/>
         </>
     )
 }

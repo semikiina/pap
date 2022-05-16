@@ -27,10 +27,17 @@ exports.GetProducts = (req, res, next) => {
 exports.NewProduct = (req, res, next) => {
 
     let productReq = { ...req.body };
+    console.log(productReq)
     var images =[];
     req.files.forEach(element => {
         images.push(element.path)
     });
+
+    var variants={
+        color: productReq.color,
+        size: productReq.size
+    };
+    
 
     const product = new Product({
         title: productReq.title,
@@ -43,7 +50,7 @@ exports.NewProduct = (req, res, next) => {
         date_created: Date.now(),
         images:images,
         active:productReq.active,
-        variants: productReq.variants
+        variants: variants
     })
     product.save()
         .then(result =>{

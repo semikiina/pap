@@ -1,5 +1,5 @@
 import React from 'react'
-import {Stack, Typography, Box, Button, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemIcon, IconButton, ButtonGroup } from '@mui/material';
+import {Stack, Typography, Box, Button, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemIcon, IconButton, ButtonGroup, Chip } from '@mui/material';
 import {AddBox, Delete, Favorite, IndeterminateCheckBox, PlusOne} from '@mui/icons-material'
 
 const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
@@ -15,7 +15,19 @@ const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) =
 			</ListItemAvatar>
 			<ListItemText 
 				primary={CartItem.product_id.title}
-				secondary={CartItem.product_id.category}
+				secondary={
+					<Stack spacing={1}>
+						{CartItem.product_id.category}
+						<Stack direction="row" spacing={1} marginTop={1}>
+							{
+								CartItem.variants?.color && <Chip avatar={ <Box component="span" sx={{ bgcolor:`${CartItem.variants?.color.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant={"outlined"} label={CartItem.variants.color} />
+							}
+							{
+								CartItem.variants?.size && <Chip variant={"outlined"} label={CartItem.variants.size} />
+							}
+						</Stack>
+					</Stack>
+				}
 				sx={{width: 150, paddingLeft: 2}}
 			/>
 			<ButtonGroup  disableElevation >

@@ -292,7 +292,7 @@ exports.Cart = async (req, res, next) => {
     const product = await Product.findById(cartReq.product_id)
     User.findById(req.userId)
     .then(user => {
-        return user.AddToCart(product,cartReq.quantity)
+        return user.AddToCart(product,cartReq.quantity,cartReq.variants)
     })
     .then(user => {
         res.status(201).json( {cart : user.cart})

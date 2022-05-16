@@ -1,7 +1,8 @@
 import React from 'react'
-import { MenuItem, Menu, Typography, CircularProgress, Stack, Avatar, Button} from '@mui/material';
+import { MenuItem, Menu, Typography, CircularProgress, Stack, Avatar, Button, Divider, ListItem, ListItemText, ListItemIcon, ListItemAvatar} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import {AddShoppingCart , Delete} from '@mui/icons-material';
+import { Box } from '@mui/system';
 
 const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
     if(!cart.items) return <CircularProgress></CircularProgress>
@@ -24,7 +25,7 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
             >
                 <MenuItem onClick={()=>{window.location.href="./" ;handleCloseCartMenu()}}>
                     <Stack alignItems={'center'} fontSize="large">
-                        <AddShoppingCartIcon></AddShoppingCartIcon>
+                        <AddShoppingCart/>
                         <Typography>Your shopping cart is empty.</Typography>  
                         <Typography variant="subtitle2">Start by adding a product.</Typography>  
                     </Stack>
@@ -48,30 +49,42 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
                 }}
                 open={Boolean(anchorElCart)}
                 onClose={handleCloseCartMenu}
+                PaperProps={{
+                    style: {
+                      maxHeight: 500,
+                    },
+                  }}
             >
                 {cart.items && cart.items.map((item) => (
                     <MenuItem key={item.product_id._id}  >
-                        <Stack direction="row" alignItems={'center'} spacing={1} justifyContent={"space-between"} >
-                            <CloseIcon onClick={()=>onRemoveFromCart(item.product_id._id)}></CloseIcon>
-                            <Stack direction="row" alignItems={'center'} spacing={1}  >
-                                <Avatar variant="square" src={'http://localhost:8090/'+item.product_id.images[0]}></Avatar>
-                                <Stack>
-                                    <Typography variant="subtitle2">{item.product_id.title}</Typography>
-                                    <Stack direction="row" justifyContent={"space-between"} >
-                                        <Typography variant="caption">Qtt.{item.quantity}</Typography>
-                                        <Typography variant="caption">{item.product_id.price} €</Typography>
+                        <ListItem>
+                            <ListItemIcon><Delete color="error" onClick={()=>onRemoveFromCart(item.product_id._id)}/></ListItemIcon>
+                            <ListItemAvatar>
+                                <Avatar src={'http://localhost:8090/'+item.product_id.images[0]} sx={{width:50, height:50, objectFit: 'cover'}} variant="square" />
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={item.product_id.title}
+                                secondary={
+                                    <Stack spacing={1}>
+                                        {item.product_id.category}
+                                        <br/>
+                                        Qtt. {item.quantity}
+                                        {item.variants && <Typography variant="caption">{item.variants?.color + ", "+ item.variants?.size}</Typography>}
                                     </Stack>
-                                </Stack>
-                            </Stack>
-                            
-                        </Stack>
+                                }
+                            />
+                            <Box marginLeft={2}>
+                                <ListItemText  primary={item.product_id.price+" €"} />
+                            </Box>
+                        </ListItem>
                     </MenuItem>
                 ))}
-                <Stack direction="row" justifyContent="space-between" paddingX={2} paddingTop={1}>
-                    <Typography>Subtotal:</Typography>  
-                    <Typography>{cart.subtotal} €</Typography>  
+                <Divider/>
+                <Stack direction="row" spacing={1} paddingLeft={2} >
+                        <Typography>Subtotal :</Typography>
+                        <Typography >{cart.subtotal}€</Typography>
                 </Stack>
-                     
+               
                 <MenuItem onClick={handleCloseCartMenu}>
                     <Button fullWidth variant="contained" color="secondary" onClick={()=> window.location.href="./cart"}>Go to Cart</Button>   
                 </MenuItem>

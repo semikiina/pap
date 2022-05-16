@@ -31,6 +31,10 @@ const userSchema = new Schema({
                     type:Schema.Types.ObjectId,
                     ref:'Product'
                 },
+                variants:{
+                    color: String,
+                    size: String,
+                },
                 quantity: Number,
                 price : Number
             }
@@ -52,7 +56,7 @@ const userSchema = new Schema({
     }]
 });
 
-userSchema.methods.AddToCart = function(product,quantity){
+userSchema.methods.AddToCart = function(product,quantity,variants){
 
     const CartItemIndex = this.cart.items.findIndex( item =>{
         return item.product_id.toString() == product._id.toString()
@@ -71,7 +75,8 @@ userSchema.methods.AddToCart = function(product,quantity){
         updatedCart.push({
             product_id : product._id,
             quantity: newQuantity,
-            price : product.price
+            price : product.price,
+            variants: variants
         });
     }
 

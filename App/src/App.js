@@ -50,10 +50,14 @@ const App = () => {
 		setOpenDrawer(false);
 	};
 
-    const AddToCart = (productId, quantity)=>{
+    const AddToCart = (productId, quantity,size,color)=>{
         api.post('user/cart',{
             product_id:productId,
-            quantity: quantity
+            quantity: quantity,
+			variants:{
+				size:size,
+				color:color,
+			}
         })
         .then( res=>{
 			setFav(fav+1)

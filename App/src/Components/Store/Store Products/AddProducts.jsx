@@ -38,11 +38,17 @@ const AddProducts = ({storeid}) => {
             formData.append("image", images[x]);
         }
 
-        var variants=[{
-            color: colorValue,
-            size: sizeValue,
-        }]
 
+        for (var x = 0; x < colorValue.length; x++) {
+
+            formData.append("color", colorValue[x])
+        }
+
+        for (var x = 0; x < sizeValue.length; x++) {
+
+            formData.append("size", sizeValue[x])
+        }
+        
         formData.append("title", data.title)
         formData.append("stock", data.stock)
         formData.append("active", data.active)
@@ -51,7 +57,7 @@ const AddProducts = ({storeid}) => {
         formData.append("description", htmlEditor)
         formData.append("store_id", storeid) 
         formData.append("shipping", shippingData)
-        formData.append("variants", variants)
+       
 
         api.post('product',formData,{
             headers: {

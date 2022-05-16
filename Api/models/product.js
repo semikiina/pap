@@ -24,14 +24,14 @@ const ProductSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:'User'
     }],
-    variants:[{
+    variants:{
         color:[{
             type:String,
         }],
         size:[{
             type:String,
         }],
-    }]
+    }
 });
 
 module.exports = mongoose.model("Product",ProductSchema);
