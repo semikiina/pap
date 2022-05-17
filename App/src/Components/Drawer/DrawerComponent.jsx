@@ -1,15 +1,15 @@
 import React, {useEffect,useState} from 'react'
 import { List, ListItem, ListItemIcon, Drawer, IconButton, Divider, ListItemText, MenuItem , Avatar, Typography, Tooltip, Button} from '@mui/material';
-import { ChevronLeft, Close, Inbox, LocalShipping, Settings, Storage, Store, Sync } from '@mui/icons-material';
+import { ChevronLeft, Close, Dashboard, Inbox, LocalShipping, Settings, Storage, Store, Sync } from '@mui/icons-material';
 import { styled, useTheme } from '@mui/material/styles';
 import api from '../../Services/api';
 import useAuth from '../Contexts/useAuth';
 import DrawerAlert from './Store Accounts/DrawerAlert';
 
-const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
+const DrawerComponent = ({handleDrawerClose,openDrawer}) => {
 
-    const {user} = useAuth();
-    const [store, setStore] = useState({});
+    const {user,setStoreA, storeA} = useAuth();
+    const [update, setUpdate] = useState(0)
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -20,20 +20,29 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
       setOpen(false);
     };
 
+
+    const ChangeCurrentStore = (storeid) =>{
+        api.get('store/login/'+storeid)
+        .then(store=>{
+            localStorage.setItem('SAuthorization',store.data.stoken)
+            window.location.reload()
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+    }
+
     useEffect(()=>{
-        if(storeid)
-        api.get('feed/store/'+storeid)
+        if(localStorage.getItem('SAuthorization'))
+        api.get('store/profile')
         .then(data=>{
-            setStore({
-                store_name: data.data.store_name,
-                store_image :  data.data.store_image
-            })
+            setStoreA(data.data)
         })
         .catch(err => {
             console.log(err)
         })
 
-    },[storeid])
+    },[update])
 
     const drawer = (
         <div>
@@ -44,7 +53,13 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
                         </ListItemIcon>
                     <ListItemText primary="Change Store" />
                 </ListItem>
-                <ListItem button onClick={()=> window.location.href="../store/"+storeid}>
+                <ListItem button onClick={()=> window.location.href="../dashboard"}>
+                        <ListItemIcon>
+                            <Dashboard /> 
+                        </ListItemIcon>
+                    <ListItemText primary="Store Dashboard" />
+                </ListItem>
+                <ListItem button onClick={()=> window.location.href="../store/"+storeA._id}>
                         <ListItemIcon>
                             <Store /> 
                         </ListItemIcon>
@@ -79,7 +94,7 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
         paddingBottom: 3
       }));
 
-    if(!store) return null;
+    if(!storeA) return null;
     return (
         <>
             <Drawer
@@ -96,11 +111,11 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
                 open={openDrawer}
             >
                 <DrawerHeader >
-                    {store.store_name && <MenuItem >
+                    {storeA.store_name && <MenuItem >
                         <ListItemIcon>
-                            <Avatar src={'http://localhost:8090/'+store?.store_image} sx={{mr:2}}/>
+                            <Avatar src={'http://localhost:8090/'+storeA?.store_image} sx={{mr:2}}/>
                         </ListItemIcon>
-                        <Typography  textAlign="center" >{store?.store_name}</Typography>
+                        <Typography  textAlign="center" >{storeA?.store_name}</Typography>
                     </MenuItem>}
                     <IconButton onClick={handleDrawerClose} >
                         <Tooltip title="close menu"  disableFocusListener disableTouchListener>
@@ -109,9 +124,9 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,storeid}) => {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                {store.store_name ? drawer : <Button variant="outlined" href="./newStore">CREATE A STORE</Button>}
+                {storeA.store_name ? drawer : <Button variant="outlined" href="./newStore">CREATE A STORE</Button>}
             </Drawer>
-            <DrawerAlert open={open} handleClose={handleClose} storeList={user.store}/>
+            <DrawerAlert open={open} handleClose={handleClose} storeList={user.store} ChangeCurrentStore={ChangeCurrentStore} />
         </>
     )
 }

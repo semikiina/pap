@@ -31,6 +31,10 @@ const OrderSchema = new Schema({
                 },
                 quantity: { 
                     type:Number 
+                },
+                variants:{
+                    color: String,
+                    size: String,
                 }
             }
         ],

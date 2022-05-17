@@ -12,11 +12,14 @@ router.get('/', storeController.GetStores)
 //GET /store/:id
 router.get('/profile', Auth, SAuth, storeController.GetTheStore)
 
-//GET /store/orders/:id
-router.get('/orders/:id', storeController.StoreOrders)
+//GET /store/products
+router.get('/products', Auth, SAuth, storeController.GetProductsByStore)
 
-//GET /store/login
-router.get('/login', Auth, storeController.Login)
+//GET /store/orders
+router.get('/orders', Auth, SAuth, storeController.StoreOrders)
+
+//GET /store/login/:id
+router.get('/login/:id', Auth, storeController.Login)
 
 //POST /store
 router.post('/', Auth, storeController.NewStore)

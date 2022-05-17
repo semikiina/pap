@@ -30,6 +30,10 @@ const StoreSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref:'Product'
             },
+            variants:{
+                color: String,
+                size: String,
+            },
             status : String,
             quantity: String
         }]

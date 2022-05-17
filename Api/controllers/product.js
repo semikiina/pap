@@ -6,9 +6,8 @@ var fs = require('fs');
 exports.GetProducts = (req, res, next) => {
 
     console.log(' GET /product')
-    //{store_id: req.storeId}
-    Product.find({active:true})
-    //Product.find()
+
+    Product.find({active:true, exists: true})
         .then(product => {
             res.status(200).json(product)
         })
@@ -27,9 +26,11 @@ exports.GetProducts = (req, res, next) => {
 exports.NewProduct = (req, res, next) => {
 
     let productReq = { ...req.body };
-    console.log(productReq)
+
     var images =[];
+
     req.files.forEach(element => {
+
         images.push(element.path)
     });
 
@@ -42,7 +43,7 @@ exports.NewProduct = (req, res, next) => {
     const product = new Product({
         title: productReq.title,
         description: productReq.description,
-        store_id: productReq.store_id,
+        store_id: req.storeId,
         price: productReq.price,
         stock: productReq.stock,
         category : productReq.category,
@@ -50,11 +51,12 @@ exports.NewProduct = (req, res, next) => {
         date_created: Date.now(),
         images:images,
         active:productReq.active,
-        variants: variants
+        variants: variants,
+        exists: true
     })
     product.save()
         .then(result =>{
-            return Store.findById(productReq.store_id)    
+            return Store.findById(req.storeId)    
         })
         .then(store=>{
 
@@ -215,25 +217,6 @@ exports.GetSimilarProducts = (req, res, next) => {
         })
 }
 
-exports.GetProductsByStore = (req, res, next) => {
-
-    console.log(' GET /product by store')
-    //{store_id: req.storeId}
-    Product.find({store_id: req.params.id})
-    //Product.find()
-        .then(product => {
-            res.status(200).json(product)
-        })
-        .catch(error => {
-            console.log(error);
-            return res
-                .status(422)
-                .json({
-                    message: "Can't find the product.",
-                    errors: error
-                })
-        })
-}
 
 exports.DistinctCategorys = (req, res, next) => {
 
@@ -276,8 +259,8 @@ exports.DeleteManyProduct = (req, res, next) => {
 
 exports.DeleteProduct = (req, res, next) => {
 
-    console.log('Delete one Product')
-    Product.deleteOne({_id : req.params.id})
+    console.log('Delete one Product HELPPP')
+    Product.updateOne({_id : req.params.id},{exists: false})
         .then(cats => {
             res.status(200).json(cats)
         })

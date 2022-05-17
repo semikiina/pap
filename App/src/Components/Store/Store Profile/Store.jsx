@@ -12,7 +12,7 @@ import  useAuth  from '../../Contexts/useAuth';
 
 
 const Store = () => {
-    const{ user} = useAuth();
+    const{ user,storeA} = useAuth();
     const [filter, setFilter] =useState('');
     const {id} = useParams();
     const [value, setValue] = useState('1');
@@ -94,7 +94,7 @@ const Store = () => {
                                 <Stack spacing={1} justifyContent="center" alignItems={'center'}>
                                     <Typography paddingTop={2} align={'center'}>{storeName}</Typography>
                                     {store.store_image &&  <Avatar src={"http://localhost:8090/"+avatar} sx={{width:200, height:200}} variant="square"></Avatar>}
-                                   { user._id == store.creator_id && 
+                                   { (user._id == store.creator_id && storeA._id == id ) && 
                                         <Stack direction="row" spacing={1} alignItems={'center'} >
                                             <Button  variant="outlined" color="secondary" onClick={handleOpen} >Edit Store</Button>
                                             <Settings  color="gray"/>

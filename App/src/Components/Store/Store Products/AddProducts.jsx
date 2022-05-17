@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import ColAddProduct from './AddProduct/ColAddProduct';
 import { useForm } from "react-hook-form";
 
-const AddProducts = ({storeid}) => {
+const AddProducts = () => {
     
     const {  handleSubmit, register } = useForm();
     const [categorys, setCategorys] = useState([])
@@ -55,7 +55,6 @@ const AddProducts = ({storeid}) => {
         formData.append("price", data.price)
         formData.append("category", data.category)
         formData.append("description", htmlEditor)
-        formData.append("store_id", storeid) 
         formData.append("shipping", shippingData)
        
 

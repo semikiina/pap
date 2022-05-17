@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const Store = require('../models/store');
 const Order = require('../models/order');
+const Product = require('../models/product');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const transporter = require('../mailer');
@@ -164,7 +165,7 @@ exports.Login = (req, res, next) => {
     const userId = req.userId;
     
     //Find User by Nickname
-    Store.findOne({creator_id: userId})
+    Store.findOne({creator_id: userId, _id: req.params.id})
         .then(store => {
             //Check if user exists.
             if (!store) {
@@ -175,7 +176,7 @@ exports.Login = (req, res, next) => {
             //Create a token
             const token = jwt.sign({ store_email: store.store_email, id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
   
-            res.status(201).json({ id: store._id.toString() ,stoken:token});
+            res.status(200).json({ id: store._id.toString() ,stoken:token});
         })
         .catch(err => {
             if (!err.StatusCode) err.StatusCode = 500;
@@ -221,8 +222,7 @@ exports.NewUpdateStore = (req, res, next) => {
 exports.StoreOrders = (req, res, next) => {
 
     console.log('Store Orders')
-    Store.findById(req.params.id)
-    //.populate('cart.items.product_id',['price','title','images','_id','category'])
+    Store.findById(req.storeId)
     .populate({
         path: 'orders.orderid',
         select : ' first_name last_name address_1 address_2 zip_code province city country status date_created'
@@ -234,7 +234,6 @@ exports.StoreOrders = (req, res, next) => {
     .then(store =>{
         var orderArray=[];
         store.orders.map((order)=>{
-
             var totalPrice= 0;
 
             order.items.map((item)=>{
@@ -251,6 +250,7 @@ exports.StoreOrders = (req, res, next) => {
                 items: order.items,
                 price: totalPrice
             })
+            
         })
         res.status(200).json({orders : orderArray})
     })
@@ -284,3 +284,22 @@ exports.NewOrderState = (req,res, next) =>{
         })
 }
 
+
+exports.GetProductsByStore = (req, res, next) => {
+
+    console.log(' GET /product by store')
+
+    Product.find({store_id: req.storeId})
+        .then(product => {
+            res.status(200).json(product)
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "Can't find the product.",
+                    errors: error
+                })
+        })
+}

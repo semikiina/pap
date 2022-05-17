@@ -17,6 +17,7 @@ const ProductSchema = new Schema({
     shipping: Number,
     stock: Number,
     views: Number,
+    exists: Boolean,
     images:[{
         type:String,
     }],

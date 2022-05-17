@@ -117,7 +117,7 @@ exports.Checkout = async (req, res, next) => {
 
         const orderSave = await order.save()
 
-        const un =  await Promise.all(uniques.map(async (e,i) => {
+        await Promise.all(uniques.map(async (e,i) => {
 
             var orderItems=[];
 
@@ -138,19 +138,19 @@ exports.Checkout = async (req, res, next) => {
                 orderid: orderSave._id,
                 items: orderItems
             })
-            const storeSave= await store.save()
+            await store.save()
 
         }))
     
         user.cart=[];
 
-        const userSave= await user.save();
+        await user.save();
 
         const data = OrderInvoice(CheckoutReq,cartItems)
             
         const newInvoice= await easyinvoice.createInvoice(data);
 
-        const newEmail = await transporter.sendMail({
+        await transporter.sendMail({
                 from: 'tagmetheapp@gmail.com',
                 to: CheckoutReq.email, 
                 subject: "Your Order was placed successfully ✔", 

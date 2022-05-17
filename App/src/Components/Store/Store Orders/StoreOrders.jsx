@@ -10,21 +10,18 @@ const StoreOrders = ({storeid}) => {
     const [update, setUpdate] = useState(0);
 
     useEffect(()=>{
-        if(storeid)
-        api.get('store/orders/'+storeid)
+        api.get('store/orders')
         .then(data=>{
-            console.log(data.data.orders)
             setStoreOrders(data.data.orders)
         })
         .catch(err=>{
             console.log(err)
         })
-    },[storeid,update])
+    },[update])
 
     const updateOrder = (ordid) =>{
 
         console.log(ordid)
-        
         // api.post('store/updateOrderState/'+ ordid,{status : 'Fulfilled'})
         // .then(data =>{
         //     console.log(data)
@@ -36,7 +33,7 @@ const StoreOrders = ({storeid}) => {
     }
 
 
-    if(!storeid) return <CircularProgress></CircularProgress>
+    if(!storeOrders) return <CircularProgress></CircularProgress>
     return (
         <Container>
             <Stack direction="row" justifyContent="space-between" padding={2}>

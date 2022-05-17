@@ -94,11 +94,23 @@ const App = () => {
         
     }
 
+	const storeLogin = (storeid) =>{
+		if(!localStorage.getItem('SAuthorization') && storeid){
+			api.get('store/login/'+storeid)
+				.then(store=>{
+					localStorage.setItem('SAuthorization',store.data.stoken)
+				})
+				.catch(err=>{
+					console.log(err)
+				})
+		}
+	}
+
 	useEffect(()=>{
 		if(localStorage.getItem('UAuthorization')){
 			api.get('user/profile')
 				.then(user=>{
-					if(user.data.store)setStore(user.data.store[0]._id)
+					storeLogin(user.data?.store[0]?._id)
 					setUser(user.data)
 					setCart(user.data.cart)
 					setFavorite(user.data.favorite)
@@ -107,6 +119,7 @@ const App = () => {
 					console.log(err)
 				})
 		}
+		
 	},[fav])
 
 

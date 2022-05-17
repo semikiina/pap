@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dialog, DialogTitle, DialogContent, ListItemButton, Divider, ListItemAvatar, Avatar, List, ListItemText, Typography } from '@mui/material'
 
-const DrawerAlert = ({open,handleClose,storeList}) => {
+const DrawerAlert = ({open,handleClose,storeList, ChangeCurrentStore}) => {
 
 
 
@@ -15,7 +15,7 @@ const DrawerAlert = ({open,handleClose,storeList}) => {
                 <List>
                     {
                         storeList?.map((store) => {
-                            return <ListItemButton key={store._id}>
+                            return <ListItemButton key={store._id} onClick={() => {ChangeCurrentStore(store._id); handleClose()}}>
                                 <ListItemAvatar>
                                     <Avatar src={'http://localhost:8090/'+store.store_image} />
                                 </ListItemAvatar>

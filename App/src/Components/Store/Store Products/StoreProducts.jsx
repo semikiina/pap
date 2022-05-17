@@ -11,8 +11,7 @@ const StoreProducts = ({storeid}) => {
     const [update, setUpdate] = useState(0);
 
     useEffect(()=>{
-        if(storeid)
-        api.get('product/store/'+storeid)
+        api.get('store/products')
         .then(data=>{
             console.log(data)
             setProducts(data.data)
@@ -20,7 +19,7 @@ const StoreProducts = ({storeid}) => {
         .catch(err=>{
             console.log(err)
         })
-    },[storeid,update])
+    },[update])
 
 
 
