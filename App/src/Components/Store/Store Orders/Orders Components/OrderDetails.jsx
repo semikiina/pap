@@ -1,5 +1,12 @@
 import { Divider, Typography, Stack, Dialog, DialogTitle, DialogContent, List, DialogActions, Button, Avatar, Box, ListItem, ListItemText, ListItemAvatar, ListItemIcon, ListItemButton, Checkbox } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react'
+
+const columns = [
+    { field: 'product_id._id', headerName: 'ID', width: 70 },
+    { field: 'product_id.title', headerName: 'Title', width: 130 }
+
+];
 
 const OrderDetails = ({updateOrder, shippingInformation, cart, orderid, currentOrder, setCurrentOrder}) => {
 
@@ -23,6 +30,13 @@ const OrderDetails = ({updateOrder, shippingInformation, cart, orderid, currentO
                 <DialogContent>
 
                     <Typography variant="subtitle1">Items Summary</Typography>
+                    <DataGrid
+                        rows={cart}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                    />
                     <List disablePadding>
                         {
                         cart?.map( item => {

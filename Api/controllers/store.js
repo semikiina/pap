@@ -236,7 +236,10 @@ exports.StoreOrders = (req, res, next) => {
         store.orders.map((order)=>{
             var totalPrice= 0;
 
+           
+
             order.items.map((item)=>{
+                console.log(item)
                 totalPrice += item.product_id.price * item.quantity
             })
             
