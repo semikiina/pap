@@ -53,10 +53,34 @@ exports.LastWeekStores = (req, res, next) => {
     console.log('GET feed/newStores')
 
     Store.find()
-        .sort({ date_created: -1 }).limit(2)
+        .sort({ date_created: -1 }).limit(6)
+        .populate({
+            path:'product',
+            options: {
+                limit: 4
+            },
+            select: 'title images'
+        })
         .then(stores => {
 
             res.status(200).json(stores)
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
+}
+
+exports.FeaturedProducts = (req, res, next) => {
+
+    console.log('GET feed/featuredProducts')
+
+    Product.find()
+        .sort({ views: -1 }).limit(10)
+        
+        .then(products => {
+
+            res.status(200).json(products)
         })
         .catch(err => {
             if (!err.StatusCode) err.StatusCode = 500;

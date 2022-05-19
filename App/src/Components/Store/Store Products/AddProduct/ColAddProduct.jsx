@@ -1,5 +1,5 @@
-import { Box, Divider, Paper, Typography, TextField, Grid, FormControlLabel, Checkbox, InputAdornment, Autocomplete, Chip } from '@mui/material'
-import React from 'react'
+import { Box, Divider, Paper, Typography, TextField, Grid, FormControlLabel, Checkbox, InputAdornment, Autocomplete, Chip, Stack, FormGroup, Button } from '@mui/material'
+import React, {useState} from 'react'
 import HtmlEditor, { Toolbar, Item } from 'devextreme-react/html-editor';
 import { DropzoneArea } from 'material-ui-dropzone';
 
@@ -14,13 +14,44 @@ const ColAddProduct = ({register,setImages,setHtmlEditor,Shipping,isDisabledShip
     const valueChanged= (e)=>{
         setHtmlEditor(e.value)
     }
+
+    const[basePrice, setBasePrice] = useState('0.00');
+    const[ variants, setVariants] = useState([])
   
+    const AddVariant = () => {
+        return variants.map((v)=>{
+            return <Stack key={v} direction="row" spacing={2} marginBottom={2}>
+                <TextField size="small"/>
+                <Autocomplete
+                    multiple
+                    fullWidth
+                    freeSolo
+                    value={sizeValue}
+                    onChange={(e, newValue) => setSizeValue(newValue)}
+                    options={sizes.map(size=>size)}
+                    renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                        <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                    ))
+                    }
+                    renderInput={(params) =>(
+                        <TextField
+                            {...params}
+                            
+                            label="Sizes"
+                            placeholder="You can add your personalized size ( M, 32, 256Gb )"
+                        />
+                    )}
+                /> 
+                 </Stack>
+        })
+    }
 
     return (
         <>
             <Box marginBottom={4}>
                 <Paper>
-                    <Typography variant="subtitle1" padding={2}>Details</Typography>
+                    <Box><Typography variant="subtitle1" padding={2}>Details</Typography></Box>
                     <Divider></Divider>
                     <Grid padding={2} container spacing={2} >
                         <Grid item xs={12} md={10} marginBottom={2}>
@@ -79,63 +110,63 @@ const ColAddProduct = ({register,setImages,setHtmlEditor,Shipping,isDisabledShip
             </Box>
             <Box marginBottom={4}>
                 <Paper >
-                    <Typography variant="subtitle1" padding={2}>Price</Typography>
+                    <Typography variant="subtitle1" padding={2}>Price and Variants</Typography>
                     <Divider></Divider>
                     <Grid padding={2} container spacing={2} >
                         <Grid item xs={12}  marginBottom={2}>
-                            <TextField required {...register("price")} label="Price" type="number" fullWidth step="0.01"/>
+                            <TextField 
+                                fullWidth 
+                                required
+                                {...register("price")} 
+                                label="Base Price" 
+                                type="number"
+                                step="0.01"
+                                onChange={(e) => setBasePrice(parseFloat(e.target.value).toFixed(2))}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                                    step: "0.01"
+                                }}
+                            />
                         </Grid>
-                    </Grid>
-                </Paper>
-            </Box>
-            <Box marginBottom={4}>
-                <Paper >
-                    <Typography variant="subtitle1" padding={2}>Variants</Typography>
-                    <Divider></Divider>
-                    <Grid padding={2} container spacing={2} >
-                        <Grid item xs={12}  marginBottom={2}>
-                        <Autocomplete
-                            multiple
-                            options={colors.map(color=>color)}
-                            freeSolo
-                            value={colorValue}
-                            onChange={(e, newValue) => setColorValue(newValue)}
-                            renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip avatar={ <Box component="span" sx={{ bgcolor:`${option.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant="outlined" label={option} {...getTagProps({ index })} />
-                            ))
-                            }
-                            renderInput={(params) =>(
-                                <TextField
-                                    {...params}
-                                    
-                                    label="Colors"
-                                    placeholder="You can add your personalized color "
-                                />
-                            )}
-                        /> 
+                        <Grid item sm={12}>
+                            <Typography> Variants</Typography>
                         </Grid>
+                        
                         <Grid item xs={12}  marginBottom={2}>
-                            <Autocomplete
-                                multiple
-                                options={sizes.map(size=>size)}
-                                freeSolo
-                                value={sizeValue}
-                                onChange={(e, newValue) => setSizeValue(newValue)}
-                                renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                    <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                                ))
-                                }
-                                renderInput={(params) =>(
-                                    <TextField
-                                        {...params}
-                                        
-                                        label="Sizes"
-                                        placeholder="You can add your personalized size ( M, 32, 256Gb )"
-                                    />
-                                )}
-                            /> 
+                            <Stack direction="row">
+                                <Autocomplete
+                                    multiple
+                                    fullWidth
+                                    freeSolo
+                                    value={colorValue}
+                                    onChange={(e, newValue) => setColorValue(newValue)}
+                                    options={colors.map(color=>color)}
+                                    renderTags={(value, getTagProps) =>
+                                    value.map((option, index) => (
+                                        <Chip avatar={ <Box component="span" sx={{ bgcolor:`${option.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant="outlined" label={option} {...getTagProps({ index })} />
+                                    ))
+                                    }
+                                    renderInput={(params) =>(
+                                        <TextField
+                                            {...params}
+                                            
+                                            label="Colors"
+                                            placeholder="You can add your personalized color "
+                                        />
+                                    )}
+                                /> 
+                            </Stack>
+                           
+                        </Grid>
+                       
+                        <Grid item xs={12}  marginBottom={2}>
+                            <Typography>Option name</Typography>
+                            
+                            <Box>
+                                <AddVariant/>
+                            </Box>
+                            <Button variant="outlined" onClick={()=> setVariants([...variants , Math.random() ])} >Add variant</Button>
+                            
                         </Grid>
                     </Grid>
                 </Paper>

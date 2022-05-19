@@ -5,8 +5,8 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typog
 const AddToCartDialog = ({open, handleClose, product, onAddToCart}) => {
 
     const[prQuantity, setPrQuantity] = useState(1);
-    const[selectedColor, setSelectedColor] = useState(0);
-    const[selectedSize, setSelectedSize] = useState(0);
+    const[selectedColor, setSelectedColor] = useState();
+    const[selectedSize, setSelectedSize] = useState();
     return (
         <Dialog open={open == product._id} onClose={handleClose}  fullWidth={true} maxWidth={'sm'}>
             <DialogTitle> Choose your options</DialogTitle>
@@ -53,7 +53,7 @@ const AddToCartDialog = ({open, handleClose, product, onAddToCart}) => {
                 </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={()=> {onAddToCart(product._id,prQuantity,selectedSize,selectedColor) ; window.location.href="../cart"}} autoFocus variant="outlined" color="secondary">Add to cart</Button>
+                <Button onClick={()=>{ onAddToCart(product._id,prQuantity,selectedSize,selectedColor) ; handleClose(); }} autoFocus variant="outlined" color="secondary">Add to cart</Button>
             </DialogActions>
         </Dialog>
     )

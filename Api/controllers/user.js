@@ -116,7 +116,7 @@ exports.Profile = (req, res, next) => {
         .select(['-password'])
         // Populate gets info from other collections
         .populate('cart.items.product_id',['price','title','images','_id','category'])
-        .populate('favorite',['title','images','price'])
+        .populate('favorite',['title','images','price','variants'])
         .populate('store')
         .then(user => {
             if (!user) {

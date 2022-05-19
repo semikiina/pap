@@ -1,6 +1,7 @@
 import React from 'react';
 import CartItem from './CartItems/CartItem';
 import {Container, Typography, Stack, CircularProgress, Button, Card,Box, Divider, List, Grid } from '@mui/material';
+import FavoriteProducts from './Favorite Products/FavoriteProducts';
 
 const Cart = ({Cart, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
     
@@ -43,7 +44,7 @@ const Cart = ({Cart, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
 
     return (
         <Container>
-            <Typography variant='h4' marginBottom={3}>Your Shopping Cart</Typography>
+            <Typography variant='h4' padding={2}>Your Shopping Cart</Typography>
             <Divider/>
             <Grid container spacing={4} marginTop={1}>
                 <Grid item xs={12} md={7}>
@@ -77,8 +78,11 @@ const Cart = ({Cart, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
                     </Card>
                 </Grid>
             </Grid>
-           
-            
+
+
+           <Box>
+                <FavoriteProducts onAddToCart={onAddToCart}/>
+           </Box>
             
             
         </Container>

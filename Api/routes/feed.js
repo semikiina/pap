@@ -8,6 +8,9 @@ router.get('/', feedController.GetAll)
 //GET /store/:id
 router.get('/newStores' , feedController.LastWeekStores)
 
+//GET /featuredProducts
+router.get('/featuredProducts' , feedController.FeaturedProducts)
+
 //GET /store/:id
 router.get('/store/:id' , feedController.GetTheStore)
 

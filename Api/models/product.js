@@ -25,14 +25,14 @@ const ProductSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:'User'
     }],
-    variants:{
-        color:[{
-            type:String,
-        }],
-        size:[{
-            type:String,
-        }],
-    }
+    variants:[{
+        option:String,
+        optionValues:[{
+            name: String,
+            price : String,
+        }]
+    }]
+    
 });
 
 module.exports = mongoose.model("Product",ProductSchema);

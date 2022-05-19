@@ -3,7 +3,6 @@ import {AppBar, Toolbar, IconButton, Badge, Button, Menu, Typography, Stack, sty
 import {ShoppingCart, Favorite, Store} from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ProfileMenu from './Navbar Items/ProfileMenu';
-import StoreMenu from './Navbar Items/StoreMenu';
 import CartMenu from './Navbar Items/CartMenu';
 import useAuth from '../Contexts/useAuth';
 

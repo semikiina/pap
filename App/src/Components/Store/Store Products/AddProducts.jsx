@@ -23,52 +23,54 @@ const AddProducts = () => {
 
     const onSubmit = data => {
 
-        var shippingData;
-
-        if(isDisabledShipping) shippingData = data.shipping
-
-        else shippingData = 0;
-
-        var formData = new FormData();
-
-        var ins = images.length;
-
-        for (var x = 0; x < ins; x++) {
-
-            formData.append("image", images[x]);
-        }
-
-
-        for (var x = 0; x < colorValue.length; x++) {
-
-            formData.append("color", colorValue[x])
-        }
-
-        for (var x = 0; x < sizeValue.length; x++) {
-
-            formData.append("size", sizeValue[x])
-        }
+        console.log(data)
         
-        formData.append("title", data.title)
-        formData.append("stock", data.stock)
-        formData.append("active", data.active)
-        formData.append("price", data.price)
-        formData.append("category", data.category)
-        formData.append("description", htmlEditor)
-        formData.append("shipping", shippingData)
+        // var shippingData;
+
+        // if(isDisabledShipping) shippingData = data.shipping
+
+        // else shippingData = 0;
+
+        // var formData = new FormData();
+
+        // var ins = images.length;
+
+        // for (var x = 0; x < ins; x++) {
+
+        //     formData.append("image", images[x]);
+        // }
+
+
+        // for (var x = 0; x < colorValue.length; x++) {
+
+        //     formData.append("color", colorValue[x])
+        // }
+
+        // for (var x = 0; x < sizeValue.length; x++) {
+
+        //     formData.append("size", sizeValue[x])
+        // }
+        
+        // formData.append("title", data.title)
+        // formData.append("stock", data.stock)
+        // formData.append("active", data.active)
+        // formData.append("price", data.price)
+        // formData.append("category", data.category)
+        // formData.append("description", htmlEditor)
+        // formData.append("shipping", shippingData)
        
 
-        api.post('product',formData,{
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-        .then(data=>{
-            window.location.href="./storeProducts"
-        })
-        .catch(err=>{
-            console.log(err) 
-        })
+        // api.post('product',formData,{
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data'
+        //     }
+        // })
+        // .then(data=>{
+        //     window.location.href="./storeProducts"
+        // })
+        // .catch(err=>{
+        //     console.log(err) 
+        // })
     };
 
     useEffect(()=>{
@@ -84,7 +86,7 @@ const AddProducts = () => {
     return (
         <>
             <Container>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={8} >
                             <ColAddProduct 

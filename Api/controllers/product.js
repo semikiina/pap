@@ -3,11 +3,12 @@ const Store = require('../models/store');
 var fs = require('fs');
 
 
+//Delete
 exports.GetProducts = (req, res, next) => {
 
     console.log(' GET /product')
 
-    Product.find({active:true, exists: true})
+    Product.find({active:true})
         .then(product => {
             res.status(200).json(product)
         })
@@ -137,6 +138,7 @@ exports.DeleteImageFromProduct = (req,res, next) =>{
 }
 
 
+//Products by id
 exports.GetTheProduct = (req, res, next) => {
 
     console.log('GET /product/:id')
@@ -151,6 +153,10 @@ exports.GetTheProduct = (req, res, next) => {
             select:'first_name last_name'
         }
     })
+        .then(product => {
+            product.views += 1;
+            return product.save()
+        })
         .then(product => {
             res.status(200).json(product)
         })
