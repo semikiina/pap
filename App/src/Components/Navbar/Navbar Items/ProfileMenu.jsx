@@ -1,7 +1,7 @@
 import React from 'react'
 import { MenuItem, Menu, Typography, ListItemIcon, Button} from '@mui/material';
 import useAuth from '../../Contexts/useAuth';
-import {Person, ManageAccounts, LocalShipping, Logout} from '@mui/icons-material';
+import {Person, ManageAccounts, LocalShipping, Logout, Favorite} from '@mui/icons-material';
 
 const NavbarMenu = ({handleCloseUserMenu, anchorElUser}) => {
 
@@ -35,9 +35,9 @@ const NavbarMenu = ({handleCloseUserMenu, anchorElUser}) => {
                 </MenuItem>
                 <MenuItem onClick={handleCloseUserMenu}>
                     <ListItemIcon>
-                        <ManageAccounts fontSize="small" />
+                        <Favorite fontSize="small" />
                     </ListItemIcon>
-                    <Typography textAlign="center" onClick={()=>{window.location.href='../account'}}>Account</Typography>
+                    <Typography textAlign="center" onClick={()=>{window.location.href='../favorite'}}>Favorites</Typography>
                 </MenuItem>
                 <MenuItem onClick={handleCloseUserMenu}>
                     <ListItemIcon>

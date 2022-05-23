@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {Card, CardActions, CardContent, CardMedia, Button, Typography, Stack, } from '@mui/material';
 import {FavoriteBorder, Favorite} from '@mui/icons-material';
-import useAuth from '../../Contexts/useAuth';
-import AddToCartDialog from '../New Products/Components/AddToCartDialog';
+import useAuth from '../../../Contexts/useAuth';
+import AddToCartDialog from '../../New Products/Components/AddToCartDialog';
 
 const Product = ({product, onAddToCart, newFav}) => {
 

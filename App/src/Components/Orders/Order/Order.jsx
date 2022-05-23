@@ -7,8 +7,8 @@ const Order = ({order}) => {
     const[page,setPage] = useState(0)
 
     var chipColor= 'primary';
-    if(order?.state.toString().toLowerCase() == 'payed') chipColor = 'warning';
-    else if(order?.state.toString().toLowerCase() == 'fulfilled') chipColor = 'primary';
+    if(order?.state?.toString().toLowerCase() == 'payed') chipColor = 'warning';
+    else if(order?.state?.toString().toLowerCase() == 'fulfilled') chipColor = 'primary';
     else chipColor = 'error';
 
 
@@ -33,9 +33,9 @@ const Order = ({order}) => {
             
             <Divider></Divider>
             <Stack direction="row" justifyContent={'space-between'}>
-                <Typography padding={3} >Total: </Typography>
+                <Typography padding={3} >Total: 35.43€</Typography>
                 <Box marginRight={2} marginTop={2}>
-                    <Chip  label={order.state} color={chipColor}></Chip>
+                    <Chip  label={order.state || 'Completed'} color={'success'}></Chip>
                 </Box>
             </Stack>
         </Paper>

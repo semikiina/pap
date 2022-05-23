@@ -30,32 +30,18 @@ const OrderDetails = ({updateOrder, shippingInformation, cart, orderid, currentO
                 <DialogContent>
 
                     <Typography variant="subtitle1">Items Summary</Typography>
-                    <DataGrid
-                        rows={cart}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        checkboxSelection
-                    />
+                   
                     <List disablePadding>
                         {
                         cart?.map( item => {
                             return( 
                                 <ListItem key={item.product_id._id}>
                                     <ListItemButton role={undefined}  dense>
-                                        <ListItemIcon>
-                                            <Checkbox
-                                            edge="start"
-                                            tabIndex={-1}
-                                            disableRipple
-                                            />
-                                        </ListItemIcon>
                                         <ListItemAvatar >
                                             <Avatar variant="square" src={"http://localhost:8090/"+item?.product_id.images[0]}></Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary={item.product_id.title} secondary={"Qtt."+ item.quantity}></ListItemText>
                                     </ListItemButton>
-                                   
                                 </ListItem>
                             )
                         }) 

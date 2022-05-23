@@ -36,10 +36,12 @@ const userSchema = new Schema({
                     size: String,
                 },
                 quantity: Number,
-                price : Number
+                price : Number,
+                shipping: Number,
             }
         ],
         subtotal: Number,
+        shipping: Number,
     },
     addresses:[{
         first_name: String,
@@ -76,19 +78,24 @@ userSchema.methods.AddToCart = function(product,quantity,variants){
             product_id : product._id,
             quantity: newQuantity,
             price : product.price,
+            shipping: product.shipping,
             variants: variants
         });
     }
 
     let subtotal = 0;
+    let shipping = 0;
 
     updatedCart.forEach(i =>{
-        subtotal += parseInt(i.quantity* i.price) ;
+        subtotal += parseFloat(i.quantity* i.price) ;
+        shipping += parseFloat(i.shipping);
     })
 
     const nupdatedCart ={
+        
         items : updatedCart,
-        subtotal : subtotal
+        subtotal : subtotal.toFixed(2),
+        shipping : shipping.toFixed(2)
     }
     this.cart = nupdatedCart;
 
@@ -102,14 +109,18 @@ userSchema.methods.RemoveFromCart = function(product){
     })
 
     let subtotal = 0;
+    let shipping = 0;
 
     updatedCartItems.forEach(i =>{
-        subtotal += parseInt(i.quantity* i.price) ;
+        console.log(i)
+        subtotal += parseFloat(i.quantity* i.price) ;
+        shipping += parseFloat(i.shipping);
     })
 
     const nupdatedCart ={
         items : updatedCartItems,
-        subtotal : subtotal
+        subtotal : subtotal.toFixed(2),
+        shipping : shipping.toFixed(2)
     }
 
     this.cart = nupdatedCart;

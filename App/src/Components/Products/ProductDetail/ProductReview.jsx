@@ -2,10 +2,12 @@ import React from 'react'
 import { Stack, Typography, Box, Divider, Avatar,Rating, Checkbox, Button, IconButton} from '@mui/material'
 import { Favorite, FavoriteBorder, StarBorder, Edit, Delete} from '@mui/icons-material';
 import api from '../../../Services/api';
+import useAuth from "../../Contexts/useAuth";
 
 const ProductReview = ({id,reviews,setDel,del}) => {
 
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    var { user} = useAuth();
 
     const DeleteReview = (delid)=>{
         api.delete('review/'+delid)
@@ -33,6 +35,7 @@ const ProductReview = ({id,reviews,setDel,del}) => {
             <Divider ></Divider>
                 {
                     reviews.map((rev)=>{
+                        console.log(user)
                         return(
                             <Box padding={2} marginBottom={3} key={rev._id}>
                                 <Stack direction="row" spacing={2} marginBottom={2}>
@@ -52,14 +55,7 @@ const ProductReview = ({id,reviews,setDel,del}) => {
                                 <Box>
                                     {/* Its for images */}
                                 </Box>
-                                <Stack direction="row"  marginBottom={1} justifyContent="space-between" >
-                                    <Stack direction="row" spacing={1}  justifyContent="flex-end" alignItems={'center'}>
-                                        <IconButton onClick={()=>DeleteReview(rev._id)}>
-                                            <Delete color="error"/>
-                                        </IconButton>
-                                        
-                                    </Stack>
-                                    <Stack direction="row" justifyContent="flex-end" alignItems={'center'}>
+                                    <Stack direction="row" justifyContent="flex-end" alignItems={'center'} marginBottom={1}>
                                         <Typography>{rev.favorites.length}</Typography>
                                         <Checkbox
                                             icon={<FavoriteBorder />}
@@ -67,8 +63,12 @@ const ProductReview = ({id,reviews,setDel,del}) => {
                                             color="error"
                                         />
                                         <Typography variant="subtitle2" >  { new Date(rev.date_created).toLocaleDateString("en-US",options)}</Typography>
+                                        { user._id  == rev.user_id._id &&
+                                            <IconButton onClick={()=>DeleteReview(rev._id)}>
+                                                <Delete color="error"/>
+                                            </IconButton>
+                                        }
                                     </Stack>
-                                </Stack>
                             </Box>
                         )
                     })

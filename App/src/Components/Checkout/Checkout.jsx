@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import {Paper, Typography, Stepper, Step, CircularProgress, StepLabel, Container,Box,Stack  } from '@mui/material';
+import {Paper, Typography, Stepper, Step, CircularProgress, StepLabel, Container,Box,Stack, Tooltip  } from '@mui/material';
 import AdressForm from './CheckoutForm/AdressForm';
 import PaymentForm from './CheckoutForm/PaymentForm';
+import { ArrowBack } from '@mui/icons-material';
 
 const steps=['Shipping Adress', 'Payment details']
 
@@ -17,7 +18,12 @@ const Checkout = ({Cart,userId}) => {
     )
 
     const nextStep =() => setActiveStep((prev) => prev + 1 );
-    const backStep =() => setActiveStep((prev) => prev - 1 );
+    const backStep =() => {
+        if(activeStep-1 <0) window.location.href="../cart"
+
+        else setActiveStep((prev) => prev - 1 );
+
+    }
     
     const next = (data) =>{
        setShippingData(data)
@@ -33,17 +39,30 @@ const Checkout = ({Cart,userId}) => {
     return (
         <Container>
             <Paper >
-                <Typography paddingTop={4} variant="h3" align="center">Checkout</Typography>
+                <Typography paddingTop={4} variant="h4" align="center">Checkout</Typography>
+               
                     <Box  padding={4}>
-                            <Stepper activeStep={activeStep} >
-                                {steps.map((label, index) => {
-                                    return (
-                                    <Step key={label} >
-                                        <StepLabel>{label}</StepLabel>
-                                    </Step>
-                                    );
-                                })}
-                            </Stepper>
+                        <Stack direction="row" spacing={2} justifyContent="space-between">
+                            <Tooltip title="Go Back">
+                                <ArrowBack onClick={backStep}/>
+                            </Tooltip>
+                            <Box>
+                                <Stepper activeStep={activeStep} >
+                                    {steps.map((label, index) => {
+                                        return (
+                                        <Step key={label} >
+                                            <StepLabel>{label}</StepLabel>
+                                        </Step>
+                                        );
+                                    })}
+                                </Stepper>
+                            </Box>
+                            <Box></Box>
+                        </Stack>
+                            
+                        
+                    </Box>
+                    <Box paddingX={4} paddingBottom={4}>
                         {activeStep == steps.length ? <Confirmation/> : <Form/>}
                     </Box>
                 </Paper>

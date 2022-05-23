@@ -1,62 +1,56 @@
-import { Grid, List, ListItem, ListItemText, Typography, Paper, Box, Divider, Tooltip, IconButton } from '@mui/material'
+import { Grid, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Stack, IconButton, ListItemAvatar, Avatar, Divider } from '@mui/material'
 import React from 'react'
 import { ArrowBack } from '@mui/icons-material'
 
 const Review = ({cart, data , backStep}) => {
+
+    console.log(cart)
+    var add2 = "";
+    if(data.address_2) add2 =  data.address_2 + ", "
     return (
-        <>
-            <Grid container spacing={3}>
-               <Grid item xs={12} lg={1} marginTop={4}>
-                   <Tooltip title="Back">
-                       <IconButton onClick={backStep}>
-                            <ArrowBack/>
-                       </IconButton>
-                   </Tooltip>
-               </Grid>
-                <Grid item xs={12} lg={5} marginBottom={4}>
-                    
-                <Paper elevation={3}>
-                    <Typography variant="h4" marginTop={4} marginBottom={1} padding={2}>Order Summary</Typography>
-                    <List>
-                        <ListItem>
-                            <Typography  variant="h6">Total items: {cart.items.length}</Typography>
+        <Box paddingX={4} >
+           <Typography textAlign={'center'} variant="h6" paddingBottom={1}>Order Summary</Typography>
+           <Divider />
+           <List disablePadding >
+               {
+                   cart.items.map((item) =>(
+                        <ListItem key={ item.product_id._id} alignItems="center"  divider>
+                            <ListItemAvatar >
+                                <Avatar src={'http://localhost:8090/'+ item.product_id.images[0]} variant="square" sx={{width: 80 , height :  80}}/>
+                            </ListItemAvatar>
+                            <ListItemText 
+                                primary={item.product_id.title}
+                                secondary={
+                                    <Stack spacing={1}  component="span">
+                                        {item.product_id.category}
+                                        <br/>
+                                            Qtt. {item.quantity}
+                                        {item.variants && <Typography variant="caption">{item.variants?.color + ", "+ item.variants?.size}</Typography>}
+                                    </Stack>
+                                }
+                                sx={{width: 150, paddingLeft: 2}}
+                            />
+                            <ListItemText primary={item.product_id.price.toFixed(2)+"€"} />
                         </ListItem>
-                        {
-                            cart.items.map((item) =>(
-                                <ListItem key={item.product_id._id}>
-                                    <ListItemText primary={item.product_id.title} secondary={item.price +"€     - Qtt. "+ item.quantity}></ListItemText>
-                                </ListItem>
-                            ))
-                        
-                        }
-                         <ListItem>
-                            <Divider></Divider>
-                        </ListItem>
-                         <ListItem>
-                            <Typography  variant="h6">Subtotal: {cart.subtotal}€</Typography>
-                        </ListItem>
-                         <ListItem>
-                            <Typography  variant="h6">Shipping: FREE</Typography>
-                        </ListItem>
-                         <ListItem>
-                            <Typography  variant="h5">Total: {cart.subtotal}€</Typography>
-                        </ListItem>
-                    </List>
-                    </Paper>
-                </Grid>
-                <Grid item xs={12} lg={6} marginBottom={4}>
-                    <Paper  elevation={3}>
-                        <Typography variant="h4" marginTop={4} marginBottom={1} padding={2}>Shipping Information</Typography>
-                        <Typography  variant="h6" padding={2}> <b>Name:</b> {data.first_name  + " " + data.last_name}</Typography>
-                        <Typography  variant="h6" padding={2}> <b>Email:</b> {data.email}</Typography>
-                        <Typography  variant="h6" padding={2}> <b>Phone:</b> {data.phone}</Typography>
-                        <Typography  variant="h6" padding={2}> <b>Address 1:</b> {data.address_1}</Typography>
-                        <Typography  variant="h6" padding={2}> <b>Country:</b> {data.country}</Typography>
-                    </Paper>
-                </Grid>
-            </Grid>
-            
-        </>
+                   ))
+               }
+               
+           </List>
+           <Box marginTop={4}>
+               <Stack direction="row" justifyContent={'space-between'}>
+                   <Typography variant="subtitle1">Subtotal</Typography>
+                   <Typography variant="subtitle1">{cart.subtotal.toFixed(2)}€</Typography>
+               </Stack>
+               <Stack direction="row" justifyContent={'space-between'}>
+                   <Typography variant="subtitle2">Shipping</Typography>
+                   <Typography variant="subtitle2">{cart.shipping.toFixed(2)}€</Typography>
+               </Stack>
+               <Stack direction="row" justifyContent={'space-between'}>
+                   <Typography variant="h5">TOTAL</Typography>
+                   <Typography variant="h5">{(cart.subtotal + cart.shipping).toFixed(2)}€</Typography>
+               </Stack>
+           </Box>
+        </Box>
     )
 }
 

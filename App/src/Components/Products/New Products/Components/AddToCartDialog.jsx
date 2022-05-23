@@ -40,7 +40,7 @@ const AddToCartDialog = ({open, handleClose, product, onAddToCart}) => {
                                     <ButtonGroup  disableElevation >
                                         <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>
                                         <Button disabled>{prQuantity}</Button>
-                                        <Button variant="contained" color="info" onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
+                                        <Button variant="contained" color="info" disabled={prQuantity < product.stock ? false : true } onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
                                     </ButtonGroup>
                                     <Typography variant="h6">{product.price * prQuantity + " €"}</Typography>
                                 </Stack>

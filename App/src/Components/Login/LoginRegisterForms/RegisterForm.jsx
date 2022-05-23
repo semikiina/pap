@@ -39,7 +39,7 @@ const RegisterForm = ({registerUser, errors}) => {
                     <TextField type="password"  label="Password" fullWidth {...register("password")} />
                 </Box>
                 <Box marginBottom={2} >
-                    <TextField  error={passError} {...register("rpassword")} helperText={passError && "Your passwords don't match"} onClick={ ()=> setPassError(false)} label="Repeat Password" fullWidth />
+                    <TextField type="password"  error={passError} {...register("rpassword")} helperText={passError && "Your passwords don't match"} onClick={ ()=> setPassError(false)} label="Repeat Password" fullWidth />
                 </Box>
                 <Button color="secondary" fullWidth variant="outlined" type="submit">Register</Button>
             

@@ -63,9 +63,6 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 						{
 							user._id ?
 							<>
-								<IconButton href="/favorite" >
-									<Favorite></Favorite>
-								</IconButton>
 								<IconButton onClick={handleOpenCartMenu} >
 									<Badge badgeContent={user.cart.items.length} color="secondary" >
 										<ShoppingCart ></ShoppingCart>

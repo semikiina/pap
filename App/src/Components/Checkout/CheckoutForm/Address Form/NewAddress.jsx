@@ -31,10 +31,10 @@ const NewAddress = ({handleSubmit,onSubmit,register}) => {
                     <Autocomplete
                             options={countries}
                             autoHighlight
-                            getOptionLabel={(option) =>  "(" +option.code+") +"+option.phone}
-                            renderOption={(props, option) => (
-                                <Box component="li" {...props}>
-                                    ({option.code}) +{option.phone}
+                            getOptionLabel={(option) =>  "+"+option.phone}
+                            renderOption={(props, option, index) => (
+                                <Box component="li" {...props} key={Math.random()}>
+                                    +{option.phone}
                                 </Box>
                             )}
                             renderInput={(params) => (

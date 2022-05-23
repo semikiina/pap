@@ -81,11 +81,10 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
                     </ListItem>
                 ))}
                 </List>
-                <Stack direction="row" spacing={1} padding={2}>
-                        <Typography>Subtotal :</Typography>
-                        <Typography >{cart.subtotal}€</Typography>
-                </Stack>
-               
+                <Box padding={2}>
+                    <Typography >Shipping : {cart.shipping}€</Typography>
+                    <Typography >Subtotal : {cart.subtotal}€</Typography>
+                </Box>
                 <MenuItem onClick={handleCloseCartMenu}>
                     <Button fullWidth variant="contained" color="secondary" onClick={()=> window.location.href="./cart"}>Go to Cart</Button>   
                 </MenuItem>

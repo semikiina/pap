@@ -115,7 +115,7 @@ exports.Profile = (req, res, next) => {
         //Excludes fields
         .select(['-password'])
         // Populate gets info from other collections
-        .populate('cart.items.product_id',['price','title','images','_id','category'])
+        .populate('cart.items.product_id',['price','title','images','stock','category',"shipping"])
         .populate('favorite',['title','images','price','variants'])
         .populate('store')
         .then(user => {
@@ -330,13 +330,16 @@ exports.RemoveProductQuantity = async (req, res, next) => {
             return user.RemoveFromCart(product)
         }
         let subtotal = 0;
+        let shipping = 0;
     
         updatedCart.forEach(i =>{
-            subtotal += parseInt(i.quantity* i.price) ;
+            subtotal += parseFloat(i.quantity* i.price) ;
+            shipping += parseFloat(i.shipping) ;
         })
         const nupdatedCart ={
             items : updatedCart,
-            subtotal : subtotal
+            subtotal : subtotal,
+            shipping : shipping
         }
         user.cart = nupdatedCart;
     

@@ -1,8 +1,9 @@
 import React from 'react'
-import {Stack, Typography, Box, Button, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemIcon, IconButton, ButtonGroup, Chip } from '@mui/material';
-import {AddBox, Delete, Favorite, IndeterminateCheckBox, PlusOne} from '@mui/icons-material'
+import {Stack, Box, Button, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemIcon, IconButton, ButtonGroup, Chip } from '@mui/material';
+import {Delete} from '@mui/icons-material'
 
 const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
+
 	return (
 		<ListItem alignItems="center" divider  >
 			<ListItemIcon onClick={()=>onRemoveFromCart(CartItem.product_id._id)}>
@@ -33,14 +34,14 @@ const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) =
 			<ButtonGroup  disableElevation >
 				<Button variant="contained" color="info" disabled={CartItem.quantity>1 ? false : true } onClick={()=>onRemoveQuantity(CartItem.product_id._id)}>-</Button>
 				<Button disabled>{CartItem.quantity}</Button>
-				<Button variant="contained" color="info" onClick={()=>onAddToCart(CartItem.product_id._id)}>+</Button>
+				<Button variant="contained" color="info" disabled={CartItem.quantity < CartItem.product_id.stock ? false : true } onClick={()=>onAddToCart(CartItem.product_id._id)}>+</Button>
 			</ButtonGroup>
 			
 			<ListItemText 
 				sx={{ marginLeft: 5}}
-				primary={CartItem.product_id.price + " €"}
+				primary={CartItem.product_id.price.toFixed(2) + " €"}
+				secondary={`+ ${CartItem.product_id.shipping.toFixed(2)} €`}
 			/>
-	
 		</ListItem>
 	)
 }
