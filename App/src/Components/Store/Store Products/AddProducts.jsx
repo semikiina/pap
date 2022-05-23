@@ -7,7 +7,7 @@ import Step3 from './AddProduct/Step3';
 import Step4 from './AddProduct/Step4';
 import Step2Variantes from './AddProduct/Step2Variantes';
 
-const steps = ['Basic Informations', 'Price and Variants','Details', 'Media Upload' , "Review"];
+const steps = ['Basic Informations', 'Price and Variants','Combinations', 'Media Upload' , "Review"];
 
 const AddProducts = () => {
     
@@ -48,7 +48,7 @@ const AddProducts = () => {
 
     const ProductSteps = ()=>{
         if(activeStep == 0) return <Step1 categorys={categorys} setHtmlEditor={setHtmlEditor} setNewProd={setNewPr} setAttributes={setAttributes} handleNext={handleNext} />;
-        else if(activeStep == 1) return <Step2Variantes setAttributes={setAttributes} handleNext={handleNext} handleBack={handleBack}  />;
+        else if(activeStep == 1) return <Step2Variantes setAttributes={setAttributes} handleNext={handleNext} handleBack={handleBack}  newPr={newPr} setNewProd={setNewPr} />;
         else if(activeStep == 2) return <Step2 newPr={newPr} attributes={attributes} handleNext={handleNext} setCombos={setCombos} handleBack={handleBack} />;
         else if(activeStep == 3) return <Step3 handleNext={handleNext} images={images} setImages={setImages} handleBack={handleBack} />;
         else if(activeStep == 4) return <Step4 handleBack={handleBack} onSubmit={onSubmit} />;
@@ -122,7 +122,7 @@ const AddProducts = () => {
                         {steps.map((label, index) => {
                         const stepProps = {};
                         const labelProps = {};
-                        if (index==1) {
+                        if (index==1 || index==2) {
                             labelProps.optional = (
                             <Typography variant="caption">Optional</Typography>
                             );

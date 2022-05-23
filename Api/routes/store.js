@@ -31,7 +31,7 @@ router.post('/confirmAccount/:email', Auth, storeController.ConfirmAccount)
 router.post('/editStore', Auth , SAuth, storeController.NewUpdateStore)
 
 //POST /store/updateOrder/:id
-router.post('/updateOrderState/:id', storeController.NewOrderState)
+router.post('/updateOrderState/:id', Auth , SAuth, storeController.NewOrderState)
 
 
 

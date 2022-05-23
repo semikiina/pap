@@ -271,7 +271,7 @@ exports.StoreOrders = (req, res, next) => {
 
 exports.NewOrderState = (req,res, next) =>{
     console.log('POST order/newState')
-    Order.findById(req.params.id)
+    Store.findById(req.storeId)
         .then(order => {
             order.status = req.body.status
             return order.save()

@@ -79,7 +79,8 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                     <Rating readOnly value={avr}></Rating>
                     <Typography variant="subtitle1"> ({reviewL})</Typography>
                 </Stack>
-                <Typography variant="h5" marginBottom={1}  marginTop={3}>{product.price}€</Typography>
+                <Typography variant="h5"   marginTop={3}>{product.price?.toFixed(2)}€</Typography>
+                <Typography variant="subtitle1"   marginBottom={1}>Shipping : {product.shipping?.toFixed(2)}€</Typography>
 
                 <Stack direction="row" spacing={2} marginY={1}>
                     { 
@@ -100,7 +101,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                     <ButtonGroup  disableElevation >
                         <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>
                         <Button disabled>{prQuantity}</Button>
-                        <Button variant="contained" color="info" onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
+                        <Button variant="contained" color="info" disabled={prQuantity < product.stock ? false : true} onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
                     </ButtonGroup>
                     <Button variant="outlined" color="secondary" fullWidth onClick={()=> {onAddToCart(product._id,prQuantity,selectedSize,selectedColor) ; window.location.href="../cart"}}>Add to cart</Button>
                     {

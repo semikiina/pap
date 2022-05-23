@@ -2,7 +2,7 @@ import { Divider, Grid, Paper, Typography, TextField, InputAdornment, Autocomple
 import React from 'react'
 import { Controller, useFieldArray, useForm} from 'react-hook-form';
 
-const Step2Variantes = ({handleNext, handleBack , setAttributes}) => {
+const Step2Variantes = ({handleNext, handleBack , setAttributes, setNewPr, newPr}) => {
 
     const { register, control, handleSubmit, setValue, watch} = useForm();
     
@@ -13,8 +13,7 @@ const Step2Variantes = ({handleNext, handleBack , setAttributes}) => {
     })
 
     const allPossibleCases = (arr) => {
-        if (arr.length == 0) return ;
-        else if (arr.length == 1) {
+        if (arr.length == 1) {
           return arr[0];
         } 
         else {
@@ -32,19 +31,31 @@ const Step2Variantes = ({handleNext, handleBack , setAttributes}) => {
 
     const onSubmit = (data) =>{
 
-        var attrs= []
+        if(data.variants){
 
-        for (const [attr, values] of Object.entries(data.variants))
-        {
-            attrs.push(values.options?.map(v => (v)));
-            
+            var attrs= []
+
+            for (const [attr, values] of Object.entries(data.variants))
+            {
+                attrs.push(values.options?.map(v => (v)));
+                
+            }
+
+            var newAttrs= allPossibleCases(attrs)
+            setAttributes(newAttrs)
+            setNewPr([...newPr, {
+                sku : data.sku,
+                baseprice : data.price,
+            }])
+            handleNext();
         }
-
-        setAttributes(allPossibleCases(attrs))
-
-        handleNext();
-       
-
+        else{
+            setNewPr([...newPr, {
+                sku : data.sku,
+                baseprice : data.price,
+            }])
+            handleNext();
+        }
     }
 
     return (

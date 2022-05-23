@@ -35,7 +35,6 @@ const ProductReview = ({id,reviews,setDel,del}) => {
             <Divider ></Divider>
                 {
                     reviews.map((rev)=>{
-                        console.log(user)
                         return(
                             <Box padding={2} marginBottom={3} key={rev._id}>
                                 <Stack direction="row" spacing={2} marginBottom={2}>

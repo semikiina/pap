@@ -27,25 +27,25 @@ const NavbarMenu = ({handleCloseUserMenu, anchorElUser}) => {
                 <MenuItem >
                     <Typography textAlign="center" >Welcome, <b>@{user.nickname}</b></Typography>
                 </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem onClick={()=>{window.location.href='../profile'}}>
                     <ListItemIcon>
                         <Person fontSize="small" />
                     </ListItemIcon>
-                    <Typography textAlign="center" onClick={()=>{window.location.href='../profile'}}>Profile</Typography>
+                    <Typography textAlign="center" >Profile</Typography>
                 </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem onClick={()=>{window.location.href='../favorite'}}>
                     <ListItemIcon>
                         <Favorite fontSize="small" />
                     </ListItemIcon>
-                    <Typography textAlign="center" onClick={()=>{window.location.href='../favorite'}}>Favorites</Typography>
+                    <Typography textAlign="center" >Favorites</Typography>
                 </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem onClick={()=>{window.location.href='../orders'}}>
                     <ListItemIcon>
                         <LocalShipping fontSize="small" />
                     </ListItemIcon>
-                    <Typography textAlign="center" onClick={()=>{window.location.href='../orders'}}>Orders</Typography>
+                    <Typography textAlign="center" >Orders</Typography>
                 </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem >
                     <Button color="error" variant="contained" onClick={()=>{localStorage.clear() ;window.location.href='../'}} startIcon={<Logout size="small"/>} fullWidth>Logout</Button>
                 </MenuItem>
             </Menu>

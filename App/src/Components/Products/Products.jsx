@@ -65,16 +65,6 @@ const Products = ({onAddToCart, newFav, fav}) => {
             <Box marginBottom={4}>
                 <NewProductsFeed  products={products} onAddToCart={onAddToCart} newFav={newFav} />
             </Box>
-            {/* <Grid container spacing={2}>
-                {products.map((product)=>{
-                    console.log(product)
-                    return(
-                        <Grid item key={product._id} sm={12} md={3}>
-                            <Product key={product._id} product={product}  onAddToCart={onAddToCart} newFav={newFav}></Product>
-                        </Grid>
-                    )})
-                }
-            </Grid> */}
         </Container>
     )
 }

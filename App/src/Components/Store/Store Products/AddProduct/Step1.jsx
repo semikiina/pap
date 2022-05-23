@@ -1,8 +1,7 @@
-import { Box, Divider, Paper, Typography, TextField, Grid, FormControlLabel, Checkbox, InputAdornment, Autocomplete, Chip, Stack, FormGroup, Button } from '@mui/material'
-import React, {useState} from 'react'
+import { Box, Divider, Paper, Typography, TextField, Grid, Autocomplete, Stack, Button } from '@mui/material'
+import React from 'react'
 import HtmlEditor, { Toolbar, Item } from 'devextreme-react/html-editor';
-import { DropzoneArea } from 'material-ui-dropzone';
-import { Controller, useFieldArray, useForm, useWatch} from 'react-hook-form';
+import { useForm} from 'react-hook-form';
 
 const sizeValues = ['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt'];
 const fontValues = ['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana',];
@@ -10,8 +9,7 @@ const fontValues = ['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console
 
 const Step1 = ({ categorys, setHtmlEditor, setNewProd, setAttributes, handleNext}) => {
 
-
-    const { register, control, handleSubmit, setValue, watch} = useForm();
+    const { register, handleSubmit, setValue} = useForm();
     
     const onSubmit = (data) =>{
 

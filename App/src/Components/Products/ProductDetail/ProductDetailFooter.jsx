@@ -1,39 +1,35 @@
 import React from 'react'
-import {CardMedia, Typography, Card, CardContent, CardActions, Button, CircularProgress } from '@mui/material';
-import {ArrowRightAlt} from '@mui/icons-material';
+import {CardMedia, Typography, Card, CardContent, Box, Button, CircularProgress, Stack, Tooltip, IconButton } from '@mui/material';
+import {ArrowForward} from '@mui/icons-material';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { responsive } from '../../../Services/carouselResponsive';
+import SimilarProduct from './Footer/SimilarProduct';
 
-const ProductDetailFooter = ({storename, product}) => {
-  return (
-    <>
-      <Typography marginTop={10} marginBottom={4} variant="h5">See other products of {storename}</Typography>
-      {
-          product?.length === 0 ?  <CircularProgress/> :  (
-            <Card sx={{ maxWidth: 300 }} >
-            <Button href={'../products/'+ product._id} padding={0} >
-              <CardMedia
-                component="img"
-                height="auto"
-                image={"http://localhost:8090/" + product.images[0]} 
-                alt={product.title} 
-              />
-            </Button>
+const ProductDetailFooter = ({storename, storeid, simProduct}) => {
+
+    if(!simProduct) return <CircularProgress/>
+    return (
+        <>
+            <Stack direction="row" justifyContent={'space-between'}>
+                <Typography marginTop={10} marginBottom={4} variant="h5">See other products of {storename}</Typography>
+                <Tooltip title="Visit the store">
+                    <IconButton disableRipple onClick={()=> window.location.href="../store/"+storeid}><ArrowForward /></IconButton>
+                </Tooltip>
+            </Stack>
             
-            <CardContent>
-              <Typography variant="subtitle2" color="text.secondary">
-              {product.category}
-              </Typography>
-              <Typography gutterBottom component="div" variant="subtitle1">
-               {product.title} 
-              </Typography>
-              <Typography  variant="subtitle1" component="div">
-               {product.price} € 
-              </Typography>
-            </CardContent>
-          </Card>
-          )
-      }
-    </>
-  )
+            <Box marginTop={2}>
+                <Carousel arrows infinite responsive={responsive}>
+                    {
+                        simProduct.map((product)=>{
+                            
+                            return <SimilarProduct key={product._id} product={product} />
+                        })
+                    }
+                </Carousel>
+            </Box>
+        </>
+    )
 }
 
 export default ProductDetailFooter

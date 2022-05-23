@@ -48,6 +48,33 @@ exports.GetTheStore = (req, res, next) => {
         })
 }
 
+exports.SimilarProducts = (req, res, next) => {
+
+    Store.findById( req.params.strid)
+        .populate({
+            path: 'product',
+            match: {
+              active: true,
+              _id: { $ne : req.params.prid }
+            }
+          })
+        .limit(10)
+        .then(similarProducts => {
+            
+            res.status(200).json(similarProducts.product)
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "This store doesn't exist.",
+                    errors: error
+
+                })
+        })
+}
+
 exports.LastWeekStores = (req, res, next) => {
 
     console.log('GET feed/newStores')
