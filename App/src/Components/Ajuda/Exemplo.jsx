@@ -23,7 +23,30 @@ const Exemplo = () => {
         name: 'variants'
     })
     
+    const allPossibleCases = (arr) => {
+        if (arr.length == 1) {
+          return arr[0];
+        } else {
+          var result = [];
+          var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
+          for (var i = 0; i < allCasesOfRest.length; i++) {
+            for (var j = 0; j < arr[0].length; j++) {
+              result.push(arr[0][j] +"?"+ allCasesOfRest[i]);
+            }
+          }
+          return result;
+        }
+      
+      }
 
+
+    const onSubmit2 = (data) =>{
+
+        console.log(data)
+
+       
+
+    }
     const onSubmit = (data) =>{
 
         var attrs= []
@@ -32,13 +55,12 @@ const Exemplo = () => {
 
         for (const [attr, values] of Object.entries(variants))
         {
-            attrs.push(values.options?.map(v => ({[attr]:v})));
+            attrs.push(values.options?.map(v => (v)));
             
         }
+  
+        setAttributes(allPossibleCases(attrs))
 
-        attrs = attrs.reduce((a, b) => a.flatMap(d => b.map(e => ({...d, ...e}))));
-
-        console.log(attrs)
 
        
 
@@ -48,6 +70,7 @@ const Exemplo = () => {
     
 
     return (
+        <>
         <form onSubmit={handleSubmit(onSubmit)}>
            {
                fields.map ( ({id}, index) =>{
@@ -86,6 +109,25 @@ const Exemplo = () => {
             <Button type="button" variant='outlined' onClick={() => append({})}>Add Option</Button>
             <Button type="submit" variant="contained" color="success">Submit form</Button>
         </form>
+        <form onSubmit={handleSubmit(onSubmit2)}>
+            <div>
+                {
+                attributes?.map((attid,index)=>{
+                    return (
+                        
+                        <Stack direction="row" spacing={2} marginBottom={2}>
+                            <input type="hidden" value={attid} {...register(`combs[${index}].name`)}></input>
+                            <Typography>{attid}</Typography>
+                            <TextField  label="price" defaultValue={0} {...register(`combs[${index}].price`)}/>
+                            <TextField  label="stock" defaultValue={1} {...register(`combs[${index}].stock`)}/>
+                        </Stack>
+                    )
+                }) 
+                }
+            </div>
+            <Button type="submit" variant="contained" color="success">Submit form 2</Button>
+        </form>
+        </>
     )
 }
 

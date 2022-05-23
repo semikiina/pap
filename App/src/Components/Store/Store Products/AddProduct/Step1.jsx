@@ -8,7 +8,7 @@ const sizeValues = ['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt'];
 const fontValues = ['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana',];
 
 
-const Step1 = ({ categorys, setHtmlEditor, setNewProd, setPrVariants}) => {
+const Step1 = ({ categorys, setHtmlEditor, setNewProd, setAttributes, handleNext}) => {
 
 
     const { register, control, handleSubmit, setValue, watch} = useForm();
@@ -19,27 +19,44 @@ const Step1 = ({ categorys, setHtmlEditor, setNewProd, setPrVariants}) => {
         name: 'variants'
     })
     
+    const allPossibleCases = (arr) => {
+        if (arr.length == 0) return ;
+        else if (arr.length == 1) {
+          return arr[0];
+        } 
+        else {
+            var result = [];
+            var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
+            for (var i = 0; i < allCasesOfRest.length; i++) {
+                for (var j = 0; j < arr[0].length; j++) {
+                result.push(arr[0][j] +"?"+ allCasesOfRest[i]);
+                }
+            }
+            return result;
+        }
+      
+      }
+
 
     const onSubmit = (data) =>{
 
-        var attrs= []
-
         setNewProd(data)
 
-        console.log(data)
+        var attrs= []
 
         for (const [attr, values] of Object.entries(data.variants))
         {
-            attrs.push(values.options?.map(v => ({[attr]:v})));
+            attrs.push(values.options?.map(v => (v)));
             
         }
-        
+  
+        const newC = allPossibleCases(attrs);
 
-        attrs = attrs.reduce((a, b) => a.flatMap(d => b.map(e => ({...d, ...e}))));
+        console.log(newC)
 
-        setPrVariants(attrs)
-        console.log(attrs)
+        if(newC) setAttributes(newC)
 
+        handleNext();
        
 
     }
@@ -51,7 +68,7 @@ const Step1 = ({ categorys, setHtmlEditor, setNewProd, setPrVariants}) => {
     return (
         <Paper>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Box><Typography variant="subtitle1" padding={2}>Details</Typography></Box>
+                <Box><Typography variant="subtitle1" padding={2}>Basic Informations</Typography></Box>
                 <Divider></Divider>
                 <Grid padding={2} container spacing={2} >
                     <Grid item xs={12} md={10} marginBottom={2}>
@@ -157,7 +174,10 @@ const Step1 = ({ categorys, setHtmlEditor, setNewProd, setPrVariants}) => {
                         }
                     </Grid>
                 </Grid>
-                <Box padding={2}><Button type="submit" variant="contained">Verify</Button></Box>
+                <Box padding={2}>
+                    <Stack direction="row" justifyContent={'flex-end'} ><Button type="submit" >Next</Button></Stack>
+                </Box>
+                
                 
             </form>
            

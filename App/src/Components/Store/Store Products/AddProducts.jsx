@@ -1,70 +1,39 @@
 import { Container, Grid, Box, Paper, Button, FormControlLabel, Switch, Stepper, Typography, Step, StepLabel } from '@mui/material'
 import api from '../../../Services/api';
 import React, { useEffect, useState } from 'react'
-import ColAddProduct from './AddProduct/ColAddProduct';
-import { useForm } from "react-hook-form";
 import Step1 from './AddProduct/Step1';
+import Step2 from './AddProduct/Step2';
+import Step3 from './AddProduct/Step3';
+import Step4 from './AddProduct/Step4';
 
 const steps = ['Basic Informations', 'Details', 'Media Upload' , "Review"];
 
 const AddProducts = () => {
     
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
-
-    const isStepOptional = (step) => {
-        return step === 1;
-    };
-
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
-    };
-
+    const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-        newSkipped = new Set(newSkipped.values());
-        newSkipped.delete(activeStep);
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
-    };
-
+        if(activeStep==0 && attributes) setActiveStep(2);
+        else setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
     const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-        const newSkipped = new Set(prevSkipped.values());
-        newSkipped.add(activeStep);
-        return newSkipped;
-        });
-    };
+        if(activeStep==2 && attributes.length == 0) setActiveStep(0);
+        else setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    }
 
 
-    // const {  handleSubmit, register } = useForm();
-    
-    // const [images, setImages] = useState([]);
-    
-    // const [isDisabledShipping, setIsDisabledShipping] = useState(false);
+    const [isDisabledShipping, setIsDisabledShipping] = useState(false);
    
-    // const [colorValue, setColorValue] = useState([]);
-    // const [sizeValue, setSizeValue] = useState([]);
+    const Shipping = (e)=>{
+        if(!e.target.checked) setIsDisabledShipping(true)
+        else setIsDisabledShipping(false)
+    }
 
-
-    // const Shipping = (e)=>{
-    //     if(!e.target.checked) setIsDisabledShipping(true)
-    //     else setIsDisabledShipping(false)
-    // }
-
+    const [images, setImages] = useState([]);
     const [htmlEditor, setHtmlEditor] = useState();
+
+    const [newPr , setNewPr] = useState({});
+    const [attributes, setAttributes] = useState([]);
+    const [combos, setCombos] = useState([]);
 
     const [categorys, setCategorys] = useState([])
 
@@ -77,6 +46,13 @@ const AddProducts = () => {
             console.log(err)
         })
     },[])
+
+    const ProductSteps = ()=>{
+        if(activeStep == 0) return <Step1 categorys={categorys} setHtmlEditor={setHtmlEditor} setNewProd={setNewPr} setAttributes={setAttributes} handleNext={handleNext} />;
+        else if(activeStep == 1) return <Step2 newPr={newPr} attributes={attributes} handleNext={handleNext} setCombos={setCombos} handleBack={handleBack} />;
+        else if(activeStep == 2) return <Step3 handleNext={handleNext} images={images} setImages={setImages} handleBack={handleBack} />;
+        else if(activeStep == 3) return <Step4 handleBack={handleBack} />;
+    }
 
     const onSubmit = data => {
 
@@ -131,13 +107,6 @@ const AddProducts = () => {
     };
 
 
-    const[newProd, setNewProd] = useState();
-    const [prVariants, setPrVariants] = useState();
-    
-
-    const ProductSteps = ()=>{
-        if(activeStep == 0) return <Step1 categorys={categorys} setHtmlEditor={setHtmlEditor} setNewProd={setNewProd} setPrVariants={setPrVariants} />;
-    }
    
     return (
         <>
@@ -147,13 +116,10 @@ const AddProducts = () => {
                         {steps.map((label, index) => {
                         const stepProps = {};
                         const labelProps = {};
-                        if (isStepOptional(index)) {
+                        if (index==1) {
                             labelProps.optional = (
                             <Typography variant="caption">Optional</Typography>
                             );
-                        }
-                        if (isStepSkipped(index)) {
-                            stepProps.completed = false;
                         }
                         return (
                             <Step key={label} {...stepProps}>
@@ -166,62 +132,8 @@ const AddProducts = () => {
                         <Box marginTop={4}>
                             <ProductSteps />
                         </Box>
-
-
-
-
-                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                            <Button
-                                color="inherit"
-                                disabled={activeStep === 0}
-                                onClick={handleBack}
-                                sx={{ mr: 1 }}
-                            >
-                                Back
-                            </Button>
-                            <Box sx={{ flex: '1 1 auto' }} />
-                            {
-                                isStepOptional(activeStep) && (<Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}> Skip</Button>)
-                            }
-
-                            {activeStep === steps.length - 1 
-                                ?   <Button>Save Changes</Button> 
-                                :   <Button onClick={handleNext}>Next</Button>
-                            }
-                            
-                        </Box>
                     </React.Fragment>
                 </Box>
-                {/* <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={8} >
-                            <ColAddProduct 
-                            register={register} 
-                            setImages={setImages} 
-                            setHtmlEditor={setHtmlEditor} 
-                            isDisabledShipping={isDisabledShipping} 
-                            Shipping={Shipping} 
-                            categorys={categorys}
-                            setColorValue={setColorValue}
-                            colorValue={colorValue}
-                            setSizeValue={setSizeValue}
-                            sizeValue={sizeValue}
-                            ></ColAddProduct>
-                        </Grid>
-                        <Grid item xs={12} md={4} >
-                            <Box marginBottom={4}>
-                                <Paper >
-                                    <Box padding={2}>
-                                        <Button padding={2} variant="contained" fullWidth type="submit">Save Changes</Button>
-                                    </Box>
-                                    <Box padding={2}>
-                                        <FormControlLabel control={<Switch defaultChecked {...register('active')}/>} label="Active Product" />
-                                    </Box>
-                                </Paper>
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </form> */}
             </Container>
         </>
     )
