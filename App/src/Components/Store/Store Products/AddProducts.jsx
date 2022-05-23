@@ -5,19 +5,18 @@ import Step1 from './AddProduct/Step1';
 import Step2 from './AddProduct/Step2';
 import Step3 from './AddProduct/Step3';
 import Step4 from './AddProduct/Step4';
+import Step2Variantes from './AddProduct/Step2Variantes';
 
-const steps = ['Basic Informations', 'Details', 'Media Upload' , "Review"];
+const steps = ['Basic Informations', 'Price and Variants','Details', 'Media Upload' , "Review"];
 
 const AddProducts = () => {
     
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
-        if(activeStep==0 && attributes) setActiveStep(2);
-        else setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
     const handleBack = () => {
-        if(activeStep==2 && attributes.length == 0) setActiveStep(0);
-        else setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }
 
 
@@ -49,14 +48,21 @@ const AddProducts = () => {
 
     const ProductSteps = ()=>{
         if(activeStep == 0) return <Step1 categorys={categorys} setHtmlEditor={setHtmlEditor} setNewProd={setNewPr} setAttributes={setAttributes} handleNext={handleNext} />;
-        else if(activeStep == 1) return <Step2 newPr={newPr} attributes={attributes} handleNext={handleNext} setCombos={setCombos} handleBack={handleBack} />;
-        else if(activeStep == 2) return <Step3 handleNext={handleNext} images={images} setImages={setImages} handleBack={handleBack} />;
-        else if(activeStep == 3) return <Step4 handleBack={handleBack} />;
+        else if(activeStep == 1) return <Step2Variantes setAttributes={setAttributes} handleNext={handleNext} handleBack={handleBack}  />;
+        else if(activeStep == 2) return <Step2 newPr={newPr} attributes={attributes} handleNext={handleNext} setCombos={setCombos} handleBack={handleBack} />;
+        else if(activeStep == 3) return <Step3 handleNext={handleNext} images={images} setImages={setImages} handleBack={handleBack} />;
+        else if(activeStep == 4) return <Step4 handleBack={handleBack} onSubmit={onSubmit} />;
     }
 
     const onSubmit = data => {
 
-        console.log(data)
+        console.log(newPr);
+        console.log("--------");
+        console.log(attributes);
+        console.log("--------");
+        console.log(combos);
+        console.log("--------");
+        console.log(images)
         
         // var shippingData;
 

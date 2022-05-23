@@ -13,52 +13,10 @@ const Step1 = ({ categorys, setHtmlEditor, setNewProd, setAttributes, handleNext
 
     const { register, control, handleSubmit, setValue, watch} = useForm();
     
-
-    const { fields, append, remove} = useFieldArray({
-        control,
-        name: 'variants'
-    })
-    
-    const allPossibleCases = (arr) => {
-        if (arr.length == 0) return ;
-        else if (arr.length == 1) {
-          return arr[0];
-        } 
-        else {
-            var result = [];
-            var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
-            for (var i = 0; i < allCasesOfRest.length; i++) {
-                for (var j = 0; j < arr[0].length; j++) {
-                result.push(arr[0][j] +"?"+ allCasesOfRest[i]);
-                }
-            }
-            return result;
-        }
-      
-      }
-
-
     const onSubmit = (data) =>{
 
         setNewProd(data)
-
-        var attrs= []
-
-        for (const [attr, values] of Object.entries(data.variants))
-        {
-            attrs.push(values.options?.map(v => (v)));
-            
-        }
-  
-        const newC = allPossibleCases(attrs);
-
-        console.log(newC)
-
-        if(newC) setAttributes(newC)
-
-        handleNext();
-       
-
+        handleNext()
     }
 
     const valueChanged= (e)=>{
@@ -85,25 +43,6 @@ const Step1 = ({ categorys, setHtmlEditor, setNewProd, setAttributes, handleNext
                                 {...register('category')}
                                 renderInput={(params) => <TextField required {...params}   helperText="Search for an existing category or add your own" placeholder='Start Searching here...'  label="Category"/>}
                             />
-                    </Grid>
-                    <Grid item xs={6}  marginBottom={2}>
-                            <TextField required  {...register('sku')} label="SKU"   fullWidth />
-                    </Grid>
-                    <Grid item xs={6}  marginBottom={2}>
-                        <TextField 
-                            fullWidth 
-                            required
-                            {...register("price")} 
-                            defaultValue={0.00}
-                            label="Price" 
-                            type="number"
-                            step="0.01"
-                            //onChange={(e) => setBasePrice(parseFloat(e.target.value).toFixed(2))}
-                            InputProps={{
-                                endAdornment: <InputAdornment position="end">€</InputAdornment>,
-                                step: "0.01"
-                            }}
-                        />
                     </Grid>
                     <Grid item xs={12} marginBottom={2}>
                         <Typography variant="subtitle1">Description</Typography>
@@ -133,45 +72,6 @@ const Step1 = ({ categorys, setHtmlEditor, setNewProd, setAttributes, handleNext
                                 <Item name="background" />
                             </Toolbar>
                         </HtmlEditor>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Box  marginBottom={3}>
-                            <Button type="button" variant='outlined' onClick={() => append({})}>Add option</Button>
-                        </Box>
-                        
-                        {
-                            fields.map ( ({id}, index) =>{
-                                return (
-                                    <Stack key={id} direction={"row"} spacing={2} marginBottom={3}>
-                                        <TextField label="option name" {...register(`variants[${index}].name`)} />
-                                        <Controller
-                                            name={`variants[${index}].options`}
-                                            control={control}
-                                            render={() => (
-                                                <Autocomplete
-                                                    multiple 
-                                                    freeSolo
-                                                    fullWidth
-                                                    options={[]}
-                                                    name="options"
-                                                    onChange={(e, values) => {setValue(`variants[${index}].options`, values);  }}
-                                                    renderInput={(params) =>(
-                                                        <TextField
-                                                            {...params}
-                                                            
-                                                            label="Values"
-                                                            placeholder="You can add your personalized values"
-                                                                />
-                                                            )}
-                                                        />
-                                            )}
-                                        />
-                                        
-                                        <Button type="button" variant='outlined' onClick={() => remove(index)}>Remove</Button>
-                                    </Stack>
-                                )
-                            })
-                        }
                     </Grid>
                 </Grid>
                 <Box padding={2}>

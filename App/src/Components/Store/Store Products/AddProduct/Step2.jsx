@@ -9,7 +9,7 @@ const Step2 = ({attributes, newPr, setCombos, handleNext, handleBack}) => {
     const onSubmit2 = (data) =>{
 
         setCombos(data.combos)
-        console.log(data.combos)
+        console.log(data)
         handleNext();
     }
 
