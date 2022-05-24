@@ -56,10 +56,11 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
                   }}
             >
                 <List>
-                {cart.items && cart.items.map((item) => (
-                    <ListItem key={item.product_id._id} divider >
+                {cart.items && cart.items.map((item,index) => {
+                    return(
+                    <ListItem key={item.product_id._id+index} divider >
                         <ListItemButton >
-                            <ListItemIcon><Delete edge="start" color="error" onClick={()=>onRemoveFromCart(item.product_id._id)}/></ListItemIcon>
+                            <ListItemIcon><Delete edge="start" color="error" onClick={()=>onRemoveFromCart(item.product_id._id, item.skuid)}/></ListItemIcon>
                             <ListItemAvatar>
                                 <Avatar src={'http://localhost:8090/'+item.product_id.images[0]} sx={{width:50, height:50, objectFit: 'cover'}} variant="square" />
                             </ListItemAvatar>
@@ -70,23 +71,23 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
                                         {item.product_id.category}
                                         <br/>
                                             Qtt. {item.quantity}
-                                        {item.variants && <Typography variant="caption">{item.variants?.color + ", "+ item.variants?.size}</Typography>}
+                                            <Typography variant="caption">{item.skuid?.replaceAll("?", ", ")}</Typography>
                                     </Stack>
                                 }
                             />
                             <Box marginLeft={2} edge="end">
-                                <Typography>{item.product_id.price+" €"}</Typography>
+                                <Typography>{item.price+" €"}</Typography>
                             </Box>
                         </ListItemButton>
                     </ListItem>
-                ))}
+                )})}
                 </List>
                 <Box padding={2}>
                     <Typography >Shipping : {cart.shipping}€</Typography>
                     <Typography >Subtotal : {cart.subtotal}€</Typography>
                 </Box>
                 <MenuItem onClick={handleCloseCartMenu}>
-                    <Button fullWidth variant="contained" color="secondary" onClick={()=> window.location.href="./cart"}>Go to Cart</Button>   
+                    <Button fullWidth variant="contained" color="secondary" onClick={()=> window.location.href="../cart"}>Go to Cart</Button>   
                 </MenuItem>
             </Menu>
         </>

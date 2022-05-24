@@ -31,10 +31,7 @@ const userSchema = new Schema({
                     type:Schema.Types.ObjectId,
                     ref:'Product'
                 },
-                variants:{
-                    color: String,
-                    size: String,
-                },
+                skuid: String,
                 quantity: Number,
                 price : Number,
                 shipping: Number,
@@ -58,17 +55,34 @@ const userSchema = new Schema({
     }]
 });
 
-userSchema.methods.AddToCart = function(product,quantity,variants){
+userSchema.methods.AddToCart = function(product,quantity,skuid){
 
+    //return the index of the cart
     const CartItemIndex = this.cart.items.findIndex( item =>{
         return item.product_id.toString() == product._id.toString()
     })
+
+    //return the product of the cart
+    const CartItem = this.cart.items.filter( item =>{
+        return item.product_id.toString() == product._id.toString()
+    })
+
+    //return combination infos
+    const Vprices = product.variants.prices.filter( item =>{
+        return item.skuid == skuid
+    })
+
 
     let newQuantity = quantity || 1;
     
     const updatedCart =[...this.cart.items];
 
-    if(CartItemIndex >=0){
+    console.log(CartItem[0])
+    console.log("-----------")
+    console.log(skuid)
+
+    if(CartItemIndex >=0 && CartItem[0].skuid == skuid ){
+        console.log('hey')
         newQuantity= this.cart.items[CartItemIndex].quantity +1;
         updatedCart[CartItemIndex].quantity = newQuantity;
     }
@@ -77,9 +91,9 @@ userSchema.methods.AddToCart = function(product,quantity,variants){
         updatedCart.push({
             product_id : product._id,
             quantity: newQuantity,
-            price : product.price,
+            price : Vprices[0].originalPrice,
             shipping: product.shipping,
-            variants: variants
+            skuid: skuid
         });
     }
 
@@ -102,10 +116,11 @@ userSchema.methods.AddToCart = function(product,quantity,variants){
     return this.save();
 }
 
-userSchema.methods.RemoveFromCart = function(product){
+userSchema.methods.RemoveFromCart = function(product, skuid){
 
     const updatedCartItems = this.cart.items.filter( item =>{
-        return item.product_id.toString() !== product._id.toString()
+        console.log(skuid)
+        return (item.product_id.toString() !== product._id.toString()) && (item.skuid !== skuid)
     })
 
     let subtotal = 0;

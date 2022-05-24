@@ -32,15 +32,23 @@ exports.NewProduct = (req, res, next) => {
     var voptions = []
 
     productReq.vprices.forEach((prc)=>{
-        vprices.push(JSON.parse(prc))
+        try{
+            vprices.push(JSON.parse(prc))
+        }
+        catch(err){
+            
+        }
     })
 
     productReq.voptions.forEach((opt)=>{
-        voptions.push(JSON.parse(opt))
+        try{
+            voptions.push(JSON.parse(opt))
+        }
+        catch(err){
+
+        }
     })
 
-    console.log( vprices)
-    console.log( voptions)
     var images =[];
 
     req.files.forEach(element => {

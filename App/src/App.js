@@ -53,14 +53,11 @@ const App = () => {
 		setOpenDrawer(false);
 	};
 
-    const AddToCart = (productId, quantity,size,color)=>{
+    const AddToCart = (productId, quantity, skuid)=>{
         api.post('user/cart',{
             product_id:productId,
             quantity: quantity,
-			variants:{
-				size:size,
-				color:color,
-			}
+			skuid : skuid
         })
         .then( res=>{
 			setFav(fav+1)
@@ -69,8 +66,8 @@ const App = () => {
             console.log(err)
         })
     }
-    const RemoveFromCart = (productId)=>{
-        api.delete('user/cart/'+productId)
+    const RemoveFromCart = (productId, skuid)=>{
+        api.delete('user/cart/'+productId + "/"+ skuid)
         .then( res=>{
 			setFav(fav+1)
         })
@@ -79,8 +76,8 @@ const App = () => {
         })
     }
 
-    const RemoveQuantity = (productId)=>{
-        api.post('user/removeq/'+productId)
+    const RemoveQuantity = (productId, skuid)=>{
+        api.post('user/removeq/'+productId + "/"+ skuid)
         .then( res=>{
 			setFav(fav+1)
         })

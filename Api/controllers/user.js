@@ -289,10 +289,11 @@ exports.Favorite = (req, res, next) => {
 exports.Cart = async (req, res, next) => {
 
     const cartReq = { ...req.body };
+
     const product = await Product.findById(cartReq.product_id)
     User.findById(req.userId)
     .then(user => {
-        return user.AddToCart(product,cartReq.quantity,cartReq.variants)
+        return user.AddToCart(product,cartReq.quantity,cartReq.skuid)
     })
     .then(user => {
         res.status(201).json( {cart : user.cart})
@@ -315,7 +316,7 @@ exports.RemoveProductQuantity = async (req, res, next) => {
     .then(user => {
 
         const CartItemIndex = user.cart.items.findIndex( item =>{
-            return item.product_id.toString() == product._id.toString()
+            return item.product_id.toString() == product._id.toString() && item.skuid == req.params.skuid
         })
 
         let newQuantity = 1;
@@ -364,7 +365,7 @@ exports.DeleteCart = async (req, res, next) => {
     const product = await Product.findById(req.params.productId)
     User.findById(req.userId)
     .then(user => {
-        return user.RemoveFromCart(product)
+        return user.RemoveFromCart(product, req.params.skuid)
     })
     .then(user => {
         res.status(201).json( {cart : user.cart})

@@ -25,7 +25,7 @@ const Step2 = ({attributes, newPr, setCombos, handleNext, handleBack}) => {
                         <Grid  container spacing={3} marginTop={1} padding={2} key={index}>
                             <input type="hidden" value={attid} {...register(`combs[${index}].skuid`)}></input>
                             <Grid item sm={12} md={2} alignContent={'center'}><Typography textAlign={'end'}>{attid.replace( '?', ' / ') +" :" }</Typography></Grid>
-                            <Grid item sm={12} md={5}><TextField size="small" fullWidth label="Price" defaultValue={newPr?.price} {...register(`combs[${index}].originalPrice`)} InputProps={{ endAdornment: <InputAdornment position="end">€</InputAdornment>, step:' 0.01'}} /></Grid>
+                            <Grid item sm={12} md={5}><TextField size="small" fullWidth label="Price" defaultValue={newPr?.basePrice} {...register(`combs[${index}].originalPrice`)} InputProps={{ endAdornment: <InputAdornment position="end">€</InputAdornment>, step:' 0.01'}} /></Grid>
                             <Grid item sm={12} md={5}><TextField size="small" fullWidth label="Stock" defaultValue={1} {...register(`combs[${index}].availableQuantity`)}/></Grid>
                         </Grid>
                     )

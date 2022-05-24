@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {CardMedia, Button, Typography, Grid, ButtonGroup,Stack, Box, Divider, Avatar, CircularProgress, Rating, Chip} from '@mui/material';
+import {CardMedia, Button, Typography, Grid, ButtonGroup,Stack, Box, Divider, Avatar, CircularProgress, Rating, Chip, FormControlLabel, Checkbox} from '@mui/material';
 import {Favorite,FavoriteBorder, BookmarkBorder, StarBorder} from '@mui/icons-material';
 import useAuth from '../../Contexts/useAuth';
 
@@ -11,11 +11,12 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
     const[prQuantity, setPrQuantity] = useState(1);
 
-    const[skuCombination, setSkuCombination] =useState('');
-
-    const[selectedSize, setSelectedSize] = useState(0);
-
     const [currentComb, setCurrentComb] = useState([]);
+
+    const [skuid, setSkuid] = useState("");
+
+
+    const [currentProductPrice, setCurrentProductPrice] = useState(1);
 
     let i=0;
     
@@ -25,10 +26,16 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
     const GetCombination = (val,index)=>{
 
+        console.log(val +" " + index)
         let newArr = [...currentComb]; 
         newArr[index] = val; 
 
         setCurrentComb(newArr);
+
+    }
+
+
+    useEffect(()=>{
 
         var newComb = "";
 
@@ -38,24 +45,36 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
             else newComb += comb
         })
 
-        var result = product.variants.prices.filter(obj => {
-            return obj.name === newComb
-          })
+        setSkuid(newComb)
 
-    }
+        var result = product.variants?.prices?.filter(obj => {
+            return obj.skuid === newComb
+          })
+        
+        if(result) {
+
+            setCurrentProductPrice(result[0])
+        }
+        
+    },[currentComb])
 
 
     useEffect(()=>{
 
         if(product){
-            console.log(product.variants)
+            
             if(product.images)  setCurrentPhoto(product.images[0]);
 
             if(product.variants){
 
+                var getVal = [];
                 product.variants.options.forEach((opt, index)=>{
-                    setCurrentComb(oldArray => [...oldArray, opt.values[0]])
+                    
+                    getVal.push(opt.values[0])
                 })
+
+                setCurrentComb(getVal)
+
             }
         }
     },[product])
@@ -114,7 +133,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                     <Rating readOnly value={avr}></Rating>
                     <Typography variant="subtitle1"> ({reviewL})</Typography>
                 </Stack>
-                <Typography variant="h5"   marginTop={3}>{product.basePrice?.toFixed(2)}€</Typography>
+                <Typography variant="h5"   marginTop={3}>{currentProductPrice?.originalPrice || product.basePrice?.toFixed(2)}€</Typography>
                 <Typography variant="subtitle1"   marginBottom={1}>Shipping : {product.shipping?.toFixed(2)}€</Typography>
 
                 <Box marginBottom={2}>
@@ -126,7 +145,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                                     {
                                         item.values.map((val,ii) =>{
                                             
-                                            return <Chip label={val} key={ii} variant="outlined" onChange={() => GetCombination(val, index)} />
+                                            return <Chip color="primary" label={val} key={ii} variant={ currentComb[index] == val ? "contained" : "outlined"} onClick={() => GetCombination(val, index)} />
                                         })
                                     }
                                 </div>
@@ -136,16 +155,31 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                 </Box>
 
                 <Stack direction="row" spacing={2}  alignItems={'center'} marginBottom={3}>
-                    <ButtonGroup  disableElevation >
-                        <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>
-                        <Button disabled>{prQuantity}</Button>
-                        <Button variant="contained" color="info" disabled={prQuantity < product.stock ? false : true} onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
-                    </ButtonGroup>
-                    <Button variant="outlined" color="secondary" fullWidth onClick={()=> {onAddToCart(product._id,prQuantity) ; window.location.href="../cart"}}>Add to cart</Button>
-                    {
-                            product.favorite?.includes(user._id)
-                            ? <Favorite onClick={()=>{newFav(product._id)}} ></Favorite>
-                            : <FavoriteBorder onClick={()=>{newFav(product._id)}} ></FavoriteBorder>
+                   { 
+                    currentProductPrice.availableQuantity > 0 
+                    ?    <>
+                        <ButtonGroup  disableElevation >
+                            <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>
+                            <Button disabled>{prQuantity}</Button>
+                            <Button variant="contained" color="info" disabled={prQuantity < currentProductPrice.availableQuantity ? false : true} onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
+                        </ButtonGroup>
+                        <Button variant="outlined" color="secondary" fullWidth onClick={()=> {onAddToCart(product._id,prQuantity, skuid) }}>Add to cart</Button>
+                        </>
+                    : <Button disabled variant="contained" color="secondary" fullWidth>This product is sould out.</Button>
+                    }
+                    {product.favorite &&
+                          <FormControlLabel 
+                            control={
+                                <Checkbox 
+                                    icon={<FavoriteBorder />} 
+                                    checkedIcon={<Favorite sx={{ color : 'black'}}/>} 
+                                    checked={product.favorite?.includes(user._id)} 
+                                    onChange={()=>{newFav(product._id)}}
+                                    
+                                />}
+                            labelPlacement="start"
+                            label={product.favorite?.length}
+                        />
                     }
                     
                 </Stack>
