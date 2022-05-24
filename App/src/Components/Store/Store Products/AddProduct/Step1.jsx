@@ -1,5 +1,5 @@
 import { Box, Divider, Paper, Typography, TextField, Grid, Autocomplete, Stack, Button } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import HtmlEditor, { Toolbar, Item } from 'devextreme-react/html-editor';
 import { useForm} from 'react-hook-form';
 
@@ -10,15 +10,16 @@ const fontValues = ['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console
 const Step1 = ({ categorys, setHtmlEditor, setNewProd, setAttributes, handleNext}) => {
 
     const { register, handleSubmit, setValue} = useForm();
+    const [newHtml , setNewHtml] = useState();
     
     const onSubmit = (data) =>{
-
+        setHtmlEditor(setNewHtml)
         setNewProd(data)
         handleNext()
     }
 
     const valueChanged= (e)=>{
-        setHtmlEditor(e.value)
+        setNewHtml(e.value)
     }
 
     return (

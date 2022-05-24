@@ -13,6 +13,7 @@ const Step2Variantes = ({handleNext, handleBack , setAttributes, setNewPr, newPr
     })
 
     const allPossibleCases = (arr) => {
+        console.log(arr)
         if (arr.length == 1) {
           return arr[0];
         } 
@@ -37,23 +38,26 @@ const Step2Variantes = ({handleNext, handleBack , setAttributes, setNewPr, newPr
 
             for (const [attr, values] of Object.entries(data.variants))
             {
-                attrs.push(values.options?.map(v => (v)));
+                console.log(values)
+                attrs.push(values.values?.map(v => (v)));
                 
             }
 
             var newAttrs= allPossibleCases(attrs)
             setAttributes(newAttrs)
-            setNewPr([...newPr, {
+            setNewPr({...newPr, 
                 sku : data.sku,
-                baseprice : data.price,
-            }])
+                basePrice : data.price,
+                variants: data.variants
+            })
             handleNext();
         }
         else{
-            setNewPr([...newPr, {
+
+            setNewPr({...newPr, 
                 sku : data.sku,
                 baseprice : data.price,
-            }])
+            })
             handleNext();
         }
     }
@@ -101,7 +105,7 @@ const Step2Variantes = ({handleNext, handleBack , setAttributes, setNewPr, newPr
                                     <Stack key={id} direction={"row"} spacing={2} marginBottom={3}>
                                         <TextField label="option name" {...register(`variants[${index}].name`)} />
                                         <Controller
-                                            name={`variants[${index}].options`}
+                                            name={`variants[${index}].values`}
                                             control={control}
                                             render={() => (
                                                 <Autocomplete
@@ -109,8 +113,8 @@ const Step2Variantes = ({handleNext, handleBack , setAttributes, setNewPr, newPr
                                                     freeSolo
                                                     fullWidth
                                                     options={[]}
-                                                    name="options"
-                                                    onChange={(e, values) => {setValue(`variants[${index}].options`, values);  }}
+                                                    name="values"
+                                                    onChange={(e, values) => {setValue(`variants[${index}].values`, values);  }}
                                                     renderInput={(params) =>(
                                                         <TextField
                                                             {...params}

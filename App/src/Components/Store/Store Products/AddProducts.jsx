@@ -48,68 +48,59 @@ const AddProducts = () => {
 
     const ProductSteps = ()=>{
         if(activeStep == 0) return <Step1 categorys={categorys} setHtmlEditor={setHtmlEditor} setNewProd={setNewPr} setAttributes={setAttributes} handleNext={handleNext} />;
-        else if(activeStep == 1) return <Step2Variantes setAttributes={setAttributes} handleNext={handleNext} handleBack={handleBack}  newPr={newPr} setNewProd={setNewPr} />;
+        else if(activeStep == 1) return <Step2Variantes setAttributes={setAttributes} handleNext={handleNext} handleBack={handleBack}  newPr={newPr} setNewPr={setNewPr} />;
         else if(activeStep == 2) return <Step2 newPr={newPr} attributes={attributes} handleNext={handleNext} setCombos={setCombos} handleBack={handleBack} />;
         else if(activeStep == 3) return <Step3 handleNext={handleNext} images={images} setImages={setImages} handleBack={handleBack} />;
         else if(activeStep == 4) return <Step4 handleBack={handleBack} onSubmit={onSubmit} />;
     }
 
     const onSubmit = data => {
-
-        console.log(newPr);
-        console.log("--------");
-        console.log(attributes);
-        console.log("--------");
-        console.log(combos);
-        console.log("--------");
-        console.log(images)
         
-        // var shippingData;
+        var shippingData;
 
-        // if(isDisabledShipping) shippingData = data.shipping
+        if(isDisabledShipping) shippingData = data.shipping
 
-        // else shippingData = 0;
+        else shippingData = 0;
 
-        // var formData = new FormData();
+        var formData = new FormData();
 
-        // var ins = images.length;
+        var ins = images.length;
 
-        // for (var x = 0; x < ins; x++) {
+        for (var x = 0; x < ins; x++) {
+            console.log(images[x])
+            formData.append("image", images[x]);
+        }
+        for (var x = 0; x < ins; x++) {
+            console.log(images[x])
+            formData.append("voptions", JSON.stringify(newPr.variants[x]));
+        }
 
-        //     formData.append("image", images[x]);
-        // }
+        for (var x = 0; x < combos.length; x++) {
 
-
-        // for (var x = 0; x < colorValue.length; x++) {
-
-        //     formData.append("color", colorValue[x])
-        // }
-
-        // for (var x = 0; x < sizeValue.length; x++) {
-
-        //     formData.append("size", sizeValue[x])
-        // }
+            formData.append("vprices[]", JSON.stringify(combos[x]));
+        }
         
-        // formData.append("title", data.title)
-        // formData.append("stock", data.stock)
-        // formData.append("active", data.active)
-        // formData.append("price", data.price)
-        // formData.append("category", data.category)
-        // formData.append("description", htmlEditor)
-        // formData.append("shipping", shippingData)
+        formData.append("title", newPr.title)
+        formData.append("stock", newPr.stock)
+        formData.append("active", "true")
+        formData.append("basePrice", newPr.basePrice)
+        formData.append("category", newPr.category)
+        formData.append("description", htmlEditor)
+        formData.append("shipping", shippingData)
        
 
-        // api.post('product',formData,{
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     }
-        // })
-        // .then(data=>{
-        //     window.location.href="./storeProducts"
-        // })
-        // .catch(err=>{
-        //     console.log(err) 
-        // })
+        api.post('product',formData,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(data=>{
+            console.log(data)
+            //window.location.href="./storeProducts"
+        })
+        .catch(err=>{
+            console.log(err) 
+        })
     };
 
 

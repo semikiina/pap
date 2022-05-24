@@ -11,9 +11,11 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
     const[prQuantity, setPrQuantity] = useState(1);
 
-    const[selectedColor, setSelectedColor] = useState(0);
+    const[skuCombination, setSkuCombination] =useState('');
 
     const[selectedSize, setSelectedSize] = useState(0);
+
+    const [currentComb, setCurrentComb] = useState([]);
 
     let i=0;
     
@@ -21,8 +23,41 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
         setCurrentPhoto(photo)
     }
 
+    const GetCombination = (val,index)=>{
+
+        let newArr = [...currentComb]; 
+        newArr[index] = val; 
+
+        setCurrentComb(newArr);
+
+        var newComb = "";
+
+        currentComb.forEach((comb, x)=>{
+            if(x < currentComb.length - 1)
+            newComb += comb+"?";
+            else newComb += comb
+        })
+
+        var result = product.variants.prices.filter(obj => {
+            return obj.name === newComb
+          })
+
+    }
+
+
     useEffect(()=>{
-        if(product.images)  setCurrentPhoto(product.images[0]);
+
+        if(product){
+            console.log(product.variants)
+            if(product.images)  setCurrentPhoto(product.images[0]);
+
+            if(product.variants){
+
+                product.variants.options.forEach((opt, index)=>{
+                    setCurrentComb(oldArray => [...oldArray, opt.values[0]])
+                })
+            }
+        }
     },[product])
 
     if (!product) return <CircularProgress/>;
@@ -65,7 +100,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                     { product.store_id && <Avatar alt="Remy Sharp" src={"http://localhost:8090/"+product.store_id.store_image} sx={{ width: 56, height: 56 }} variant="square"/>}
                     <Box>
                         <Typography variant="subtitle1" onClick={()=>{ window.location.href="../store/"+product.store_id._id}} >{product.store_id && product.store_id.store_name}</Typography>
-                        <Typography variant="subtitle2" color="secondary" >Created by <b>@{product.store_id && product.store_id.creator_id.first_name + " " + product.store_id.creator_id.last_name}</b></Typography>
+                        <Typography variant="subtitle2" color="secondary" >Created by <b>{product.store_id && product.store_id.creator_id.first_name + " " + product.store_id.creator_id.last_name}</b></Typography>
                     </Box>
                 </Stack>
                 <Divider></Divider>
@@ -79,23 +114,26 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                     <Rating readOnly value={avr}></Rating>
                     <Typography variant="subtitle1"> ({reviewL})</Typography>
                 </Stack>
-                <Typography variant="h5"   marginTop={3}>{product.price?.toFixed(2)}€</Typography>
+                <Typography variant="h5"   marginTop={3}>{product.basePrice?.toFixed(2)}€</Typography>
                 <Typography variant="subtitle1"   marginBottom={1}>Shipping : {product.shipping?.toFixed(2)}€</Typography>
 
-                <Stack direction="row" spacing={2} marginY={1}>
-                    { 
-                        product.variants?.color?.map((option, index) => (
-                            <Chip key={index} avatar={ <Box component="span" sx={{ bgcolor:`${option.replace(/ |_|-/g,'')}`, width: 40, height: 40, borderRadius: '50%', border: 1  }} />} variant={selectedColor == option ? "": "outlined"} label={option} onClick={()=>setSelectedColor(option)} />
-                        ))
+                <Box marginBottom={2}>
+                    {
+                        product.variants?.options?.map((item,index)=>{
+                            return (
+                                <div key={index}>
+                                    <Typography padding={1}>{item.name}</Typography>
+                                    {
+                                        item.values.map((val,ii) =>{
+                                            
+                                            return <Chip label={val} key={ii} variant="outlined" onChange={() => GetCombination(val, index)} />
+                                        })
+                                    }
+                                </div>
+                            )
+                        })
                     }
-                    </Stack>
-                    <Stack direction="row" spacing={2} marginY={1}>
-                    { 
-                        product.variants?.size?.map((option, index) => (
-                            <Chip key={index}  variant={selectedSize == option ? "contained": "outlined"} label={option} onClick={()=>setSelectedSize(option)}/>
-                        ))
-                    }
-                </Stack>
+                </Box>
 
                 <Stack direction="row" spacing={2}  alignItems={'center'} marginBottom={3}>
                     <ButtonGroup  disableElevation >
@@ -103,7 +141,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                         <Button disabled>{prQuantity}</Button>
                         <Button variant="contained" color="info" disabled={prQuantity < product.stock ? false : true} onClick={()=>setPrQuantity(prQuantity+1)} >+</Button>
                     </ButtonGroup>
-                    <Button variant="outlined" color="secondary" fullWidth onClick={()=> {onAddToCart(product._id,prQuantity,selectedSize,selectedColor) ; window.location.href="../cart"}}>Add to cart</Button>
+                    <Button variant="outlined" color="secondary" fullWidth onClick={()=> {onAddToCart(product._id,prQuantity) ; window.location.href="../cart"}}>Add to cart</Button>
                     {
                             product.favorite?.includes(user._id)
                             ? <Favorite onClick={()=>{newFav(product._id)}} ></Favorite>

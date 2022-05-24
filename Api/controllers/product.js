@@ -28,6 +28,19 @@ exports.NewProduct = (req, res, next) => {
 
     let productReq = { ...req.body };
 
+    var vprices= []
+    var voptions = []
+
+    productReq.vprices.forEach((prc)=>{
+        vprices.push(JSON.parse(prc))
+    })
+
+    productReq.voptions.forEach((opt)=>{
+        voptions.push(JSON.parse(opt))
+    })
+
+    console.log( vprices)
+    console.log( voptions)
     var images =[];
 
     req.files.forEach(element => {
@@ -35,26 +48,25 @@ exports.NewProduct = (req, res, next) => {
         images.push(element.path)
     });
 
-    var variants={
-        color: productReq.color,
-        size: productReq.size
-    };
-    
-
     const product = new Product({
         title: productReq.title,
         description: productReq.description,
         store_id: req.storeId,
-        price: productReq.price,
+        basePrice: productReq.basePrice,
         stock: productReq.stock,
         category : productReq.category,
         shipping: parseInt(productReq.shipping) ,
         date_created: Date.now(),
         images:images,
         active:productReq.active,
-        variants: variants,
-        exists: true
+        variants: {
+            options: voptions,
+            prices : vprices
+        },
+        exists: true,
+        views:0
     })
+    
     product.save()
         .then(result =>{
             return Store.findById(req.storeId)    

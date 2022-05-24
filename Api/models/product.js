@@ -9,7 +9,7 @@ const ProductSchema = new Schema({
         type : Schema.Types.ObjectId,
         ref: 'Store'
     } ,
-    price: Number,
+    basePrice: Number,
     date_created: Date,
     orders:Number,
     category:String,
@@ -25,13 +25,17 @@ const ProductSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:'User'
     }],
-    variants:[{
-        option:String,
-        optionValues:[{
+    variants:{
+        options:[{
             name: String,
-            price : String,
+            values:[],
+        }],
+        prices:[{
+            originalPrice: Number,
+            availableQuantity : Number,
+            skuid : String
         }]
-    }]
+    }
     
 });
 
