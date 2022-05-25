@@ -55,14 +55,14 @@ router.post('/addAddress', Auth, userController.AddAddress);
 //POST /user/cart
 router.post('/cart', Auth, userController.Cart);
 
-//POST /user/cart/:id/:skuid
-router.post('/removeq/:id/:skuid', Auth, userController.RemoveProductQuantity);
+//POST /user/cart/:id
+router.post('/removeq/:id', Auth, userController.RemoveProductQuantity);
 
 //POST /user/fav/:id
 router.post('/fav/:id', Auth, userController.Favorite);
 
-//DELETE /user/cart/:productId/:skuid
-router.delete('/cart/:productId/:skuid', Auth, userController.DeleteCart);
+//DELETE /user/cart/:productId
+router.post('/cart/:productId', Auth, userController.DeleteCart);
 
 //DELETE /user/deleteAddress/:addressId
 router.delete('/deleteAddress/:addressId', Auth, userController.DeleteAddress);

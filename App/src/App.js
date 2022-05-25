@@ -67,7 +67,10 @@ const App = () => {
         })
     }
     const RemoveFromCart = (productId, skuid)=>{
-        api.delete('user/cart/'+productId + "/"+ skuid)
+		console.log(skuid)
+        api.post('user/cart/'+productId ,{
+			skuid: skuid
+		})
         .then( res=>{
 			setFav(fav+1)
         })
@@ -77,7 +80,10 @@ const App = () => {
     }
 
     const RemoveQuantity = (productId, skuid)=>{
-        api.post('user/removeq/'+productId + "/"+ skuid)
+		console.log(skuid)
+        api.post('user/removeq/'+productId ,{
+			skuid: skuid
+		})
         .then( res=>{
 			setFav(fav+1)
         })

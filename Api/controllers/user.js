@@ -365,7 +365,7 @@ exports.DeleteCart = async (req, res, next) => {
     const product = await Product.findById(req.params.productId)
     User.findById(req.userId)
     .then(user => {
-        return user.RemoveFromCart(product, req.params.skuid)
+        return user.RemoveFromCart(product, req.body.skuid)
     })
     .then(user => {
         res.status(201).json( {cart : user.cart})

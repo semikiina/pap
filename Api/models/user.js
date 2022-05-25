@@ -77,10 +77,6 @@ userSchema.methods.AddToCart = function(product,quantity,skuid){
     
     const updatedCart =[...this.cart.items];
 
-    console.log(CartItem[0])
-    console.log("-----------")
-    console.log(skuid)
-
     if(CartItemIndex >=0 && CartItem[0].skuid == skuid ){
         console.log('hey')
         newQuantity= this.cart.items[CartItemIndex].quantity +1;
@@ -117,11 +113,12 @@ userSchema.methods.AddToCart = function(product,quantity,skuid){
 }
 
 userSchema.methods.RemoveFromCart = function(product, skuid){
-
-    const updatedCartItems = this.cart.items.filter( item =>{
-        console.log(skuid)
-        return (item.product_id.toString() !== product._id.toString()) && (item.skuid !== skuid)
+    
+    var updatedCartItems = this.cart.items.filter( item =>{
+        return item.product_id != product._id && item.skuid != skuid
     })
+  
+
 
     let subtotal = 0;
     let shipping = 0;
