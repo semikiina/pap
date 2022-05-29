@@ -8,11 +8,11 @@ import SucessAccount from './Components/SucessAccount';
 
 
 const Login = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
 
-    const [errors, setErrors] = useState(false);
+    const [errorsLogin, setErrorsLogin] = useState(false);
+    const [errorsRegister, setErrorsRegister] = useState(false);
     const [open, setOpen] = useState(true);
 
     const [openSucessAccount, setOpenSucessAccount] = React.useState(false);
@@ -29,7 +29,7 @@ const Login = () => {
         }
         catch(err){
             console.log(err)
-            setErrors(true);
+            setErrorsLogin(true);
         }
         
     }
@@ -47,7 +47,7 @@ const Login = () => {
         }
         catch(err){
             console.log(err)
-            setErrors(true);
+            setErrorsRegister(true);
         }
         
     }
@@ -55,16 +55,9 @@ const Login = () => {
     return (
         <>
             <Container>
-                <Collapse in={open}>
-                    {
-                        errors && <Alert onClose={() => {
-                            setOpen(false);
-                        }} severity="error">An error occured, please try again later!</Alert>
-                    }
-                </Collapse>
                 <Grid container>
-                    <Grid item xs={12} md={6}><LoginForm login={Login} errors={errors}/></Grid>
-                    <Grid item xs={12} md={6}><RegisterForm registerUser={Register} errors={errors}/></Grid>
+                    <Grid item xs={12} md={6}><LoginForm login={Login} setErrorsLogin={setErrorsLogin} errorsLogin={errorsLogin} /></Grid>
+                    <Grid item xs={12} md={6}><RegisterForm registerUser={Register}  setErrorsRegister={setErrorsRegister} errorsRegister={errorsRegister}  /></Grid>
                 </Grid>
             </Container>
             <SucessAccount open={openSucessAccount} />

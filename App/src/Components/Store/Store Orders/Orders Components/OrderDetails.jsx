@@ -38,7 +38,7 @@ const OrderDetails = ({updateOrder, shippingInformation, cart, orderid, currentO
                                 <ListItem key={item.product_id._id}>
                                     <ListItemButton role={undefined}  dense>
                                         <ListItemAvatar >
-                                            <Avatar variant="square" src={"http://localhost:8090/"+item?.product_id.images[0]}></Avatar>
+                                            <Avatar variant="square" src={"https://tagmeapi.herokuapp.com/"+item?.product_id.images[0]}></Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary={item.product_id.title} secondary={"Qtt."+ item.quantity}></ListItemText>
                                     </ListItemButton>

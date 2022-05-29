@@ -114,7 +114,7 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,setUpdate, update}) => {
                     {storeA && <>
                         <MenuItem >
                             <ListItemIcon>
-                                <Avatar src={storeA?.store_image && 'http://localhost:8090/'+storeA?.store_image} />
+                                <Avatar src={storeA?.store_image && 'https://tagmeapi.herokuapp.com/'+storeA?.store_image} />
                             </ListItemIcon>
                             <ListItemText primary={storeA?.store_name}/>
                             <IconButton onClick={handleDrawerClose} sx={{pr:2}} disableRipple>

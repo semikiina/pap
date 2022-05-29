@@ -9,7 +9,7 @@ const SimilarProduct = ({product}) => {
                 <CardMedia
                     component="img"
                     height="auto"
-                    image={"http://localhost:8090/" + product.images[0]} 
+                    image={"https://tagmeapi.herokuapp.com/" + product.images[0]} 
                     alt={product.title} 
                     sx={{width: 260,height: 260 , objectFit: 'cover'}}
                 />

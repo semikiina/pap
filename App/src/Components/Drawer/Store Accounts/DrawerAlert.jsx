@@ -17,7 +17,7 @@ const DrawerAlert = ({open,handleClose,storeList, ChangeCurrentStore}) => {
                         storeList?.map((store) => {
                             return <ListItemButton key={store._id} onClick={() => {ChangeCurrentStore(store._id); handleClose()}}>
                                 <ListItemAvatar>
-                                    <Avatar src={'http://localhost:8090/'+store.store_image} />
+                                    <Avatar src={'https://tagmeapi.herokuapp.com/'+store.store_image} />
                                 </ListItemAvatar>
                                 <ListItemText primary={store.store_name}  />
                             </ListItemButton>

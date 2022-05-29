@@ -18,7 +18,7 @@ const StoreProduct = ({product}) => {
                         return (
                             <ImageListItem key={item._id}>
                             <img
-                                src={'http://localhost:8090/'+item.images[0]}
+                                src={'https://tagmeapi.herokuapp.com/'+item.images[0]}
                                 alt={item.title}
                                 style={{ maxHeight:267}}
                                 loading="lazy"

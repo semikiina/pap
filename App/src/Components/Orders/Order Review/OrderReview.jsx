@@ -36,7 +36,7 @@ const OrderReview = ({product,open,handleClose,userId}) => {
                 
                         <Stack direction="row" marginBottom={2} >
                             {
-                                product.images && <CardMedia   component="img" sx={{ width: 100, height: 100, paddingRight:2, objectFit: 'cover' }} image={"http://localhost:8090/" + product.images[0]} />
+                                product.images && <CardMedia   component="img" sx={{ width: 100, height: 100, paddingRight:2, objectFit: 'cover' }} image={"https://tagmeapi.herokuapp.com/" + product.images[0]} />
                             }
                             <Box >
                                 <Typography >{product.title}</Typography>

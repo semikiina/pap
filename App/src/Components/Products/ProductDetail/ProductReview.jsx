@@ -38,7 +38,7 @@ const ProductReview = ({id,reviews,setDel,del}) => {
                         return(
                             <Box padding={2} marginBottom={3} key={rev._id}>
                                 <Stack direction="row" spacing={2} marginBottom={2}>
-                                    <Avatar src={'http://localhost:8090/'+rev.user_id.profile_pic}></Avatar>
+                                    <Avatar src={'https://tagmeapi.herokuapp.com/'+rev.user_id.profile_pic}></Avatar>
                                     <Box>
                                         <Stack direction="row" spacing={1} >
                                             <Typography variant="subtitle1">{rev.user_id.first_name+" "+rev.user_id.last_name}</Typography>

@@ -15,7 +15,7 @@ const CartItem = ({CartItem, onRemoveFromCart, onAddToCart, onRemoveQuantity}) =
 			</ListItemIcon>
 			<ListItemButton disableRipple onClick={()=> window.location.href="../products/"+CartItem.product_id._id}>
 			<ListItemAvatar>
-				<Avatar variant="square" src={'http://localhost:8090/'+CartItem.product_id.images[0]}  sx={{ height: 80, width: 80, objectFit: 'cover'}}/>
+				<Avatar variant="square" src={'https://tagmeapi.herokuapp.com/'+CartItem.product_id.images[0]}  sx={{ height: 80, width: 80, objectFit: 'cover'}}/>
 			</ListItemAvatar>
 			<ListItemText 
 				primary={CartItem.product_id.title}

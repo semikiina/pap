@@ -65,7 +65,7 @@ const StoreSettings = ({update, setUpdate}) => {
 
     useEffect(()=>{
         if(storeA){
-            setDefStore({...defStore, store_image : "http://localhost:8090/"+storeA.store_image , store_name : storeA.store_name, store_email: storeA.store_email})
+            setDefStore({...defStore, store_image : "https://tagmeapi.herokuapp.com/"+storeA.store_image , store_name : storeA.store_name, store_email: storeA.store_email})
             setValue('store_name', storeA.store_name)
         }
         

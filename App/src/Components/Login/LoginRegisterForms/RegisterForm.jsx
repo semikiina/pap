@@ -1,26 +1,29 @@
 import React, { useState } from 'react'
-import { Container, TextField, Typography, Box, Button, Stack, InputAdornment } from '@mui/material'
+import { Container, TextField, Typography, Box, Button, Stack, InputAdornment, Collapse, Alert, IconButton } from '@mui/material'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import api from '../../../Services/api';
+import { Close } from '@mui/icons-material';
 
 const schema = yup.object({
     first_name: yup.string().matches(/^[A-Za-z ]*$/, 'Please enter valid name').max(20),
     last_name: yup.string().matches(/^[A-Za-z ]*$/, 'Please enter valid name').max(20),
     nickname: yup.string().min(8).max(15).required(),
     email: yup.string().email().required(),
-    password: yup.string().required('Password is required'),
+    password: yup.string().min(8).required('Password is required'),
     passwordConfirmation: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
   }).required();
 
 
 
-const RegisterForm = ({registerUser}) => {
+const RegisterForm = ({registerUser, errorsRegister, setErrorsRegister}) => {
 
     const {  handleSubmit, register, formState:{ errors } } =  useForm({
         resolver: yupResolver(schema)
     });
+
+    const [nicknameError, setNicknameError] = useState(false)
 
     const onSubmit = data => {
 
@@ -31,7 +34,9 @@ const RegisterForm = ({registerUser}) => {
                 registerUser(data)
             }
         })
-        .catch(err=> console.log(err))
+        .catch(err=> {
+            setNicknameError(true)
+        })
 
         
         
@@ -42,6 +47,16 @@ const RegisterForm = ({registerUser}) => {
 
     return (
         <Container>
+             <Collapse in={errorsRegister}>
+                {
+                    errorsRegister && <Alert onClose={() => {
+                        setErrorsRegister(false);
+                    }} severity="error">An error ocurred, try again later!</Alert>
+                }
+            </Collapse>
+            <Collapse in={nicknameError}>
+                <Alert severity="error" action={<IconButton onClick={()=>setNicknameError(false)} ><Close/></IconButton>} >Nickname or Email already exists!</Alert>
+            </Collapse>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h4" marginBottom={4} textAlign="center">Register</Typography>
                 <Stack marginBottom={2} direction="row" spacing={1}>

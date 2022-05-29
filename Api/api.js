@@ -39,7 +39,7 @@ const fileFilter = (req, file, cb) => {
 
 }
 
-
+app.use(cors())
 app.use(bodyParser.json());
 app.use(compression())
 app.use(bodyParser.urlencoded({ extended: true}))
@@ -48,14 +48,14 @@ app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).array('image', 
 app.use('/uploads', express.static(path.join(__dirname,'/uploads')));
 
 //Set Headers
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')//Vários sites podem acessar aminha API
-  res.setHeader("Access-Control-Allow-Credentials", "true")
-  res.header("Access-Control-Allow-Origin", "*");
-  res.setHeader('Acess-Control-Allow-Methods', 'GET, HEAD , OPTIONS , POST, PUT, PATCH, DELETE')//Os sites podem usar todos os métodos
-  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, UAuthorization, SAuthorization");
-  next();
-})
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*')//Vários sites podem acessar aminha API
+//   res.setHeader("Access-Control-Allow-Credentials", "true")
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.setHeader('Acess-Control-Allow-Methods', 'GET, HEAD , OPTIONS , POST, PUT, PATCH, DELETE')//Os sites podem usar todos os métodos
+//   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, UAuthorization, SAuthorization");
+//   next();
+// })
 
 
 //localhost:8090/users

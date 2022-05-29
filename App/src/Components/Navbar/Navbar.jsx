@@ -70,7 +70,7 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 								<Box >
 									<Tooltip title="Profile options">
 										<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-											<Avatar alt={user.nickname} src={user.profile_pic && `http://localhost:8090/${user.profile_pic}`} />
+											<Avatar alt={user.nickname} src={user.profile_pic && `https://tagmeapi.herokuapp.com/${user.profile_pic}`} />
 										</IconButton>
 									</Tooltip>
 									<ProfileMenu handleCloseUserMenu={handleCloseUserMenu} anchorElUser={anchorElUser}/>

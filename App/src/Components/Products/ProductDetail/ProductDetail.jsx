@@ -108,7 +108,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                             <CardMedia
                             component="img"
                             sx={{objectFit:'cover', maxHeight:550, maxWidth:550, minHeight:100, minWidth:100 }}
-                            image={"http://localhost:8090/" + currentPhoto} 
+                            image={"https://tagmeapi.herokuapp.com/" + currentPhoto} 
                             alt={product.title} 
                             />
                             <Stack direction="row" spacing={2} marginTop={2} alignItems={'center'}>
@@ -119,7 +119,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
                                             key={i}
                                             component="img"
                                             sx={{ width: 100, height: 100 }}
-                                            image={"http://localhost:8090/" + e} 
+                                            image={"https://tagmeapi.herokuapp.com/" + e} 
                                             onClick={()=> {ChangedPhoto(e)}}
                                         />
                                         )
@@ -133,7 +133,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
             </Grid>
             <Grid item  xs={12} md={6}>
                 <Stack direction="row" spacing={2} marginBottom={1} alignItems={'center'}>
-                    { product.store_id && <Avatar alt="Remy Sharp" src={"http://localhost:8090/"+product.store_id.store_image} sx={{ width: 56, height: 56 }} variant="square"/>}
+                    { product.store_id && <Avatar alt="Remy Sharp" src={"https://tagmeapi.herokuapp.com/"+product.store_id.store_image} sx={{ width: 56, height: 56 }} variant="square"/>}
                     <Box>
                         <Typography variant="subtitle1" onClick={()=>{ window.location.href="../store/"+product.store_id._id}} >{product.store_id && product.store_id.store_name}</Typography>
                         <Typography variant="subtitle2" color="secondary" >Created by <b>{product.store_id && product.store_id.creator_id.first_name + " " + product.store_id.creator_id.last_name}</b></Typography>

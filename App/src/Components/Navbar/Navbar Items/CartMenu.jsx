@@ -62,7 +62,7 @@ const CartMenu = ({cart,handleCloseCartMenu,anchorElCart,onRemoveFromCart}) => {
                         <ListItemButton >
                             <ListItemIcon><Delete edge="start" color="error" onClick={()=>onRemoveFromCart(item.product_id._id, item.skuid)}/></ListItemIcon>
                             <ListItemAvatar>
-                                <Avatar src={'http://localhost:8090/'+item.product_id.images[0]} sx={{width:50, height:50, objectFit: 'cover'}} variant="square" />
+                                <Avatar src={'https://tagmeapi.herokuapp.com/'+item.product_id.images[0]} sx={{width:50, height:50, objectFit: 'cover'}} variant="square" />
                             </ListItemAvatar>
                             <ListItemText
                                 primary={item.product_id.title}

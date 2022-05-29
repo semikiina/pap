@@ -20,7 +20,7 @@ const OrderProduct = ({item, quantity, userId}) => {
             <Box padding={2} fullWidth>
                 <Stack direction="row" marginBottom={2}>
                     {
-                        item.images && <CardMedia   component="img" sx={{ width: 100, height: 100, paddingX: 2, objectFit: 'cover' }} image={"http://localhost:8090/" + item.images[0]} />
+                        item.images && <CardMedia   component="img" sx={{ width: 100, height: 100, paddingX: 2, objectFit: 'cover' }} image={"https://tagmeapi.herokuapp.com/" + item.images[0]} />
                     }
                     <Box >
                         <Typography >{item.title}</Typography>

@@ -46,7 +46,7 @@ const StoreEdit = ({open, handleClose, store, setStore,  setAvatar,setStoreName}
 
 
     useEffect(()=>{
-        setPreviewAvatar("http://localhost:8090/"+store.store_image)
+        setPreviewAvatar("https://tagmeapi.herokuapp.com/"+store.store_image)
         
     },[store])
    

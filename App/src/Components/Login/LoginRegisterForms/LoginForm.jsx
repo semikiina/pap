@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, TextField, Typography, Box, Button} from '@mui/material'
+import { Container, TextField, Typography, Box, Button, Collapse, Alert} from '@mui/material'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -10,7 +10,7 @@ const schema = yup.object({
   }).required();
 
 
-const LoginForm = ({login }) => {
+const LoginForm = ({login, setErrorsLogin, errorsLogin }) => {
 
     const {  handleSubmit, register, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
@@ -22,6 +22,13 @@ const LoginForm = ({login }) => {
     return (
     <>
     <Container>
+        <Collapse in={errorsLogin}>
+            {
+                errorsLogin && <Alert onClose={() => {
+                    setErrorsLogin(false);
+                }} severity="error">Your Password and Email don't match!</Alert>
+            }
+        </Collapse>
         <form onSubmit={handleSubmit(onSubmit)}>
             <Typography variant="h4" marginBottom={4} textAlign="center">Login</Typography>
             <Box marginBottom={2} >

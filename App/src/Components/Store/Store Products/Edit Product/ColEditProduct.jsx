@@ -165,7 +165,7 @@ const ColEditProduct = ({product,setProduct, register,setUpdate,update,setHtmlEd
                                 return (
                                     <Grid item xs={12} md={4} key={src}>
                                         <Stack>
-                                            <img src={'http://localhost:8090/'+src} style={{ width: 200 , height : 200 , objectFit : 'cover'}}/>
+                                            <img src={'https://tagmeapi.herokuapp.com/'+src} style={{ width: 200 , height : 200 , objectFit : 'cover'}}/>
                                             <Delete onClick={()=>{DeleteImg(src)}}/>
                                         </Stack>
                                         

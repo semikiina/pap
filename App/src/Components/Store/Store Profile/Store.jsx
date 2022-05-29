@@ -93,7 +93,7 @@ const Store = () => {
                             <Paper>
                                 <Stack spacing={1} justifyContent="center" alignItems={'center'}>
                                     <Typography paddingTop={2} align={'center'}>{storeName}</Typography>
-                                    {  <Avatar src={ store.store_image && "http://localhost:8090/"+avatar} sx={{width:200, height:200}} variant="square"></Avatar>}
+                                    {  <Avatar src={ store.store_image && "https://tagmeapi.herokuapp.com/"+avatar} sx={{width:200, height:200}} variant="square"></Avatar>}
                                    { (user._id == store.creator_id && storeA._id == id ) &&  <Button  variant="outlined" color="secondary" onClick={handleOpen} >Edit Store</Button> }
                                     <Button variant="contained" href ={ `mailto:${store.store_email}`} fullWidth> <Typography paddingRight={1}>Send Email</Typography> <Send fontSize='small'/></Button>
                                 </Stack>

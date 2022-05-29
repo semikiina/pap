@@ -23,7 +23,7 @@ const Favorite = ({favorite,newFavorite}) => {
                                     <CardMedia
                                     component="img"
                                     height="300"
-                                    image={"http://localhost:8090/" + product.images[0]} 
+                                    image={"https://tagmeapi.herokuapp.com/" + product.images[0]} 
                                     alt={product.title} 
                                     />
                                 </Button>
