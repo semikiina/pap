@@ -2,14 +2,19 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "api.js",
+  "engines": {
+    "node": "16.13.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon api.js"
+    "start": "node api.js",
+    "start:dev": "nodemon api.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.0.1",
+    "compression": "^1.7.4",
     "cookie": "^0.4.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

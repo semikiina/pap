@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 
 const userRoutes = require('./routes/user');
 const productRoutes = require('./routes/product');
@@ -40,22 +41,17 @@ const fileFilter = (req, file, cb) => {
 
 
 app.use(bodyParser.json());
+app.use(compression())
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).array('image', 6))
 
 app.use('/uploads', express.static(path.join(__dirname,'/uploads')));
 
-
-const corOpt ={
-  origin:'http://localhost:3000',
-  credentials: true,
-}
-
-app.use(cors(corOpt))
 //Set Headers
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')//Vários sites podem acessar aminha API
+  res.setHeader('Access-Control-Allow-Origin', '*')//Vários sites podem acessar aminha API
   res.setHeader("Access-Control-Allow-Credentials", "true")
+  res.header("Access-Control-Allow-Origin", "*");
   res.setHeader('Acess-Control-Allow-Methods', 'GET, HEAD , OPTIONS , POST, PUT, PATCH, DELETE')//Os sites podem usar todos os métodos
   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, UAuthorization, SAuthorization");
   next();
@@ -92,7 +88,7 @@ app.use((error, req, res, next) => {
 })
 
 //Database Connection
-mongoose.connect('mongodb+srv://crislinda:tagme123@tagme.bekir.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mongoose.connect(`mongodb+srv://default:gYUfuNa2PplUeOZo@tagme.bekir.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`)
   .then(result => {
     console.log('connected to server!');
     app.listen(port);
