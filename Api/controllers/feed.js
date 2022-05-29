@@ -4,10 +4,35 @@ const Store = require('../models/store');
 
 //GET all products
 exports.GetAll = (req, res, next) => {
+
+    console.log('GET feed/ (ALL PRODUCTS)')
     Product.find()
         .then(product => {
 
             res.status(200).json(product)
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
+}
+
+//GET all stores
+exports.GetAllStores = (req, res, next) => {
+
+    console.log('GET feed/stores (ALL STORES)')
+
+    Store.find()
+        .populate({
+            path:'product',
+            options: {
+                limit: 4
+            },
+            select: 'title images'
+        })
+        .then(store => {
+
+            res.status(200).json(store)
         })
         .catch(err => {
             if (!err.StatusCode) err.StatusCode = 500;
@@ -28,7 +53,7 @@ exports.GetTheStore = (req, res, next) => {
             }
           })
         .then(store => { 
-
+            console.log(store)
             store.views += 1;
             return store.save();
         })

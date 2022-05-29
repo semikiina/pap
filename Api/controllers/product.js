@@ -27,27 +27,36 @@ exports.GetProducts = (req, res, next) => {
 exports.NewProduct = (req, res, next) => {
 
     let productReq = { ...req.body };
+    console.log(productReq)
 
     var vprices= []
     var voptions = []
+    if(productReq.voptions){
+        productReq.vprices.forEach((prc)=>{
+            try{
+                vprices.push(JSON.parse(prc))
+            }
+            catch(err){
+                
+            }
+        })
 
-    productReq.vprices.forEach((prc)=>{
-        try{
-            vprices.push(JSON.parse(prc))
-        }
-        catch(err){
-            
-        }
-    })
+        productReq.voptions.forEach((opt)=>{
+            try{
+                voptions.push(JSON.parse(opt))
+            }
+            catch(err){
 
-    productReq.voptions.forEach((opt)=>{
-        try{
-            voptions.push(JSON.parse(opt))
-        }
-        catch(err){
-
-        }
-    })
+            }
+        })
+    }
+    else{
+        vprices=[{
+            skuid: "default",
+            availableQuantity: productReq.stock,
+            originalPrice : productReq.basePrice
+        }]
+    }
 
     var images =[];
 
@@ -60,10 +69,10 @@ exports.NewProduct = (req, res, next) => {
         title: productReq.title,
         description: productReq.description,
         store_id: req.storeId,
-        basePrice: productReq.basePrice,
+        basePrice: parseFloat(productReq.basePrice),
         stock: productReq.stock,
         category : productReq.category,
-        shipping: parseInt(productReq.shipping) ,
+        shipping: parseFloat(productReq.shipping) ,
         date_created: Date.now(),
         images:images,
         active:productReq.active,

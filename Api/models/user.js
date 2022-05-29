@@ -8,7 +8,6 @@ const userSchema = new Schema({
     email: String,
     nickname: String,
     password: String,
-    phonenumber: Number,
     bio: String,
     phone_code : String,
     phone : String,
@@ -63,9 +62,8 @@ userSchema.methods.AddToCart = function(product,quantity,skuid){
     })
 
     //return the product of the cart
-    const CartItem = this.cart.items.filter( item =>{
-        return item.product_id.toString() == product._id.toString()
-    })
+    const CartItem = this.cart.items[CartItemIndex]
+    console.log(quantity)
 
     //return combination infos
     const Vprices = product.variants.prices.filter( item =>{
@@ -77,9 +75,8 @@ userSchema.methods.AddToCart = function(product,quantity,skuid){
     
     const updatedCart =[...this.cart.items];
 
-    if(CartItemIndex >=0 && CartItem[0].skuid == skuid ){
-        console.log('hey')
-        newQuantity= this.cart.items[CartItemIndex].quantity +1;
+    if(CartItemIndex >=0 && CartItem.skuid == skuid ){
+        newQuantity= this.cart.items[CartItemIndex].quantity + newQuantity;
         updatedCart[CartItemIndex].quantity = newQuantity;
     }
 
@@ -118,8 +115,6 @@ userSchema.methods.RemoveFromCart = function(product, skuid){
         return item.product_id != product._id && item.skuid != skuid
     })
   
-
-
     let subtotal = 0;
     let shipping = 0;
 

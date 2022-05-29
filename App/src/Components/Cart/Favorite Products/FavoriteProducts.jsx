@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import useAuth from '../../Contexts/useAuth';
-import Carousselitem from '../../Products/New Products/Components/Carousselitem';
+import Carousselitem from '../../Products/Components/Carousselitem';
 
 const responsive = {
     desktop: {

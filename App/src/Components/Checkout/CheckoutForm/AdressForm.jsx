@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import NewAddress from './Address Form/NewAddress';
 import ListOfAddresses from './Address Form/ListOfAddresses';
 import useAuth from '../../Contexts/useAuth';
+import api from '../../../Services/api';
 
 const AdressForm = ({next}) => {
 
@@ -15,6 +16,10 @@ const AdressForm = ({next}) => {
     const [exAddress, setExAddress] = useState('');
     
     const handleClick = () =>{
+        api.get('order/stock')
+        .then(data=>{
+            console.log(data)
+        })
         next(user.addresses.filter(o => o._id === exAddress)[0])
     }
 

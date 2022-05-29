@@ -1,9 +1,26 @@
-import { Stack, Box, TextField, Grid, Button, Autocomplete} from '@mui/material'
+import { Stack, Box, TextField, Grid, Button, Autocomplete, Typography} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import {countries} from '../../../../Services/countrys';
 import api from '../../../../Services/api';
 import useAuth from '../../../Contexts/useAuth';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object({
+        first_name : yup.string().required(),
+        last_name :yup.string().required(),
+        email : yup.string().email().required(),
+        phone_code :yup.string().required('phone code is a required field'),
+        phone : yup.string().required(),
+        address_1 : yup.string().required(),
+        zip_code : yup.string().required('zip code is a required field'),
+        province :yup.string().required(),
+        city : yup.string().required(),
+        country : yup.string().required(),
+  }).required();
+
+
 
 const NewAddress = ({setAddress, setFav, fav}) => {
 
@@ -16,9 +33,13 @@ const NewAddress = ({setAddress, setFav, fav}) => {
         phone_code: user.phone_code,
         phone: user.phone
     })
-    const {  handleSubmit, register } = useForm();
+
+    const {  handleSubmit, register, formState : {errors} } = useForm({
+        resolver : yupResolver(schema)
+    });
 
     const AddAddress = (data) => {
+        console.log(data)
         api.post('user/addAddress',{
             first_name : data.first_name,
             last_name : data.last_name,
@@ -48,16 +69,19 @@ const NewAddress = ({setAddress, setFav, fav}) => {
             <form onSubmit={handleSubmit(AddAddress)}> 
             <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} marginBottom={3}>
-                        <TextField  label="First Name" defaultValue={userA.first_name} onChange={(e) => setUserA({...userA, first_name: e.target.value})} {...register("first_name")} fullWidth required></TextField>
+                        <TextField  label="First Name" defaultValue={userA.first_name} onChange={(e) => setUserA({...userA, first_name: e.target.value})} {...register("first_name")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.first_name?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} marginBottom={3}>
-                        <TextField  label="Last Name" defaultValue={userA.last_name} onChange={(e) => setUserA({...userA, last_name: e.target.value})} {...register("last_name")} fullWidth required></TextField>
+                        <TextField  label="Last Name" defaultValue={userA.last_name} onChange={(e) => setUserA({...userA, last_name: e.target.value})} {...register("last_name")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.last_name?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} marginBottom={3}>
-                        <TextField  label="Email" defaultValue={userA.email} onChange={(e) => setUserA({...userA, email: e.target.value})} {...register("email")} fullWidth required></TextField>
+                        <TextField  label="Email" defaultValue={userA.email} onChange={(e) => setUserA({...userA, email: e.target.value})} {...register("email")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.email?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={3} marginBottom={3}>
-                    <Autocomplete
+                        <Autocomplete
                             options={countries}
                             autoHighlight
                             getOptionLabel={(option) => '+'+ option.phone}
@@ -69,7 +93,6 @@ const NewAddress = ({setAddress, setFav, fav}) => {
                             
                             renderInput={(params) => (
                                 <TextField
-                                required
                                 {...params}
                                 {...register("phone_code")}
                                 label="Phone Code"
@@ -82,9 +105,11 @@ const NewAddress = ({setAddress, setFav, fav}) => {
                                 />
                             )}
                             />
+                        <Typography variant="caption" color="error">{errors.phone_code?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={3} marginBottom={3}>
-                        <TextField  label="Phone" {...register("phone")} defaultValue={userA.phone} onChange={(e) => setUserA({...userA, phone: e.target.value})} fullWidth required></TextField>
+                        <TextField  label="Phone" {...register("phone")} defaultValue={userA.phone} onChange={(e) => setUserA({...userA, phone: e.target.value})} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.phone?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} marginBottom={3}>
                         <Autocomplete
@@ -105,7 +130,6 @@ const NewAddress = ({setAddress, setFav, fav}) => {
                             )}
                             renderInput={(params) => (
                                 <TextField
-                                required
                                 {...params}
                                 {...register("country")}
                                 label="Country"
@@ -116,21 +140,26 @@ const NewAddress = ({setAddress, setFav, fav}) => {
                                 />
                             )}
                             />
+                        <Typography variant="caption" color="error">{errors.country?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} marginBottom={3}>
-                        <TextField  label="City" {...register("city")} fullWidth required></TextField>
+                        <TextField  label="City" {...register("city")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.city?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} marginBottom={3}>
-                        <TextField  label="Zip Code" {...register("zip_code")} fullWidth required></TextField>
+                        <TextField  label="Zip Code" {...register("zip_code")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.zip_code?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} marginBottom={3}>
-                        <TextField  label="Province" {...register("province")} fullWidth required></TextField>
+                        <TextField  label="Province" {...register("province")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.province?.message}</Typography>
                     </Grid>
                     <Grid item xs={12}  marginBottom={3}>
-                        <TextField  label="Address 1" {...register("address_1")} fullWidth required></TextField>
+                        <TextField  label="Address 1" {...register("address_1")} fullWidth ></TextField>
+                        <Typography variant="caption" color="error">{errors.address_1?.message}</Typography>
                     </Grid>
                     <Grid item xs={12} marginBottom={3}>
-                        <TextField  label="Address 2" {...register("address_2")} fullWidth ></TextField>
+                        <TextField fullWidth label="Address 2" {...register("address_2")}  ></TextField>
                     </Grid>
                     <Grid item xs={12} marginBottom={3}>
                         <Stack direction="row" spacing={1}>

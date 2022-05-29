@@ -1,38 +1,37 @@
-import { Grid, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Stack, IconButton, ListItemAvatar, Avatar, Divider } from '@mui/material'
+import {List, ListItem, ListItemText, Typography, Box, Stack, ListItemAvatar, Avatar, Divider } from '@mui/material'
 import React from 'react'
-import { ArrowBack } from '@mui/icons-material'
 
-const Review = ({cart, data , backStep}) => {
+const Review = ({cart}) => {
 
-    console.log(cart)
-    var add2 = "";
-    if(data.address_2) add2 =  data.address_2 + ", "
     return (
         <Box paddingX={4} >
            <Typography textAlign={'center'} variant="h6" paddingBottom={1}>Order Summary</Typography>
            <Divider />
            <List disablePadding >
                {
-                   cart.items.map((item) =>(
-                        <ListItem key={ item.product_id._id} alignItems="center"  divider>
-                            <ListItemAvatar >
-                                <Avatar src={'http://localhost:8090/'+ item.product_id.images[0]} variant="square" sx={{width: 80 , height :  80}}/>
-                            </ListItemAvatar>
-                            <ListItemText 
-                                primary={item.product_id.title}
-                                secondary={
-                                    <Stack spacing={1}  component="span">
-                                        {item.product_id.category}
-                                        <br/>
-                                            Qtt. {item.quantity}
-                                        {item.variants && <Typography variant="caption">{item.variants?.color + ", "+ item.variants?.size}</Typography>}
-                                    </Stack>
-                                }
-                                sx={{width: 150, paddingLeft: 2}}
-                            />
-                            <ListItemText primary={item.product_id.price.toFixed(2)+"€"} />
-                        </ListItem>
-                   ))
+                   cart.items.map((item,index) =>{
+                       
+                        var thisComb = item.product_id.variants.prices.filter((comb)=>{ return comb.skuid == item.skuid})
+                        return(
+                            <ListItem key={`${item.product_id._id}_${index}` } alignItems="center"  divider>
+                                <ListItemAvatar >
+                                    <Avatar src={'http://localhost:8090/'+ item.product_id.images[0]} variant="square" sx={{width: 80 , height :  80}}/>
+                                </ListItemAvatar>
+                                <ListItemText 
+                                    primary={item.product_id.title}
+                                    secondary={
+                                        <Stack spacing={1}  component="span">
+                                            {item.product_id.category}
+                                            <br/>
+                                                Qtt. {item.quantity}
+                                        </Stack>
+                                    }
+                                    sx={{width: 150, paddingLeft: 2}}
+                                />
+                                <ListItemText primary={`${thisComb[0].originalPrice}€`} />
+                            </ListItem>
+                        )
+                    })
                }
                
            </List>

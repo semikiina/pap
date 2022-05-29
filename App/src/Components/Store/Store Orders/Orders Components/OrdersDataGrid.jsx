@@ -38,8 +38,8 @@ const OrdersDataGrid = ({updateOrder, storeOrders}) => {
                 <SearchPanel visible={true} highlightCaseSensitive={true}  width={250}/>
                 <Selection mode="multiple" showCheckBoxesMode="always"/>
                 <HeaderFilter visible={true} allowSearch={true} />
-                <Column dataField="name" caption="Name" width={'auto'} />
-                <Column dataField="address" caption="Address"  width={'auto'} />
+                <Column dataField="name" caption="Name" width={'auto'} alignment={'center'}/>
+                <Column dataField="address" caption="Address"  width={'auto'} alignment={'center'} />
                 <Column dataField="price" caption="Price" format={{style:'currency', currency: 'EUR', useGrouping: true, minimumSignificantDigits: 3 }} width={'auto'} alignment={'center'}/>
                 <Column dataField="date_created" dataType="date" caption="Date" width={200} alignment={'center'}/>
                 <Column dataField="status"  caption="Status" width={200} cellRender={stateCell} alignment={'center'}/>

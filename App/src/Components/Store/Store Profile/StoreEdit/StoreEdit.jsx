@@ -28,7 +28,7 @@ const StoreEdit = ({open, handleClose, store, setStore,  setAvatar,setStoreName}
         var imagefile = document.querySelector('#file');
         formData.append("image", imagefile.files[0]);
         formData.append("store_name",data.store_name);
-        api.post("store/editStore/"+ store._id , formData,{
+        api.post("store/editStore", formData,{
             headers: {
                 'Content-Type': 'multipart/form-data'
               }

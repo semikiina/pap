@@ -30,13 +30,10 @@ const StoreSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref:'Product'
             },
-            variants:{
-                color: String,
-                size: String,
-            },
-            status : String,
+            skuid: String,
             quantity: String
-        }]
+        }],
+        status: String,
     }],
     admins:[{
         type: Schema.Types.ObjectId,

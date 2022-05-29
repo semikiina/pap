@@ -5,11 +5,16 @@ const feedController = require('../controllers/feed');
 //GET /store
 router.get('/', feedController.GetAll)
 
+//GET /similarStoreProducts
+router.get('/stores' , feedController.GetAllStores)
+
 //GET /newStores
 router.get('/newStores' , feedController.LastWeekStores)
 
 //GET /similarStoreProducts
 router.get('/similarProducts/:strid/:prid' , feedController.SimilarProducts)
+
+
 
 //GET /featuredProducts
 router.get('/featuredProducts' , feedController.FeaturedProducts)

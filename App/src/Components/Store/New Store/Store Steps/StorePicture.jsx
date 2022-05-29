@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react'
 import { ArrowBack} from '@mui/icons-material';
 import api from '../../../../Services/api'
 
-const StorePicture = ({storeName, storeEmail,handleSkip,handleBack, setLoading,handleNext}) => {
+const StorePicture = ({handleBack, setLoading,handleNext, newStore}) => {
 
     const [ava, setAva] = useState('');
     const inputFile = useRef(null);
@@ -20,21 +20,27 @@ const StorePicture = ({storeName, storeEmail,handleSkip,handleBack, setLoading,h
         setAva(url)
     }
     const createStore = () =>{
+
         setLoading(true)
-        var formdata = new FormData();
+
         var imagefile = document.querySelector('#file');
+  
+        console.log(newStore)
+        var formdata = new FormData();
+        if(imagefile.files[0])
         formdata.append('image', imagefile.files[0])
-        formdata.append('store_name', storeName)
-        formdata.append('store_email', storeEmail)
+        formdata.append('store_name', newStore.store_name)
+        formdata.append('store_email', newStore.store_email)
+
         api.post('store',formdata,{
             headers: {
                 'Content-Type': 'multipart/form-data'
                 }
         })
         .then(data =>{
+
             setLoading(false)
             handleNext()
-            console.log(data)
         })
         .catch(err=>{
             setLoading(false)
@@ -50,12 +56,11 @@ const StorePicture = ({storeName, storeEmail,handleSkip,handleBack, setLoading,h
             </Box>
             <Typography textAlign={'center'}>Add a store picture</Typography>
             <Stack alignItems={'center'} spacing={1} >
-                <Avatar variant="square" src={ava} onClick={onButtonClick}  sx={{ width: 200, height: 200}}>{storeName}</Avatar>
-                <Typography>{storeName}</Typography>
+                <Avatar variant="square" src={ava} onClick={onButtonClick}  sx={{ width: 200, height: 200}}>{newStore.store_name}</Avatar>
+                <Typography>{newStore.store_name}</Typography>
             </Stack>
             <input  id="file" type="file" ref={inputFile} onChange={(e) => handleChange(e)} hidden></input>
             <Stack direction="row" justifyContent={'flex-end'} spacing={1} paddingTop={3}>
-                <Button variant="contained" color="secondary" onClick={handleSkip}>skip</Button>
                 <Button variant="contained" onClick={createStore}>next</Button>
             </Stack>
         </>

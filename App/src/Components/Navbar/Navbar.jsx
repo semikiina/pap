@@ -39,13 +39,11 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 		setAnchorElCart(null);
 	};
 
-
-
 	return (
 		<>
 			<AppBar position='fixed' color='inherit' >
 				<Toolbar  disableGutters>
-					{user._id && <IconButton
+					{user.store && <IconButton
 						color="inherit"
 						aria-label="open drawer"
 						onClick={handleDrawerOpen}
@@ -54,12 +52,12 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 					>
 						<MenuIcon />
 					</IconButton>}
-					<Typography variant="h6" color="inherit"  sx={{ mr: 2 , flexGrow: 1 }}>
-						<IconButton href="/">
+					<Typography variant="h6" color="inherit"  sx={{ ml: 2 , flexGrow: 1 }}>
+						<IconButton href="../" disableRipple>
 							TagMe!
 						</IconButton>
 					</Typography>
-					<Stack direction="row" spacing={2}>
+					<Stack direction="row" spacing={2} sx={{mr:2}}>
 						{
 							user._id ?
 							<>
@@ -72,7 +70,7 @@ const Navbar = ({onRemoveFromCart, handleDrawerOpen, openDrawer}) => {
 								<Box >
 									<Tooltip title="Profile options">
 										<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-											<Avatar alt={user.nickname} src={'http://localhost:8090/'+user.profile_pic} />
+											<Avatar alt={user.nickname} src={user.profile_pic && `http://localhost:8090/${user.profile_pic}`} />
 										</IconButton>
 									</Tooltip>
 									<ProfileMenu handleCloseUserMenu={handleCloseUserMenu} anchorElUser={anchorElUser}/>

@@ -15,6 +15,8 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
     const [skuid, setSkuid] = useState("");
 
+    const [cartQuantity, setCartQuantity] = useState(0);
+
 
     const [currentProductPrice, setCurrentProductPrice] = useState(1);
 
@@ -26,7 +28,6 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
     const GetCombination = (val,index)=>{
 
-        console.log(val +" " + index)
         let newArr = [...currentComb]; 
         newArr[index] = val; 
 
@@ -55,12 +56,28 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
             setCurrentProductPrice(result[0])
         }
+
         
     },[currentComb])
 
 
     useEffect(()=>{
+        if(skuid){
+            setCartQuantity(0)
+            var result = user.cart?.items?.filter(obj => {
+                return obj.skuid === skuid
+            })
+            if(result.length) setCartQuantity(result[0]?.quantity)
+            else ( setCartQuantity(0))
+        }
+      
+        
+    },[skuid,product])
 
+
+    useEffect(()=>{
+        
+        
         if(product){
             
             if(product.images)  setCurrentPhoto(product.images[0]);
@@ -156,7 +173,7 @@ const ProductDetail = ({product, newFav, reviewL,avr, onAddToCart}) => {
 
                 <Stack direction="row" spacing={2}  alignItems={'center'} marginBottom={3}>
                    { 
-                    currentProductPrice.availableQuantity > 0 
+                    (currentProductPrice.availableQuantity > 0 && cartQuantity < currentProductPrice.availableQuantity)
                     ?    <>
                         <ButtonGroup  disableElevation >
                             <Button variant="contained" color="info" disabled={prQuantity>1 ? false : true } onClick={()=>setPrQuantity(prQuantity-1)}>-</Button>

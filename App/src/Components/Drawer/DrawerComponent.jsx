@@ -6,13 +6,13 @@ import api from '../../Services/api';
 import useAuth from '../Contexts/useAuth';
 import DrawerAlert from './Store Accounts/DrawerAlert';
 
-const DrawerComponent = ({handleDrawerClose,openDrawer}) => {
+const DrawerComponent = ({handleDrawerClose,openDrawer,setUpdate, update}) => {
 
     const {user,setStoreA, storeA} = useAuth();
-    const [update, setUpdate] = useState(0)
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
+        setUpdate(update +1)
       setOpen(true);
     };
   
@@ -33,6 +33,7 @@ const DrawerComponent = ({handleDrawerClose,openDrawer}) => {
     }
 
     useEffect(()=>{
+
         if(localStorage.getItem('SAuthorization'))
         api.get('store/profile')
         .then(data=>{
@@ -41,7 +42,6 @@ const DrawerComponent = ({handleDrawerClose,openDrawer}) => {
         .catch(err => {
             console.log(err)
         })
-
     },[update])
 
     const drawer = (
@@ -77,7 +77,7 @@ const DrawerComponent = ({handleDrawerClose,openDrawer}) => {
                         </ListItemIcon>
                     <ListItemText primary="Store Orders" />
                 </ListItem>
-                <ListItem button>
+                <ListItem button onClick={()=> window.location.href="../storeSettings"}>
                         <ListItemIcon>
                             <Settings /> 
                         </ListItemIcon>
@@ -111,20 +111,24 @@ const DrawerComponent = ({handleDrawerClose,openDrawer}) => {
                 open={openDrawer}
             >
                 <DrawerHeader >
-                    {storeA.store_name && <MenuItem >
-                        <ListItemIcon>
-                            <Avatar src={'http://localhost:8090/'+storeA?.store_image} sx={{mr:2}}/>
-                        </ListItemIcon>
-                        <Typography  textAlign="center" >{storeA?.store_name}</Typography>
-                    </MenuItem>}
-                    <IconButton onClick={handleDrawerClose} >
-                        <Tooltip title="close menu"  disableFocusListener disableTouchListener>
-                            <Close />
-                        </Tooltip>
-                    </IconButton>
+                    {storeA && <>
+                        <MenuItem >
+                            <ListItemIcon>
+                                <Avatar src={storeA?.store_image && 'http://localhost:8090/'+storeA?.store_image} />
+                            </ListItemIcon>
+                            <ListItemText primary={storeA?.store_name}/>
+                            <IconButton onClick={handleDrawerClose} sx={{pr:2}} disableRipple>
+                                <Tooltip title="close menu"  disableFocusListener disableTouchListener>
+                                    <Close />
+                                </Tooltip>
+                            </IconButton>
+                        </MenuItem>
+                       
+                        </>
+                    }
                 </DrawerHeader>
                 <Divider />
-                {storeA.store_name ? drawer : <Button variant="outlined" href="./newStore">CREATE A STORE</Button>}
+                {storeA ? drawer : <Button variant="outlined" href="./newStore">CREATE A STORE</Button>}
             </Drawer>
             <DrawerAlert open={open} handleClose={handleClose} storeList={user.store} ChangeCurrentStore={ChangeCurrentStore} />
         </>

@@ -43,7 +43,7 @@ const StoreOrders = ({storeid}) => {
             {
                 storeOrders.length 
                 ? <OrdersDataGrid storeOrders={storeOrders} updateOrder={updateOrder} />
-                : <Typography>You don't have any orders yet.</Typography>
+                : <Typography padding={2} variant="h6" textAlign={'center'}>You don't have any orders yet.</Typography>
             }
             
         </Container>

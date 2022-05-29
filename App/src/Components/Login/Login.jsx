@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react'   
+import React, { useState } from 'react'   
 import LoginForm from './LoginRegisterForms/LoginForm'
 import RegisterForm from './LoginRegisterForms/RegisterForm'
 import api from '../../Services/api';
 import {useLocation, useNavigate} from 'react-router-dom';
-import { Container, Grid, Collapse, Alert } from '@mui/material';
+import { Container, Grid, Collapse, Alert, Button } from '@mui/material';
+import SucessAccount from './Components/SucessAccount';
 
 
 const Login = () => {
@@ -14,6 +15,7 @@ const Login = () => {
     const [errors, setErrors] = useState(false);
     const [open, setOpen] = useState(true);
 
+    const [openSucessAccount, setOpenSucessAccount] = React.useState(false);
 
     const Login = async (user)=>{
         try{
@@ -41,7 +43,7 @@ const Login = () => {
                 email: user.email,
                 password: user.password,
             })
-            window.location.href='./'
+            setOpenSucessAccount(true);
         }
         catch(err){
             console.log(err)
@@ -51,19 +53,22 @@ const Login = () => {
     }
 
     return (
-        <Container>
-               <Collapse in={open}>
-                {
-                    errors && <Alert onClose={() => {
-                        setOpen(false);
-                    }} severity="error">This is a success alert — check it out!</Alert>
-                }
-            </Collapse>
-            <Grid container>
-                <Grid item xs={12} md={6}><LoginForm login={Login} errors={errors}/></Grid>
-                <Grid item xs={12} md={6}><RegisterForm registerUser={Register} errors={errors}/></Grid>
-            </Grid>
-        </Container>
+        <>
+            <Container>
+                <Collapse in={open}>
+                    {
+                        errors && <Alert onClose={() => {
+                            setOpen(false);
+                        }} severity="error">An error occured, please try again later!</Alert>
+                    }
+                </Collapse>
+                <Grid container>
+                    <Grid item xs={12} md={6}><LoginForm login={Login} errors={errors}/></Grid>
+                    <Grid item xs={12} md={6}><RegisterForm registerUser={Register} errors={errors}/></Grid>
+                </Grid>
+            </Container>
+            <SucessAccount open={openSucessAccount} />
+        </>
     )
 }
 

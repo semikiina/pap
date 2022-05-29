@@ -9,6 +9,7 @@ const ProfileEdit = ({open, handleClose, setFav, fav}) => {
 
     const {  handleSubmit, register } = useForm();
     const [previewAvatar, setPreviewAvatar] = useState();
+    const [ok, setOk] = useState(true);
 
     const{user, setUser} = useAuth(); 
 
@@ -24,26 +25,39 @@ const ProfileEdit = ({open, handleClose, setFav, fav}) => {
     }
 
     const updateUser = data =>{
-
-        var formData = new FormData();
-        var imagefile = document.querySelector('#file');
-        formData.append("image", imagefile.files[0]);
-        formData.append("first_name", data.first_name)
-        formData.append("last_name", data.last_name)
-        formData.append("nickname", data.nickname)
-        api.post("user/editProfile" , formData,{
-            headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-        })
+        setOk(true)
+        if(data.nickname != user.nickname)
+        api.get("user/verifyNickname/"+data.nickname ,)
         .then(data=>{
-            setFav(fav+1)
-            handleClose()
+            setOk(false);
         })
         .catch(err=>{
             console.log(err)
         })
+
+        if(ok){
+            var formData = new FormData();
+            var imagefile = document.querySelector('#file');
+            formData.append("image", imagefile.files[0]);
+            formData.append("first_name", data.first_name)
+            formData.append("last_name", data.last_name)
+            formData.append("nickname", data.nickname)
+            api.post("user/editProfile" , formData,{
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+            })
+            .then(data=>{
+                setFav(fav+1)
+                handleClose()
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+        }
     }
+
+
     useEffect(()=>{
         setPreviewAvatar("http://localhost:8090/"+user.profile_pic)
     },[user])
@@ -84,6 +98,7 @@ const ProfileEdit = ({open, handleClose, setFav, fav}) => {
                     <TextField {...register('nickname')} label="Username" variant="outlined" defaultValue={user.nickname} fullWidth InputProps={{
                         startAdornment: <InputAdornment position="start">@</InputAdornment>,
                     }}/>
+                    <Typography variant="caption" color="error">{!setOk && 'This nickname is anavailable'}</Typography>
                 </Grid>
             </Grid>
         </DialogContent>

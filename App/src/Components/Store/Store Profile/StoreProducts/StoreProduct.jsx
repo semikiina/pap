@@ -26,7 +26,7 @@ const StoreProduct = ({product}) => {
                             />
                             <ImageListItemBar
                                 title={item.title}
-                                subtitle={<span>{item.price} €</span>}
+                                subtitle={<span>{item.basePrice} €</span>}
                                 position="below"
                             />
                             </ImageListItem>

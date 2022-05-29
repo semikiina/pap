@@ -35,7 +35,7 @@ const StoreProducts = ({storeid}) => {
                 {
                     products.length 
                     ? <ProductDataGrid products={products} update={update} setUpdate={setUpdate} /> 
-                    : <Typography>Start by adding a product</Typography>
+                    : <Typography padding={2} textAlign={'center'} variant="h6">Start by adding a product.</Typography>
                 }
         </Container>
         

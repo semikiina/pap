@@ -3,34 +3,9 @@ import { Divider, Typography, Box, Stack, IconButton, Tooltip } from '@mui/mater
 import React, { useEffect } from 'react'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import Carousselitem from './Components/Carousselitem';
+import Carousselitem from '../Components/Carousselitem';
+import { responsive} from '../../../Services/carouselResponsive';
 
-const responsive = {
-    desktop: {
-    breakpoint: {
-        max: 3000,
-        min: 1024
-    },
-    items: 4,
-    partialVisibilityGutter: 40
-    },
-    mobile: {
-    breakpoint: {
-        max: 464,
-        min: 0
-    },
-    items: 1,
-    partialVisibilityGutter: 30
-    },
-    tablet: {
-    breakpoint: {
-        max: 1024,
-        min: 464
-    },
-    items: 2,
-    partialVisibilityGutter: 30
-    }
-}
 const NewProductsFeed = ({products, onAddToCart, newFav}) => {
 
     
@@ -41,7 +16,7 @@ const NewProductsFeed = ({products, onAddToCart, newFav}) => {
                 <Stack direction="row" justifyContent={'space-between'}>
                         <Typography padding={2} variant="h6">Featured Products</Typography>
                     <Tooltip title="see more">
-                        <IconButton disableRipple>
+                        <IconButton disableRipple onClick={()=> window.location.href="../feed/products"}>
                             <ArrowForward />
                         </IconButton>
                     </Tooltip>

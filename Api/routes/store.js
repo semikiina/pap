@@ -18,6 +18,9 @@ router.get('/products', Auth, SAuth, storeController.GetProductsByStore)
 //GET /store/orders
 router.get('/orders', Auth, SAuth, storeController.StoreOrders)
 
+//GET /store/verifyStoreEmail/:id
+router.get('/verifyStoreEmail/:id', Auth, storeController.verifyEmail)
+
 //GET /store/login/:id
 router.get('/login/:id', Auth, storeController.Login)
 

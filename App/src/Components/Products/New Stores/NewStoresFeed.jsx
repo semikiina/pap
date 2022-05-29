@@ -3,7 +3,7 @@ import { Divider, Typography, Box, Stack, IconButton, Tooltip } from '@mui/mater
 import React, { useEffect } from 'react'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import Carousselitem from './Components/Carousselitem';
+import CarousselitemStores from './Components/CarousselitemStores';
 
 const responsive = {
     desktop: {
@@ -44,7 +44,7 @@ const NewStoresFeed = ({newStores}) => {
             <Stack direction="row" justifyContent={'space-between'}>
                 <Typography padding={2} variant="h6">New Stores</Typography>
                 <Tooltip title="see more">
-                    <IconButton disableRipple>
+                    <IconButton disableRipple onClick={()=> window.location.href="../feed/stores"}>
                         <ArrowForward />
                     </IconButton>
                 </Tooltip>
@@ -54,7 +54,7 @@ const NewStoresFeed = ({newStores}) => {
                 <Carousel arrows infinite responsive={responsive}>
                     {
                         newStores.map((store)=>{
-                            return <Carousselitem key={store._id} store={store} />
+                            return <CarousselitemStores key={store._id} store={store} />
                         })
                     }
                 </Carousel>

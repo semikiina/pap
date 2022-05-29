@@ -40,6 +40,12 @@ router.get('/profile', Auth, userController.Profile);
 //GET /user/orders
 router.get('/orders', Auth, userController.UserOrders);
 
+//GET /user/verifyParams
+router.get('/verifyParams/:nickname/:email', userController.verifyParams);
+
+//GET /user/verifyNickname
+router.get('/verifyNickname/:nickname', userController.verifyNickname);
+
 //GET /user/confirmAccount
 router.get('/confirmAccount/:nickname/:token', userController.ConfirmAccount);
 

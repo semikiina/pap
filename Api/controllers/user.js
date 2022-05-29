@@ -69,6 +69,40 @@ exports.NewUser = (req, res, next) => {
 
 }
 
+//GET verify Nickname
+exports.verifyParams = (req, res, next) => {
+
+    console.log('GET /user/verifyParams')
+    User.findOne({  $or:[ {email: req.params.email} , {nickname: req.params.nickname} ] })
+        .then(user => {
+
+            if(user) res.status(400).send('Account already exists.')
+            else res.status(200).send('New Account');
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
+}
+
+//GET verify Nickname
+exports.verifyNickname = (req, res, next) => {
+
+    console.log('GET /user/verifyNickname')
+    User.findOne({nickname: req.params.nickname})
+        .then(user => {
+            
+            if(user) res.status(400).send('Nickname Taken.')
+            else res.status(200).send('New Account');
+        })
+        .catch(err => {
+            if (!err.StatusCode) err.StatusCode = 500;
+            next(err);
+        })
+}
+
+
+
 //GET all users
 exports.ConfirmAccount = (req, res, next) => {
 
@@ -112,10 +146,8 @@ exports.Profile = (req, res, next) => {
     const userId = req.userId;
     console.log('GET user/profile')
     User.findById(userId)
-        //Excludes fields
         .select(['-password'])
-        // Populate gets info from other collections
-        .populate('cart.items.product_id',['price','title','images','stock','category',"shipping"])
+        .populate('cart.items.product_id',['price','title','images','stock','category',"shipping",'variants'])
         .populate('favorite',['title','images','price','variants'])
         .populate('store')
         .then(user => {
@@ -181,7 +213,7 @@ exports.EditProfile = (req, res, next) => {
     User.findById(userid)
         .then(user => {
             
-            if(req.files) user.profile_pic = req.files[0].path;
+            if(req.files.path) user.profile_pic = req.files[0].path;
             user.first_name = userReq.first_name;
             user.last_name = userReq.last_name;
             user.nickname = userReq.nickname;
@@ -316,7 +348,7 @@ exports.RemoveProductQuantity = async (req, res, next) => {
     .then(user => {
 
         const CartItemIndex = user.cart.items.findIndex( item =>{
-            return item.product_id.toString() == product._id.toString() && item.skuid == req.params.skuid
+            return item.product_id.toString() == product._id.toString() && item.skuid == req.body.skuid
         })
 
         let newQuantity = 1;
@@ -328,7 +360,7 @@ exports.RemoveProductQuantity = async (req, res, next) => {
             updatedCart[CartItemIndex].quantity = newQuantity;
         }
         else{
-            return user.RemoveFromCart(product)
+            return user.RemoveFromCart(product,req.body.skuid)
         }
         let subtotal = 0;
         let shipping = 0;

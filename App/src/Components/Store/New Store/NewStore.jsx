@@ -1,22 +1,22 @@
-import { Container, Divider, Grid, Typography, Paper, TextField, Stack, Button, Box, Stepper, Step, StepLabel, CircularProgress, Backdrop } from '@mui/material'
+import { Container, Divider, Grid, Typography, Paper, Stack, Box, Stepper, Step, StepLabel, CircularProgress, Backdrop } from '@mui/material'
 import React , {useState} from 'react'
 import BasicInfos from './Store Steps/BasicInfos';
 import StorePicture from './Store Steps/StorePicture';
-import api from '../../../Services/api'
-import ConfirmStore from './Store Steps/ConfirmStore';
 
-const steps = ['Basic Informations', 'Add a store picture', 'Confirm'];
+const steps = ['Basic Informations', 'Add a store picture'];
 
 
 const NewStore = () => {
 
-    const [storeName, setStoreName] = useState('');
-    const [storeEmail, setStoreEmail] = useState('');
-    const [code, setCode] = useState('');
+
+    const [newStore, setNewStore] = useState({});
 
     const [loading, setLoading] = useState(false);
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
+
+    const [activeStep, setActiveStep] = useState(0);
+
+    const [skipped, setSkipped] = useState(new Set());
+
 
     const isStepOptional = (step) => {
         return step === 1;
@@ -27,11 +27,14 @@ const NewStore = () => {
     };
 
     const handleNext = () => {
+        
         let newSkipped = skipped;
         if (isStepSkipped(activeStep)) {
         newSkipped = new Set(newSkipped.values());
         newSkipped.delete(activeStep);
         }
+
+        if(activeStep == 1) window.location.href="../ConfirmStore/"+newStore.store_email
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
@@ -41,39 +44,10 @@ const NewStore = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-        throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-        const newSkipped = new Set(prevSkipped.values());
-        newSkipped.add(activeStep);
-        return newSkipped;
-        });
-    };
-
    
-
-
-    const confirmStore = () =>{
-        api.post('store/confirmAccount/'+storeEmail,{
-            code: code
-        })
-        .then(data =>{
-            window.location.href="./store/"+data.data
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-
-    }
-
   const StoreSteps = () =>{
-    if(activeStep == 0) return <BasicInfos handleNext={handleNext} storeName={storeName} setStoreName={setStoreName} storeEmail={storeEmail} setStoreEmail={setStoreEmail}/>
-    else if(activeStep == 1) return <StorePicture  handleNext={handleNext} handleBack={handleBack} handleSkip={handleSkip} storeName={storeName} storeEmail={storeEmail} setLoading={setLoading}/>
-    else if(activeStep == 2) return <ConfirmStore storeEmail={storeEmail} code={code} setCode={setCode} handleBack={handleBack} confirmStore={confirmStore}/>
+    if(activeStep == 0) return <BasicInfos handleNext={handleNext} newStore={newStore} setNewStore={setNewStore}/>
+    else if(activeStep == 1) return <StorePicture  handleNext={handleNext} handleBack={handleBack} newStore={newStore} setLoading={setLoading} />
   }
 
   return (

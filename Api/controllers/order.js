@@ -48,7 +48,7 @@ function OrderInvoice (CheckoutReq, cartItems) {
 
 
 exports.GetOrder = (req, res, next) => {
-    Order.find({email: req.params.email})
+    Order.find({email: req.params.email}).orFail()
     .populate('cart.items.product_id',['price','title','images'])
     //Product.find()
         .then(order => {
@@ -63,6 +63,14 @@ exports.GetOrder = (req, res, next) => {
                     errors: error.array()
                 })
         })
+}
+
+async function  removeStock(prd, skuid){
+    const product = await Product.findById(prd)
+    product.variants.prices.forEach((item)=>{
+        
+    })
+
 }
 
 
@@ -86,10 +94,11 @@ exports.Checkout = async (req, res, next) => {
         var cartItems = [];
 
         user.cart.items.map((item)=>{
+            var thisComb = item.product_id.variants.prices.filter((comb)=>{ return comb.skuid == item.skuid})
             cartItems.push({
                 "quantity": item.quantity,
-                "description": item.product_id.title,
-                "price": item.product_id.price,
+                "description": item.product_id.title + " - " + item.skuid.replaceAll('?', " ,"),
+                "price": thisComb[0].originalPrice,
                 "tax-rate": 0,
             })
         })
@@ -126,17 +135,20 @@ exports.Checkout = async (req, res, next) => {
             user.cart.items.map((item)=>{
                 if(item.product_id.store_id._id.toString() == store._id)
                 {
+                    removeStock();
+
                     orderItems.push({
                         product_id: item.product_id._id,
-                        status: 'payed',
-                        quantity: item.quantity
+                        quantity: item.quantity,
+                        skuid : item.skuid
                     })
                 }
             })
 
             store.orders.push({
                 orderid: orderSave._id,
-                items: orderItems
+                items: orderItems,
+                status:'Payed'
             })
             await store.save()
 
@@ -184,22 +196,16 @@ exports.Checkout = async (req, res, next) => {
 exports.VerifyStock = (req, res, next) => {
     
     console.log('POST /order/stock')
-    User.findById(req.userId)
-        .populate('cart.items.product_id',['price','title','images','category','store_id',"stock"])
+    User.findById(req.userId).orFail()
+        .populate('cart.items.product_id',["variants"])
         .then(user =>{
             user.cart.items.forEach((e) =>{
-
-                if(e.quantity > e.product_id.stock) throw new Error("This product doesn't have enough stock")
+                const verProd = e.product_id.variants.prices.filter((comb)=>{ return comb.skuid == e.skuid})
+                if(e.quantity > verProd[0].availableQuantity) throw new Error("This product doesn't have enough stock!")
             })
 
-            return user.save()
+            res.status(200).send('Stock available.')
 
-        })
-        .then(result => {
-            res.status(201).json({
-                message: "Order Placed Successfully!",
-                email: result
-            })
         })
         .catch(error => {
             console.log(error);

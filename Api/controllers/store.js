@@ -1,6 +1,5 @@
 const { validationResult } = require('express-validator');
 const Store = require('../models/store');
-const Order = require('../models/order');
 const Product = require('../models/product');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
@@ -27,8 +26,30 @@ exports.GetStores = (req, res, next) => {
         })
 }
 
+//Verify Store account
+exports.verifyEmail = (req, res, next) => {
+
+    console.log('GET /verifyStoreEmail')
+
+    Store.find({ store_email : req.params.id})
+        .then(store => {
+
+            if(store.length == 0) res.status(200).send('New Store');
+            else res.status(400).send('Email already exists.')
+        })
+        .catch(error => {
+            console.log(error);
+            return res
+                .status(422)
+                .json({
+                    message: "An error ocurred.",
+                    errors: error.array()
+                })
+        })
+}
+
 //Store New
-exports.NewStore = (req, res, next) => {
+exports.NewStore = async (req, res, next) => {
 
     console.log('POST store')
     let storeReq = { ...req.body };
@@ -44,15 +65,16 @@ exports.NewStore = (req, res, next) => {
         throw error;
     }
 
-    var storeimg;
+    var storeimg="";
     console.log(req.files)
-    if(req.files) storeimg= req.files[0].path
+    if(req.files.path) storeimg= req.files[0].path
 
     //Create new store
     const store = new Store({
         store_image: storeimg,
         store_name: storeReq.store_name,
         store_email: storeReq.store_email,
+        private : true,
         active : false,
         creator_id: req.userId,
         date_created: Date.now(),
@@ -75,9 +97,6 @@ exports.NewStore = (req, res, next) => {
         })
         .then( result =>{
 
-            //Create a token
-            //const token = jwt.sign({ store_email: store.store_email, id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
-            //res.status(201).json({ id: store._id.toString() ,stoken:token, creatorid: result._id.toString()});
             res.status(201).send('Store Created sucessfully!');
         })
         .catch(error => {
@@ -120,9 +139,9 @@ exports.ConfirmAccount = (req, res, next) => {
         })
         .then(store => {
             
-            const token = jwt.sign({ id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
+            const token = jwt.sign({ id: storeForUser.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
 
-            res.status(201).json({ id: store._id.toString() ,stoken:token});
+            res.status(201).json({ id: storeForUser.toString() ,stoken:token, store:store});
         })
         .catch(err => {
             if (!err.StatusCode) err.StatusCode = 500;
@@ -176,6 +195,7 @@ exports.Login = (req, res, next) => {
             //Create a token
             const token = jwt.sign({ store_email: store.store_email, id: store._id.toString() }, 'supersecretstoretagmetoken', { expiresIn: '30d' });
   
+            console.log(token)
             res.status(200).json({ id: store._id.toString() ,stoken:token});
         })
         .catch(err => {
