@@ -1,13 +1,19 @@
-import React from 'react'
-import { Stack, Typography, Box, Divider, Avatar,Rating, Checkbox, Button, IconButton} from '@mui/material'
-import { Favorite, FavoriteBorder, StarBorder, Edit, Delete} from '@mui/icons-material';
+import React, { useState } from 'react'
+import { Stack, Typography, Box, Divider, Avatar,Rating, IconButton, Select, MenuItem, InputLabel, FormControl, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
+import { StarBorder, Delete} from '@mui/icons-material';
 import api from '../../../Services/api';
 import useAuth from "../../Contexts/useAuth";
+import RevPagination from './Footer/Reviews/RevPagination';
+import { Lightbox } from "react-modal-image";
 
-const ProductReview = ({id,reviews,setDel,del}) => {
+const ProductReview = ({ reviews,setDel,del}) => {
 
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     var { user} = useAuth();
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [revPerPage, setRevPerPage] = useState(5);
+    const [open, setOpen] = useState();
 
     const DeleteReview = (delid)=>{
         api.delete('review/'+delid)
@@ -28,50 +34,90 @@ const ProductReview = ({id,reviews,setDel,del}) => {
         </Stack>
         
     )
-    
+
+    const indexOfLastRev = currentPage * revPerPage;
+    const indexOfFirstRev =  indexOfLastRev - revPerPage;
+    const currentRevs = reviews.slice(indexOfFirstRev,indexOfLastRev);
+
+    const handlePaginationChange = (e, page) => {
+        setCurrentPage(page)
+    }
+
     return (
         <>
-            <Typography variant="h5"  marginTop={4} >Reviews</Typography>
+            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} margin={2}>
+                <Typography variant="h5" >Reviews</Typography>
+                <Box>
+                    <FormControl >
+                        <InputLabel id="revPagelabel">Items</InputLabel>
+                        <Select defaultValue={revPerPage} onChange={(e) => setRevPerPage(e.target.value)} labelId="revPagelabel"  label="Items" sx={{width: 80}}>
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={10}>10</MenuItem>
+                            <MenuItem value={20}>15</MenuItem>
+                        </Select> 
+                    </FormControl>
+                </Box>
+            </Stack>
             <Divider ></Divider>
                 {
-                    reviews.map((rev)=>{
+                    currentRevs.map((rev)=>{
                         return(
-                            <Box padding={2} marginBottom={3} key={rev._id}>
-                                <Stack direction="row" spacing={2} marginBottom={2}>
-                                    <Avatar src={'https://tagmeapi.herokuapp.com/'+rev.user_id.profile_pic}></Avatar>
-                                    <Box>
-                                        <Stack direction="row" spacing={1} >
-                                            <Typography variant="subtitle1">{rev.user_id.first_name+" "+rev.user_id.last_name}</Typography>
-                                            <Rating value={rev.review} readOnly />
-                                        </Stack>
-                                        <Typography variant="caption">@{rev.user_id.nickname}</Typography>
-                                    </Box>
-                                    
+                            <Box key={rev._id}>
+                        <Box padding={2} marginBottom={3} >
+                            <ListItem dense disablePadding>
+                                <ListItemAvatar>
+                                    <Avatar src={`http://localhost:8090/${rev.user_id.profile_pic}`} />
+                                </ListItemAvatar>
+                                <ListItemText 
+                                    primary={`${rev.user_id.first_name} ${rev.user_id.last_name}`}
+                                    secondary={`@${rev.user_id.nickname}`}
+                                />
+                            </ListItem>
+                            <Typography variant="subtitle2" padding={1} >{rev.description}</Typography>
+                            {
+                                rev.images &&
+                                <Stack direction="row" spacing={2}>
+                                    { 
+                                        rev.images?.map((img,index)=>{
+                                            var imgInd = rev._id+index;
+                                            return <Box key={imgInd}>
+                                                <IconButton onClick={()=>setOpen(rev._id+index)} disableRipple>
+                                                    <Avatar src={`http://localhost:8090/${img}`} variant={'square'} sx={{width:100, height:100}} />
+                                                </IconButton>
+                                                {
+                                                    open == imgInd && 
+                                                        <Lightbox
+                                                        medium={`http://localhost:8090/${img}`}
+                                                        onClose={()=>setOpen("")}
+                                                        />
+                                                    
+                                                }
+                                            </Box>
+                                                        
+                                        })
+                                    }
                                 </Stack>
-                                <Box>
-                                    <Typography variant="subtitle2">{rev.description}</Typography>
-                                </Box>
-                                <Box>
-                                    {/* Its for images */}
-                                </Box>
-                                    <Stack direction="row" justifyContent="flex-end" alignItems={'center'} marginBottom={1}>
-                                        <Typography>{rev.favorites.length}</Typography>
-                                        <Checkbox
-                                            icon={<FavoriteBorder />}
-                                            checkedIcon={<Favorite />}
-                                            color="error"
-                                        />
-                                        <Typography variant="subtitle2" >  { new Date(rev.date_created).toLocaleDateString("en-US",options)}</Typography>
-                                        { user._id  == rev.user_id._id &&
-                                            <IconButton onClick={()=>DeleteReview(rev._id)}>
-                                                <Delete color="error"/>
-                                            </IconButton>
-                                        }
-                                    </Stack>
-                            </Box>
+                            }
+                            <Stack direction="row"  marginBottom={1} justifyContent="flex-end" alignItems={'center'}>
+                                <Rating value={rev.review} readOnly/>
+                                <Typography variant="caption" > , {new Date(rev.date_created).toLocaleDateString("en-US", options)}</Typography>
+                                {
+                                    user._id == rev.user_id._id && 
+                                    <IconButton onClick={()=>DeleteReview(rev._id)} >
+                                        <Delete color="error" />
+                                    </IconButton>
+                                }
+                            </Stack>
+                        </Box>
+                        <Divider variant="middle" />
+                        </Box>
                         )
                     })
-                }     
+                }
+                <Box marginTop={3}>
+                    <RevPagination revPerPage={revPerPage} totalRevs={reviews.length} currentPage={currentPage} handlePaginationChange={handlePaginationChange} />     
+                </Box>
+            
         </>
   )
 }

@@ -73,4 +73,7 @@ router.post('/cart/:productId', Auth, userController.DeleteCart);
 //DELETE /user/deleteAddress/:addressId
 router.delete('/deleteAddress/:addressId', Auth, userController.DeleteAddress);
 
+//DELETE /user/removeStore/:id
+router.delete('/removeStore/:id', Auth, userController.RemoveStore);
+
 module.exports = router;

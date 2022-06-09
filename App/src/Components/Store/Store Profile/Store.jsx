@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import {Container, Paper, Typography, Box, Tab, Grid, CircularProgress, Button, Stack, Avatar,MenuItem,Select, TextField, InputAdornment} from '@mui/material'
-import {Send, Settings} from '@mui/icons-material';
+import {Container, Paper, Typography, Box, Tab, Grid, CircularProgress, Button, Stack, Avatar,MenuItem,Select, TextField, InputAdornment, Chip} from '@mui/material'
+import {Lock, LockOutlined, RemoveRedEye, Send, Settings} from '@mui/icons-material';
 import {TabContext, TabList,TabPanel } from '@mui/lab/';
 import StoreReviews from '../Store Profile/StoreReview/StoreReviews';
 import StoreProduct from '../Store Profile/StoreProducts/StoreProduct';
 import api from '../../../Services/api';
 import { useParams } from 'react-router-dom';
-import StoreEdit from '../Store Profile/StoreEdit/StoreEdit';
 import SearchIcon from '@mui/icons-material/Search';
 import  useAuth  from '../../Contexts/useAuth';
 
@@ -72,6 +71,7 @@ const Store = () => {
     useEffect(()=>{
         api.get('feed/store/'+id)
         .then(({data})=>{
+            console.log(data)
             setStore(data)
             setStoreName(data.store_name)
             setAvatar(data.store_image)
@@ -82,26 +82,48 @@ const Store = () => {
         })
     },[])
 
-    
     if (!store) return <CircularProgress/>;
-    return (
+
+    else if(!store.active && !(store.collaborators?.some(e => e.user_id == user._id) && storeA._id == store._id)) return (
+        <Grid container alignItems={'center'} justifyContent={'center'} >
+            <Box padding={4}>
+                <Stack direction="row" alignItems={'center'} marginBottom={2}>
+                    <LockOutlined sx={{width:100, height :100}} color="secondary" />
+                    <Box>
+                        <Typography variant="h5">This store is currently private!</Typography>
+                        <Typography >Try to visit it later. If you own this store,</Typography>
+                        <Typography >make sure that you've logged with the right account.</Typography>
+                    </Box>
+                </Stack>
+                <Button fullWidth variant="outlined" href="../feed/stores" color="secondary" > See other stores</Button>
+            </Box>
+        </Grid>
+        
+    )
+
+
+    else return (
         <>
-            <Container>
+            <Container >
                 <Grid container spacing={3}>
-                    <Grid item md={4} lg={3}>
+                    <Grid xs={12} item md={4} lg={3} >
                         <Box>
                             <Paper>
-                                <Stack spacing={1} justifyContent="center" alignItems={'center'}>
+                                <Stack spacing={1} justifyContent="center" alignItems={'center'} paddingTop={2}>
+                                    {
+                                        (store.collaborators?.some(e => e.user_id == user._id) && storeA._id == store._id) && <Chip  variant="outlined" icon={store.active ? <RemoveRedEye/> :  <Lock />}  label={store.active ? "Public Store" : "Private Store"} color={store.active ? "success" : "secondary"} />
+                                    }
                                     <Typography paddingTop={2} align={'center'}>{storeName}</Typography>
-                                    {  <Avatar src={ store.store_image && "https://tagmeapi.herokuapp.com/"+avatar} sx={{width:200, height:200}} variant="square"></Avatar>}
-                                   { (user._id == store.creator_id && storeA._id == id ) &&  <Button  variant="outlined" color="secondary" onClick={handleOpen} >Edit Store</Button> }
+                                    {  <Avatar src={ store.store_image && "http://localhost:8090/"+avatar} sx={{width:200, height:200}} variant="square"></Avatar>}
+                                    
+                                    <Typography>{`${store.orders.length} orders`}</Typography>
+                                    
                                     <Button variant="contained" href ={ `mailto:${store.store_email}`} fullWidth> <Typography paddingRight={1}>Send Email</Typography> <Send fontSize='small'/></Button>
                                 </Stack>
-                                
                             </Paper>
                         </Box>
                     </Grid>
-                    <Grid item md={8} lg={9}>
+                    <Grid item  xs={12} md={8} lg={9}>
                         <Paper sx={{ width: '100%', typography: 'body1' }}>
                             <TabContext value={value}>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -146,15 +168,13 @@ const Store = () => {
                                     {
                                         products.length ? <StoreProduct product={filteredProducts}/> : <Typography variant="h6" textAlign={'center'} marginTop={5}>This store doesn't have any products yet.</Typography>
                                     }
-                                    
                                 </TabPanel>
-                                <TabPanel value="2"><StoreReviews/> </TabPanel>
+                                <TabPanel value="2"><StoreReviews storeid={id} /> </TabPanel>
                             </TabContext>
                         </Paper>
                     </Grid>
                 </Grid>
             </Container>
-            <StoreEdit open={open} handleClose={handleClose} store={store} setStore={setStore} setAvatar={setAvatar} setStoreName={setStoreName}></StoreEdit>
         </>
     )
 }

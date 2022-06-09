@@ -4,17 +4,15 @@ import Review from './Review'
 import api from '../../../Services/api';
 import { Email, Home, LocalPhone, Person } from '@mui/icons-material';
 import DialogCheckout from './Components/DialogCheckout';
+import Swal from 'sweetalert2'
 
-const PaymentForm = ({shippingData, cart, backStep}) => {
+
+const PaymentForm = ({shippingData, cart, backStep, setUpdateNots}) => {
 
     const [open, setOpen] = useState(false);
     const paypal = useRef()
     var cartItems=[];
     var totalitems=0;
-
-    const handleClose = () => {
-        setOpen(false);
-      };
 
 
     var add2 = "";
@@ -45,10 +43,10 @@ const PaymentForm = ({shippingData, cart, backStep}) => {
                             description: 'TagMe! purchase',
                             amount:{
                                 currency_code: 'EUR',
-                                value: cart.subtotal + cart.shipping,
+                                value: (cart.subtotal + cart.shipping).toFixed(2),
                                 breakdown: {
-                                    item_total: {value: totalitems, currency_code: 'EUR'},
-                                    shipping: {value: cart.shipping, currency_code: 'EUR'},
+                                    item_total: {value: totalitems.toFixed(2), currency_code: 'EUR'},
+                                    shipping: {value: cart.shipping.toFixed(2), currency_code: 'EUR'},
 
                                 }
                             },
@@ -78,8 +76,10 @@ const PaymentForm = ({shippingData, cart, backStep}) => {
             },
             onApprove: async (data, actions) =>{
                 try {
+                   
                     const order = await actions.order.capture()
-                    const postOrder = await api.post('order',{
+
+                    const postOrderbody ={
                         email:shippingData.email,
                         first_name: shippingData.first_name,
                         last_name: shippingData.last_name,
@@ -87,18 +87,32 @@ const PaymentForm = ({shippingData, cart, backStep}) => {
                         phone: shippingData.phone,
                         country: shippingData.country,
                         zip_code: shippingData.zip_code,
+                        province: shippingData.province,
                         city: shippingData.city,
                         address_1: shippingData.address_1,
                         address_2: shippingData.address_2,
                         paypal_id: order.id,
-                    })
-                    setOpen(true)
+                    }
+
+                    const postOrder = await api.post('order', postOrderbody)
+                    
+                    Swal.fire({
+                        title: 'Great!',
+                        text: 'Your order was placed successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'My orders'
+                      })
+                      .then((data )=> window.location.href="../orders")
+
+                    setUpdateNots(Math.random(100))
                 }
                 catch(err){
+                    console.log('bye')
                     console.log(err)
                 }
             },
             onError: (err) =>{
+                console.log(err)
                 console.log("An error happened!")
             },
             onCancel : () =>{
@@ -124,10 +138,6 @@ const PaymentForm = ({shippingData, cart, backStep}) => {
                 <div ref={paypal}></div>
             </Grid>
         </Grid>
-        <DialogCheckout open={open}/>
-      
-        
-        
         </>
     )
 }

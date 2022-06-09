@@ -43,7 +43,7 @@ const NavbarMenu = ({handleCloseStoreMenu, anchorElStore, storeid}) => {
             >
                 <MenuItem onClick={handleCloseStoreMenu}>
                     <ListItemIcon>
-                        <Avatar src={'https://tagmeapi.herokuapp.com/'+store?.store_image} sx={{width: 30, height: 30}}/>
+                        <Avatar src={'http://localhost:8090/'+store?.store_image} sx={{width: 30, height: 30}}/>
                     </ListItemIcon>
                     <Typography Store textAlign="center" >{store.store_name}</Typography>
                 </MenuItem>

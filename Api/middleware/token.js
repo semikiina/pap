@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
 
-    //console.log('User Token');
     const token = req.get('UAuthorization');
     if (!token) {
         const error = new Error('ERROR ON TOKEN');

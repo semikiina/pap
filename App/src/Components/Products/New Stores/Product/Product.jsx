@@ -23,15 +23,15 @@ const Product = ({product, onAddToCart, newFav}) => {
     const HandleHovers = () =>{
         if(src.image == 0) {
             if(product.images[1])
-            setSrc({src:"https://tagmeapi.herokuapp.com/" + product.images[1], image : 1})
+            setSrc({src:"http://localhost:8090/" + product.images[1], image : 1})
         }
         else {
-            if(product.images[1]) setSrc({src:"https://tagmeapi.herokuapp.com/" + product.images[0], image : 0})
+            if(product.images[1]) setSrc({src:"http://localhost:8090/" + product.images[0], image : 0})
         }  
     }
 
     useEffect(()=>{
-        if(product) setSrc({src:"https://tagmeapi.herokuapp.com/" + product.images[0], image : 0})
+        if(product) setSrc({src:"http://localhost:8090/" + product.images[0], image : 0})
     },[product])
 
    

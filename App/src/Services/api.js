@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'https://tagmeapi.herokuapp.com'
+    baseURL: 'http://localhost:8090'
 })
 
 api.defaults.headers.common['UAuthorization'] = localStorage.getItem('UAuthorization');

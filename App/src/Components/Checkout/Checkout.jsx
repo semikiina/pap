@@ -4,20 +4,18 @@ import AdressForm from './CheckoutForm/AdressForm';
 import PaymentForm from './CheckoutForm/PaymentForm';
 import { ArrowBack } from '@mui/icons-material';
 
+
+
 const steps=['Shipping Adress', 'Payment details']
 
 
-const Checkout = ({Cart,userId}) => {
+const Checkout = ({Cart, setUpdateNots}) => {
+
     const [activeStep, setActiveStep] = useState(0);
     const [shippingData, setShippingData] = useState({});
   
-    const Confirmation = () =>(
-        <div>
-            Confirmation
-        </div>
-    )
-
     const nextStep =() => setActiveStep((prev) => prev + 1 );
+    
     const backStep =() => {
         if(activeStep-1 <0) window.location.href="../cart"
 
@@ -30,11 +28,9 @@ const Checkout = ({Cart,userId}) => {
        nextStep();
     }
 
-
-
     const Form = () => activeStep == 0 
         ? <AdressForm next={next}/>
-        : <PaymentForm shippingData ={shippingData} cart={Cart} userId={userId} backStep={backStep}/>
+        : <PaymentForm shippingData ={shippingData} cart={Cart}  backStep={backStep} setUpdateNots={setUpdateNots}/>
 
     return (
         <Container>
@@ -57,13 +53,10 @@ const Checkout = ({Cart,userId}) => {
                                     })}
                                 </Stepper>
                             </Box>
-                            <Box></Box>
                         </Stack>
-                            
-                        
                     </Box>
                     <Box paddingX={4} paddingBottom={4}>
-                        {activeStep == steps.length ? <Confirmation/> : <Form/>}
+                        <Form/>
                     </Box>
                 </Paper>
         </Container>

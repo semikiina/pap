@@ -15,7 +15,7 @@ const Review = ({cart}) => {
                         return(
                             <ListItem key={`${item.product_id._id}_${index}` } alignItems="center"  divider>
                                 <ListItemAvatar >
-                                    <Avatar src={'https://tagmeapi.herokuapp.com/'+ item.product_id.images[0]} variant="square" sx={{width: 80 , height :  80}}/>
+                                    <Avatar src={'http://localhost:8090/'+ item.product_id.images[0]} variant="square" sx={{width: 80 , height :  80}}/>
                                 </ListItemAvatar>
                                 <ListItemText 
                                     primary={item.product_id.title}

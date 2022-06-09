@@ -29,13 +29,10 @@ const OrderSchema = new Schema({
                     type:Schema.Types.ObjectId,
                     ref:'Product'
                 },
-                quantity: { 
-                    type:Number 
-                },
-                variants:{
-                    color: String,
-                    size: String,
-                }
+                skuid: String,
+                quantity: Number,
+                price : Number,
+                shipping: Number,
             }
         ],
         subtotal: Number,

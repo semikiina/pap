@@ -6,9 +6,9 @@ import 'react-multi-carousel/lib/styles.css';
 import { responsive } from '../../../Services/carouselResponsive';
 import SimilarProduct from './Footer/SimilarProduct';
 
-const ProductDetailFooter = ({storename, storeid, simProduct}) => {
+const ProductDetailFooter = ({storename, storeid, simProduct, storeActive}) => {
 
-    if(!simProduct) return <CircularProgress/>
+    if(!storeActive || !simProduct.length) return null;
     return (
         <>
             <Stack direction="row" justifyContent={'space-between'}>

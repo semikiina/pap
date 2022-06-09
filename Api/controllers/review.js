@@ -1,3 +1,4 @@
+const { populate } = require('../models/review');
 const Review = require('../models/review');
 
 exports.GetReviews = (req, res, next) => {
@@ -19,13 +20,56 @@ exports.GetReviews = (req, res, next) => {
     })
 }
 
+exports.GetReviewsPerStore = (req, res, next) => {
+    
+    console.log('Get /review/store/'+req.params.id)
+    Review.find()
+    .populate({
+        path:'product_id', 
+        select: ['title',"images", 'category', 'active', "store_id"],
+        populate:({
+            path:'store_id', 
+            select: "store_name store_image",
+        })
+    })
+    .populate('user_id',"first_name last_name nickname profile_pic")
+    .then((rev)=>{
+        var revArray=[]
+
+        rev.forEach((rev)=>{
+            if(rev.product_id.store_id._id == req.params.id) revArray.push(rev)
+        })
+        res.status(201).json({revArray})
+    })
+    .catch((error)=>{
+        console.log(error);
+        return res
+            .status(422)
+            .json({
+                message: "Failed to update review. Please try again later.",
+                errors: error
+            })
+    })
+}
+
+
 exports.NewReview = (req, res, next) => {
     
     console.log('POST /review')
+
     var ReqReview = {...req.body}
+
+    var images =[];
+
+    req.files.forEach(element => {
+
+        images.push(element.path)
+    });
+
     const review = new Review({
-        user_id: ReqReview.user_id,
+        user_id: req.userId,
         product_id: ReqReview.product_id,
+        images: images,
         description: ReqReview.description,
         review: ReqReview.review,
         date_created : Date.now(),

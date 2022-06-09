@@ -21,15 +21,13 @@ const StoreOrders = ({storeid}) => {
 
     const updateOrder = (ordid) =>{
 
-        console.log(ordid)
-        // api.post('store/updateOrderState/'+ ordid,{status : 'Fulfilled'})
-        // .then(data =>{
-        //     console.log(data)
-        //     setUpdate(update+1)
-        // })
-        // .catch( err =>{
-        //     console.log(err)
-        // })
+        api.post('store/order/'+ ordid)
+        .then(data =>{
+            setUpdate(update+1)
+        })
+        .catch( err =>{
+            console.log(err)
+        })
     }
 
 

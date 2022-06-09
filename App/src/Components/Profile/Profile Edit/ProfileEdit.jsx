@@ -59,7 +59,7 @@ const ProfileEdit = ({open, handleClose, setFav, fav}) => {
 
 
     useEffect(()=>{
-        setPreviewAvatar("https://tagmeapi.herokuapp.com/"+user.profile_pic)
+        setPreviewAvatar("http://localhost:8090/"+user.profile_pic)
     },[user])
 
 

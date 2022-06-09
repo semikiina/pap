@@ -7,19 +7,98 @@ const storeRoutes = require('./routes/store');
 const orderRoutes = require('./routes/order');
 const feedRoutes = require('./routes/feed');
 const reviewRoutes = require('./routes/review');
+const notificationRoutes = require('./routes/notification');
 
+const notificationController = require('./controllers/notification');
+const orderController = require('./controllers/order');
+
+const jwt = require('jsonwebtoken');
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 var cors = require('cors');
 const path = require('path');
-
 const app = express();
 var port = process.env.PORT || 8090;
 
+const io = require('socket.io')(3001, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+      }
+});
+
+var onlineUsers=[]
+
+const addNewUser = (token, socketID, storeToken) => {
+    if(token){
+        var decodedToken = jwt.verify(token, 'supersecrettagmetoken');
+        var userID = decodedToken.id;
+
+        var store =""
+        if(storeToken){
+            var decodedStoreToken = jwt.verify(storeToken, 'supersecretstoretagmetoken');
+            var store = decodedStoreToken.id;
+        }
+    
+        !onlineUsers.some((user) => user.userID === userID) &&
+        onlineUsers.push({
+            userID,
+            socketID,
+            store
+        })
+
+    }
+}
+
+const removeUser = (socketID) => {
+    onlineUsers = onlineUsers.filter((user) => user.socketID !== socketID)
+}
+
+const getUser = (socketID) => {
+    return onlineUsers.find((user) => user.socketID == socketID)
+}
+
+const getStoreOwners = (storeID) => {
+    return onlineUsers.filter((user) => {
+        return user.store == storeID})
+}
 
 
+io.on("connection", (socket) => {
+
+    socket.on('newUser' , (token ,store) => {
+        addNewUser(token, socket.id , store)
+    })
+
+    socket.on('disconnect' , () => {
+        removeUser(socket.id)
+    })
+
+
+    socket.on("sendFavoriteNotification", async (productID) =>{
+
+        const userID = getUser (socket.id)
+        if(userID){
+            const newNot = await notificationController.newFavoriteNotification(userID.userID,productID);
+
+            if(newNot){
+                const storeOwners = await getStoreOwners(newNot.storeID._id.toString());
+    
+                console.log(storeOwners)
+        
+                storeOwners.forEach((user) => {
+                    io.to(user.socketID).emit('notification', newNot.newNot);
+                })
+            }
+            
+        }
+    });
+
+  
+
+});
 
 
 //File Storage for images
@@ -34,6 +113,7 @@ const fileStorage = multer.diskStorage({
 
 //Accept only images
 const fileFilter = (req, file, cb) => {
+  console.log(file)
   if (file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg') cb(null, true);
   else cb(null, false);
 
@@ -46,17 +126,6 @@ app.use(bodyParser.urlencoded({ extended: true}))
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).array('image', 6))
 
 app.use('/uploads', express.static(path.join(__dirname,'/uploads')));
-
-//Set Headers
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*')//Vários sites podem acessar aminha API
-//   res.setHeader("Access-Control-Allow-Credentials", "true")
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.setHeader('Acess-Control-Allow-Methods', 'GET, HEAD , OPTIONS , POST, PUT, PATCH, DELETE')//Os sites podem usar todos os métodos
-//   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, UAuthorization, SAuthorization");
-//   next();
-// })
-
 
 //localhost:8090/users
 app.use('/user', userRoutes);
@@ -76,7 +145,8 @@ app.use('/feed', feedRoutes);
 //localhost:8090/review
 app.use('/review', reviewRoutes);
 
-
+//localhost:8090/notification
+app.use('/notification', notificationRoutes);
 
 //Handling errors
 app.use((error, req, res, next) => {

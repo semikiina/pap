@@ -8,7 +8,6 @@ import ColEditProduct from './Edit Product/ColEditProduct';
 const EditProduct = ({storeid}) => {
 
     const  {id} = useParams();
-    const { handleSubmit, register } = useForm();
     const [categorys, setCategorys] = useState([])
     const [images, setImages] = useState([]);
     const [update, setUpdate] = useState(0);
@@ -20,9 +19,8 @@ const EditProduct = ({storeid}) => {
         description: '',
         category: '',
         stock: 0,
-        price: 0,
-        images: [],
-        shipping: 0,
+        basePrice: 0,
+        shipping: "0",
       })
 
     const Shipping = (e)=>{
@@ -30,23 +28,32 @@ const EditProduct = ({storeid}) => {
         else setIsDisabledShipping(true)
     }
 
-    const onSubmit = data => {
+    const handleEdit = data => {
+
         var formData = new FormData();
-        var shippingData;
-        if(!isDisabledShipping) shippingData = data.shipping
-        else shippingData = 0;
-        var ins = images.length;
+
+        var ins = data.images.length;
+
+        console.log(data.images)
         for (var x = 0; x < ins; x++) {
-            formData.append("image", images[x]);
+            formData.append("image", data.images[x]);
         }
+
+        if(data.vprices.length){
+    
+            for (var x = 0; x < data.vprices.length; x++) {
+    
+                formData.append("vprices[]", JSON.stringify(data.vprices[x]));
+            }
+        }
+
         formData.append("title", data.title)
         formData.append("stock", data.stock)
         formData.append("active", data.active)
-        formData.append("price", data.price)
+        formData.append("basePrice", data.basePrice)
         formData.append("category", data.category)
-        formData.append("description", htmlEditor)
-        formData.append("store_id", storeid)
-        formData.append("shipping", shippingData)
+        formData.append("description", data.description)
+        formData.append("shipping", data.shipping)
 
         api.post('product/upd/'+id,formData,{
             headers: {
@@ -65,14 +72,21 @@ const EditProduct = ({storeid}) => {
         api.get('product/categorys')
         .then(cats=>{
             setCategorys(cats.data)
+
+            
         })
         .catch(err=>{
             console.log(err)
         })
         api.get('product/'+id)
         .then(prd=>{
-            console.log(prd.data)
-            if(prd.data.shipping == 0) setIsDisabledShipping (true)
+
+            var imgs=[]
+            prd.data.images.forEach((image) => {
+                imgs.push(`http://localhost:8090/${image}`)
+            })
+
+            setImages(imgs)
             setProduct(prd.data)
         })
         .catch(err=>{
@@ -83,25 +97,11 @@ const EditProduct = ({storeid}) => {
     return (
         <>
             <Container>
-                <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} md={8} >
-                        <ColEditProduct product={product} setProduct={setProduct} update={update} setUpdate={setUpdate} register={register} setImages={setImages} setHtmlEditor={setHtmlEditor} isDisabledShipping={isDisabledShipping} Shipping={Shipping} categorys={categorys}></ColEditProduct>
-                    </Grid>
-                    <Grid item xs={12} md={4} >
-                        <Box marginBottom={4}>
-                            <Paper >
-                                <Box padding={2}>
-                                    <Button padding={2} variant="contained" fullWidth type="submit">Save Changes</Button>
-                                </Box>
-                                <Box padding={2}>
-                                    <FormControlLabel control={<Switch defaultChecked {...register('active')}/>} label="Active Product" />
-                                </Box>
-                            </Paper>
-                        </Box>
+                    <Grid item xs={12} >
+                        <ColEditProduct product={product} setProduct={setProduct} categorys={categorys} images={images} handleEdit={handleEdit} ></ColEditProduct>
                     </Grid>
                 </Grid>
-                </form>
             </Container>
         </>
     )

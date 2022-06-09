@@ -1,5 +1,6 @@
 const Store = require('../models/store');
 const Product = require('../models/product');
+const Notification = require('../models/notification');
 const Order = require('../models/order');
 const User = require('../models/user');
 var easyinvoice = require('easyinvoice');
@@ -65,12 +66,29 @@ exports.GetOrder = (req, res, next) => {
         })
 }
 
-async function  removeStock(prd, skuid){
+async function  removeStock(prd, skuid, quantity){
+    
     const product = await Product.findById(prd)
-    product.variants.prices.forEach((item)=>{
-        
-    })
 
+    var thisProduct = product.variants.prices.find((item)=> item.skuid == skuid)
+
+    thisProduct.availableQuantity = thisProduct.availableQuantity - quantity ;
+
+    if(thisProduct.availableQuantity <=5){
+        
+        const not = new Notification({
+            store_id : product.store_id,
+            product_id : product._id,
+            message: `Your product "${product.title}" (${skuid.replaceAll("?", " ,")}) only have ${thisProduct.availableQuantity} units in stock left.`,
+            read: false,
+            date_created: Date.now(),
+            ref_type: 4
+        })
+
+        await not.save();
+    }
+
+    await product.save();
 }
 
 
@@ -84,7 +102,7 @@ exports.Checkout = async (req, res, next) => {
        const user =  await User.findById(req.userId)
         .populate({
             path:'cart.items.product_id',
-            select: 'price title',
+            select: 'price title variants',
             populate : {
                 path: 'store_id',
                 select:'_id'
@@ -92,9 +110,15 @@ exports.Checkout = async (req, res, next) => {
         })
     
         var cartItems = [];
-
         user.cart.items.map((item)=>{
-            var thisComb = item.product_id.variants.prices.filter((comb)=>{ return comb.skuid == item.skuid})
+            var thisComb = item.product_id.variants.prices.filter((comb)=>{ 
+                
+                return comb.skuid == item.skuid
+            })
+
+            removeStock(item.product_id._id, thisComb[0].skuid, item.quantity);
+
+            
             cartItems.push({
                 "quantity": item.quantity,
                 "description": item.product_id.title + " - " + item.skuid.replaceAll('?', " ,"),
@@ -135,8 +159,7 @@ exports.Checkout = async (req, res, next) => {
             user.cart.items.map((item)=>{
                 if(item.product_id.store_id._id.toString() == store._id)
                 {
-                    removeStock();
-
+                    
                     orderItems.push({
                         product_id: item.product_id._id,
                         quantity: item.quantity,
@@ -150,6 +173,17 @@ exports.Checkout = async (req, res, next) => {
                 items: orderItems,
                 status:'Payed'
             })
+
+            const orderNot = new Notification({
+                store_id : store._id,
+                message: `Your store has a new order.`,
+                read: false,
+                date_created: Date.now(),
+                ref_type: 1
+            })
+    
+            await orderNot.save();
+
             await store.save()
 
         }))
@@ -177,6 +211,8 @@ exports.Checkout = async (req, res, next) => {
                 ],
             });
 
+       
+
         res.status(201).json({
             message: "Order Placed Successfully!"
         })
@@ -197,11 +233,16 @@ exports.VerifyStock = (req, res, next) => {
     
     console.log('POST /order/stock')
     User.findById(req.userId).orFail()
-        .populate('cart.items.product_id',["variants"])
+        .populate('cart.items.product_id',["variants","active", "title"])
         .then(user =>{
+
             user.cart.items.forEach((e) =>{
-                const verProd = e.product_id.variants.prices.filter((comb)=>{ return comb.skuid == e.skuid})
-                if(e.quantity > verProd[0].availableQuantity) throw new Error("This product doesn't have enough stock!")
+
+                const verProd = e.product_id.variants.prices.find((comb)=> comb.skuid == e.skuid)
+
+                if(!e.product_id.active) throw new Error("This product isn't available!")
+
+                if(e.quantity > verProd.availableQuantity) throw new Error(`"${e.product_id.title}" doesn't have enough stock!`)
             })
 
             res.status(200).send('Stock available.')

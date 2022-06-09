@@ -1,8 +1,8 @@
 import React from 'react'
-import { Container, Typography, Divider, Grid, Paper, Box, Stack, CardMedia, Button, CircularProgress } from '@mui/material'
+import { Container, Typography, Divider, Grid, Paper, Box, Stack, CardMedia, Button, CircularProgress, ListItemText, ListItem, ListItemAvatar, Avatar } from '@mui/material'
 import OrderReview from '../../Order Review/OrderReview';
 
-const OrderProduct = ({item, quantity, userId}) => {
+const OrderProduct = ({item, status, userId, order}) => {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -13,28 +13,31 @@ const OrderProduct = ({item, quantity, userId}) => {
       setOpen(false);
     };
 
-    if(!item) return <CircularProgress></CircularProgress>
+    if(!order) return <CircularProgress></CircularProgress>
     return (
         <>
-            <Divider></Divider>
+            
             <Box padding={2} fullWidth>
-                <Stack direction="row" marginBottom={2}>
-                    {
-                        item.images && <CardMedia   component="img" sx={{ width: 100, height: 100, paddingX: 2, objectFit: 'cover' }} image={"https://tagmeapi.herokuapp.com/" + item.images[0]} />
-                    }
-                    <Box >
-                        <Typography >{item.title}</Typography>
-                        <Typography variant="caption" color="inherit">{item.category}</Typography>
-                        <Stack direction="row" justifyContent={'space-between'}>
-                            <Typography>{item.price} €</Typography>
-                            <Typography>Qtt.{quantity}</Typography>
-                        </Stack>
-                        
-                    </Box>
+                <Stack direction="row" spacing={2} alignItems={'center'}>
+                    <ListItemAvatar >
+                        <Avatar src={"http://localhost:8090/" + order.product_id?.images[0]} sx={{ width: 80, height: 80}} variant="square"/>
+                    </ListItemAvatar>
+                    <ListItemText 
+                        primary={order.product_id?.title}
+                        secondary={`${order.price} €`}
+                    />
+                    <Typography>Qtt.{order.quantity}</Typography>
                 </Stack>
-                <Button color="secondary"  fullWidth  onClick={handleClickOpen}>Review</Button>
             </Box>
-            <OrderReview open={open} handleClose={handleClose} product={item} userId={userId}></OrderReview>
+            <Stack alignItems={'center'}>
+                {
+                    status?.toLowerCase() == "completed" 
+                    ? <Button color="secondary"  fullWidth  onClick={handleClickOpen}>Review</Button>
+                    : <Typography variant="caption" textAlign={'center'}> After recieve your product you can review them.</Typography>
+                }
+            </Stack>
+            
+            <OrderReview open={open} handleClose={handleClose} product={order.product_id} productPrice={order.price} userId={userId}></OrderReview>
         </>
     )
 }

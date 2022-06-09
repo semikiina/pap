@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CartItem from './CartItems/CartItem';
-import {Container, Typography, Stack, Button,Box, Divider, List, Grid } from '@mui/material';
+import {Container, Typography, Stack, Button,Box, Divider, List, Grid, Collapse, Alert, IconButton } from '@mui/material';
 import FavoriteProducts from './Favorite Products/FavoriteProducts';
 import CheckoutLabel from './CartItems/CheckoutLabel';
-import {  ShoppingBasketOutlined } from '@mui/icons-material';
+import {  Close, ShoppingBasketOutlined } from '@mui/icons-material';
+import api from '../../Services/api';
 
 const Cart = ({Cart, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
     
-    
+    const [ errors, setErrors] = useState(false);
+
     const EmptyCart = ()=>{
         return(
             <Stack spacing={1} alignItems={'center'} marginTop={3}>
                 <ShoppingBasketOutlined/>
                 <Typography variant="h6">Your cart is empty!</Typography>
                 <Typography variant="caption">Start by adding a product.</Typography>
-                <Button variant="contained" color="primary" href="/category">Search Products</Button>  
+                <Button variant="contained" color="primary" href="/feed/products">Search Products</Button>  
             </Stack>
         ) 
     }
@@ -28,9 +30,28 @@ const Cart = ({Cart, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
         </List>
     )
 
+    const handleClick = () =>{
+        api.get('order/stock')
+        .then(data=>{
+            window.location.href="../checkout"
+        })
+        .catch(err=>{
+            setErrors(true)
+        })
+       
+    }
+
     if(!Cart) return null;
     return (
         <Container>
+            <Collapse in={errors}>
+                <Alert 
+                    severity="error" 
+                    action={<IconButton size="small" onClick={() => setErrors(false)}><Close/></IconButton>}
+                >
+                    One or more product(s) aren't available now.
+                </Alert>
+            </Collapse>
             <Typography variant='h5' padding={2}>Your Shopping Cart</Typography>
             <Divider/>
             {
@@ -41,7 +62,7 @@ const Cart = ({Cart, onRemoveFromCart, onAddToCart, onRemoveQuantity}) => {
                             <FilledCart />
                         </Grid>
                         <Grid item xs={12} md={5}>
-                            <CheckoutLabel Cart={Cart} />
+                            <CheckoutLabel Cart={Cart} handleClick={handleClick} />
                         </Grid>
                     </Grid>
                 :   <EmptyCart></EmptyCart>

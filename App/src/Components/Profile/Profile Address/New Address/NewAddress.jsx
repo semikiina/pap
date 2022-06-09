@@ -86,8 +86,8 @@ const NewAddress = ({setAddress, setFav, fav}) => {
                             autoHighlight
                             getOptionLabel={(option) => '+'+ option.phone}
                             renderOption={(props, option) => (
-                                <Box component="li" {...props}>
-                                    ({option.code}) +{option.phone}
+                                <Box component="li" {...props} key={Math.random()}>
+                                    +{option.phone}
                                 </Box>
                             )}
                             

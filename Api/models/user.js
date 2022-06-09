@@ -58,12 +58,11 @@ userSchema.methods.AddToCart = function(product,quantity,skuid){
 
     //return the index of the cart
     const CartItemIndex = this.cart.items.findIndex( item =>{
-        return item.product_id.toString() == product._id.toString()
+        return item.product_id.toString() == product._id.toString() && item.skuid == skuid
     })
 
     //return the product of the cart
     const CartItem = this.cart.items[CartItemIndex]
-    console.log(quantity)
 
     //return combination infos
     const Vprices = product.variants.prices.filter( item =>{
@@ -129,6 +128,34 @@ userSchema.methods.RemoveFromCart = function(product, skuid){
         subtotal : subtotal.toFixed(2),
         shipping : shipping.toFixed(2)
     }
+
+    this.cart = nupdatedCart;
+
+    return this.save();
+}
+
+userSchema.methods.RemoveProductIDFromCart = function(product){
+    
+    
+    var updatedCartItems = this.cart.items.filter( item =>{
+        return item.product_id != product._id.toString()
+    })
+
+    let subtotal = 0;
+    let shipping = 0;
+
+    updatedCartItems.forEach(i =>{
+
+        subtotal += parseFloat(i.quantity* i.price) ;
+        shipping += parseFloat(i.shipping);
+    })
+
+    const nupdatedCart ={
+        items : updatedCartItems,
+        subtotal : subtotal.toFixed(2),
+        shipping : shipping.toFixed(2)
+    }
+
 
     this.cart = nupdatedCart;
 

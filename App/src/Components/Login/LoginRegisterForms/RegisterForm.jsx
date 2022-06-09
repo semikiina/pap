@@ -59,7 +59,7 @@ const RegisterForm = ({registerUser, errorsRegister, setErrorsRegister}) => {
             </Collapse>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h4" marginBottom={4} textAlign="center">Register</Typography>
-                <Stack marginBottom={2} direction="row" spacing={1}>
+                <Stack marginBottom={2} direction="row" spacing={1} justifyContent={'space-between'} >
                     <Box fullWidth>
                         <TextField  label="First Name" fullWidth {...register("first_name")}/>
                         <Typography variant="caption" color="error">{errors.first_name?.message}</Typography>

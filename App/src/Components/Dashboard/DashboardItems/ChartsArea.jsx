@@ -83,7 +83,10 @@ const ChartsArea = ({store}) => {
                         </Series>
                         <SmallValuesGrouping threshold={200} mode="smallValueThreshold" />
                         <Legend
-                        visible={false}
+                        visible={true}
+                        verticalAlignment="bottom"
+                        horizontalAlignment="center"
+                        itemTextPosition="right"
                         />
                          <Tooltip
                             paddingLeftRight={12}

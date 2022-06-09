@@ -37,7 +37,7 @@ const Profile = ({setFav,fav}) => {
                         <Paper >
                             <Stack justifyContent={'center'} alignItems={'center'} padding={2} spacing={2}>
                                 <Typography >Welcome back, {user.first_name}</Typography>
-                                <Avatar  alt={user.nickname} src={'https://tagmeapi.herokuapp.com/'+user.profile_pic} sx={{ width: 200, height: 200 }}></Avatar>
+                                <Avatar  alt={user.nickname} src={'http://localhost:8090/'+user.profile_pic} sx={{ width: 200, height: 200 }}></Avatar>
                                 <Button  variant="outlined" color="secondary" onClick={handleOpen} >Edit Profile</Button>
                             </Stack>
                         </Paper>

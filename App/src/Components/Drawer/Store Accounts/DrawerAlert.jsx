@@ -15,9 +15,9 @@ const DrawerAlert = ({open,handleClose,storeList, ChangeCurrentStore}) => {
                 <List>
                     {
                         storeList?.map((store) => {
-                            return <ListItemButton key={store._id} onClick={() => {ChangeCurrentStore(store._id); handleClose()}}>
+                            return <ListItemButton key={store._id} onClick={() => {ChangeCurrentStore(store._id); handleClose()}} >
                                 <ListItemAvatar>
-                                    <Avatar src={'https://tagmeapi.herokuapp.com/'+store.store_image} />
+                                    <Avatar src={'http://localhost:8090/'+store.store_image} />
                                 </ListItemAvatar>
                                 <ListItemText primary={store.store_name}  />
                             </ListItemButton>
@@ -26,7 +26,7 @@ const DrawerAlert = ({open,handleClose,storeList, ChangeCurrentStore}) => {
                     }
                 </List>
                 <Divider></Divider>
-                <Typography variant='subtitle2' paddingTop={2}>Sign In or Sign Up to a store <b style={{ cursor: 'pointer'}} onClick={()=>window.location.href= "../newStore"}>here</b>.</Typography>
+                <Typography variant='subtitle2' paddingTop={2} textAlign={'center'}>Create a new store <b style={{ cursor: 'pointer'}} onClick={()=>window.location.href= "../newStore"}>here</b>.</Typography>
             </DialogContent>
         </Dialog>
     )

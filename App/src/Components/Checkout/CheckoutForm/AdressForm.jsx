@@ -15,13 +15,7 @@ const AdressForm = ({next}) => {
     const [newAddress, setNewAddress] = useState(true);
     const [exAddress, setExAddress] = useState('');
     
-    const handleClick = () =>{
-        api.get('order/stock')
-        .then(data=>{
-            console.log(data)
-        })
-        next(user.addresses.filter(o => o._id === exAddress)[0])
-    }
+
 
     return (
         <>
@@ -35,7 +29,7 @@ const AdressForm = ({next}) => {
             {
                 newAddress 
                 ? <NewAddress handleSubmit={handleSubmit} register={register} onSubmit={onSubmit}  ></NewAddress>
-                : <Button variant='contained' color='secondary' fullWidth onClick={handleClick}>Continue</Button>
+                : <Button variant='contained' color='secondary' fullWidth onClick={next(user.addresses.filter(o => o._id === exAddress)[0])}>Continue</Button>
             }
             
        

@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const transporter = require('../mailer');
 var crypto = require('crypto');
+const user = require('../models/user');
 
 //POST new User
 exports.NewUser = (req, res, next) => {
@@ -147,8 +148,15 @@ exports.Profile = (req, res, next) => {
     console.log('GET user/profile')
     User.findById(userId)
         .select(['-password'])
-        .populate('cart.items.product_id',['price','title','images','stock','category',"shipping",'variants'])
-        .populate('favorite',['title','images','price','variants'])
+        .populate({
+            path :'cart.items.product_id',
+            select :['basePrice','title','images','stock','category',"shipping",'variants',"active"],
+           
+        })
+        .populate({
+            path :'favorite',
+            select :['basePrice','title','images','stock','category',"shipping",'variants'], 
+        })
         .populate('store')
         .then(user => {
             if (!user) {
@@ -213,7 +221,7 @@ exports.EditProfile = (req, res, next) => {
     User.findById(userid)
         .then(user => {
             
-            if(req.files.path) user.profile_pic = req.files[0].path;
+            if(req.files) user.profile_pic = req.files[0].path;
             user.first_name = userReq.first_name;
             user.last_name = userReq.last_name;
             user.nickname = userReq.nickname;
@@ -423,7 +431,7 @@ exports.UserOrders = (req, res, next) => {
     Order.find({user_id : req.userId})
         .populate({
             path:'cart.items.product_id',
-            select:'title images price category',
+            select:'title images basePrice category active variants',
             populate:{
                 path:"store_id",
                 select:'store_name store_image'
@@ -444,7 +452,7 @@ exports.UserOrders = (req, res, next) => {
 
 }
 
-//User Orders
+//User Delete Address
 exports.DeleteAddress = (req, res, next) => {
 
     console.log('DELETE user/deleteAddress')
@@ -462,6 +470,26 @@ exports.DeleteAddress = (req, res, next) => {
             .status(422)
             .json({
                 message: "Validation failed. Please insert correct data.",
+                errors: error
+            })
+    })
+}
+
+//User remove store
+exports.RemoveStore = (req, res, next) => {
+
+    console.log('DELETE user/removeStore')
+
+    User.updateOne({_id: req.userId},{ $pull : { store: req.params.id}})
+    .then(data=>{
+        res.status(200).send("Store removed successfully.")
+    })
+    .catch(error => {
+        console.log(error);
+        return res
+            .status(422)
+            .json({
+                message: "An error ocurred. Please, try again later.",
                 errors: error
             })
     })

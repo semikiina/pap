@@ -1,15 +1,18 @@
 import React, {useEffect,useState} from 'react'
-import { List, ListItem, ListItemIcon, Drawer, IconButton, Divider, ListItemText, MenuItem , Avatar, Typography, Tooltip, Button} from '@mui/material';
+import { List, ListItem, ListItemIcon, Drawer, IconButton, Divider, ListItemText, MenuItem , Avatar, Typography, Tooltip, Button, Stack} from '@mui/material';
 import { ChevronLeft, Close, Dashboard, Inbox, LocalShipping, Settings, Storage, Store, Sync } from '@mui/icons-material';
 import { styled, useTheme } from '@mui/material/styles';
 import api from '../../Services/api';
 import useAuth from '../Contexts/useAuth';
 import DrawerAlert from './Store Accounts/DrawerAlert';
 
-const DrawerComponent = ({handleDrawerClose,openDrawer,setUpdate, update}) => {
+
+
+const DrawerComponent = ({handleDrawerClose,openDrawer,setUpdate, update, userRole, setUserRole}) => {
+
 
     const {user,setStoreA, storeA} = useAuth();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
         setUpdate(update +1)
@@ -38,61 +41,20 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,setUpdate, update}) => {
         api.get('store/profile')
         .then(data=>{
             setStoreA(data.data)
+            
         })
         .catch(err => {
             console.log(err)
         })
     },[update])
 
-    const drawer = (
-        <div>
-          <List>
-                <ListItem button onClick={handleClickOpen}>
-                        <ListItemIcon>
-                            <Sync /> 
-                        </ListItemIcon>
-                    <ListItemText primary="Change Store" />
-                </ListItem>
-                <ListItem button onClick={()=> window.location.href="../dashboard"}>
-                        <ListItemIcon>
-                            <Dashboard /> 
-                        </ListItemIcon>
-                    <ListItemText primary="Store Dashboard" />
-                </ListItem>
-                <ListItem button onClick={()=> window.location.href="../store/"+storeA._id}>
-                        <ListItemIcon>
-                            <Store /> 
-                        </ListItemIcon>
-                    <ListItemText primary="Store Profile" />
-                </ListItem>
-                <ListItem button onClick={()=> window.location.href="../storeProducts"}>
-                        <ListItemIcon>
-                            <Storage /> 
-                        </ListItemIcon>
-                    <ListItemText primary="Store Products" />
-                </ListItem>
-                <ListItem button onClick={()=> window.location.href="../storeOrders"}>
-                        <ListItemIcon>
-                            <LocalShipping /> 
-                        </ListItemIcon>
-                    <ListItemText primary="Store Orders" />
-                </ListItem>
-                <ListItem button onClick={()=> window.location.href="../storeSettings"}>
-                        <ListItemIcon>
-                            <Settings /> 
-                        </ListItemIcon>
-                    <ListItemText primary="Store Settings" />
-                </ListItem>
-          </List>
-        </div>
-      );
+    useEffect(()=> {
+        if(storeA.collaborators){
+            console.log(storeA.collaborators?.find((collab)=> collab.user_id._id == user._id)?.role)
+            setUserRole(storeA.collaborators?.find((collab)=> collab.user_id._id == user._id)?.role)
+        }
+    },[storeA,update])
 
-      const DrawerHeader = styled('div')(() => ({
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'content-between',
-        paddingBottom: 3
-      }));
 
     if(!storeA) return null;
     return (
@@ -109,26 +71,64 @@ const DrawerComponent = ({handleDrawerClose,openDrawer,setUpdate, update}) => {
                 variant="persistent"
                 anchor="left"
                 open={openDrawer}
+                
             >
-                <DrawerHeader >
-                    {storeA && <>
-                        <MenuItem >
+                {storeA && 
+                    <Stack direction="row" justifyContent={'space-between'}  alignItems={'center'} paddingRight={1}>
+                        <ListItem>
                             <ListItemIcon>
-                                <Avatar src={storeA?.store_image && 'https://tagmeapi.herokuapp.com/'+storeA?.store_image} />
+                                <Avatar src={storeA?.store_image && 'http://localhost:8090/'+storeA?.store_image} />
                             </ListItemIcon>
-                            <ListItemText primary={storeA?.store_name}/>
-                            <IconButton onClick={handleDrawerClose} sx={{pr:2}} disableRipple>
-                                <Tooltip title="close menu"  disableFocusListener disableTouchListener>
-                                    <Close />
-                                </Tooltip>
-                            </IconButton>
-                        </MenuItem>
-                       
+                            <Typography variant="subtitle2">{storeA.store_name}</Typography>
+                        </ListItem>
+                        <IconButton onClick={handleDrawerClose}  >
+                            <Close  />
+                        </IconButton>
+                    </Stack>
+                }
+                <Divider />
+                <List>
+                    <ListItem button onClick={handleClickOpen}>
+                            <ListItemIcon>
+                                <Sync color="secondary"/> 
+                            </ListItemIcon>
+                        <ListItemText primary="Change Store" />
+                    </ListItem>
+                    <ListItem button onClick={()=> window.location.href="../store/"+storeA._id}>
+                            <ListItemIcon>
+                                <Store color="secondary"/> 
+                            </ListItemIcon>
+                        <ListItemText primary="Store Profile" />
+                    </ListItem>
+                    <ListItem button onClick={()=> window.location.href="../storeProducts"}>
+                            <ListItemIcon>
+                                <Storage color="secondary"/> 
+                            </ListItemIcon>
+                        <ListItemText primary="Store Products" />
+                    </ListItem>
+                   {userRole < 3 &&
+                        <>
+                            <ListItem button onClick={()=> window.location.href="../dashboard"}>
+                                    <ListItemIcon>
+                                        <Dashboard color="secondary"/> 
+                                    </ListItemIcon>
+                                <ListItemText primary="Store Dashboard" />
+                            </ListItem>
+                            <ListItem button onClick={()=> window.location.href="../storeOrders"}>
+                                    <ListItemIcon>
+                                        <LocalShipping color="secondary"/> 
+                                    </ListItemIcon>
+                                <ListItemText primary="Store Orders" />
+                            </ListItem>
                         </>
                     }
-                </DrawerHeader>
-                <Divider />
-                {storeA ? drawer : <Button variant="outlined" href="./newStore">CREATE A STORE</Button>}
+                    <ListItem button onClick={()=> window.location.href="../storeSettings"}>
+                            <ListItemIcon>
+                                <Settings color="secondary"/> 
+                            </ListItemIcon>
+                        <ListItemText primary="Store Settings" />
+                    </ListItem>
+                </List>
             </Drawer>
             <DrawerAlert open={open} handleClose={handleClose} storeList={user.store} ChangeCurrentStore={ChangeCurrentStore} />
         </>

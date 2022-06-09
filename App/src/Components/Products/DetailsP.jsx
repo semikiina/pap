@@ -26,7 +26,7 @@ const DetailsP = ({newFavorite,fav,onAddToCart}) => {
 
 
     useEffect(() =>{
-        api.get('product/'+id)
+        api.get('feed/product/'+id)
         .then(({data})=>{
              setProduct(data)
              similarProducts(data.store_id._id)
@@ -51,7 +51,7 @@ const DetailsP = ({newFavorite,fav,onAddToCart}) => {
         <Container >
             <ProductDetail product={product} newFav={newFavorite} reviewL={reviews.length} avr={avr} onAddToCart={onAddToCart}></ProductDetail>
             <ProductReview id={id} reviews={reviews} setDel={setDel} del={del}></ProductReview>
-            <ProductDetailFooter storename={product.store_id?.store_name} storeid={product.store_id?._id} simProduct={simProduct} ></ProductDetailFooter>
+            <ProductDetailFooter storename={product.store_id?.store_name} storeid={product.store_id?._id} simProduct={simProduct}  storeActive={product.store_id?.active}></ProductDetailFooter>
         </Container>
     )
 }

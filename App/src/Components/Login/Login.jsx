@@ -23,9 +23,10 @@ const Login = () => {
                 email: user.email,
                 password: user.password,
             })
+            console.log(Login)
             localStorage.setItem('UAuthorization',Login.data.token)
-            //navigate(from, {replace: true })
-            window.location.href=from
+            // //navigate(from, {replace: true })
+             window.location.href=from
         }
         catch(err){
             console.log(err)

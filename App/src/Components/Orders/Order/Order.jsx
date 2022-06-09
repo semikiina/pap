@@ -7,10 +7,11 @@ const Order = ({order}) => {
     const[page,setPage] = useState(0)
 
     var chipColor= 'primary';
-    if(order?.state?.toString().toLowerCase() == 'payed') chipColor = 'warning';
-    else if(order?.state?.toString().toLowerCase() == 'fulfilled') chipColor = 'primary';
+    if(order?.status?.toString().toLowerCase() == 'payed') chipColor = 'warning';
+    else if(order?.status?.toString().toLowerCase() == 'fulfilled') chipColor = 'primary';
     else chipColor = 'error';
 
+    console.log(order)
 
 
     if(!order) return <CircularProgress></CircularProgress>
@@ -18,24 +19,17 @@ const Order = ({order}) => {
         <Paper>
             <Typography paddingTop={2} paddingX={2} variant="subtitle1">Order #{order.paypal_id}</Typography>
             <Typography paddingX={2} paddingBottom={2} variant="subtitle2">{ new Date(order.date_created).toLocaleDateString("en-US",options)}</Typography>
-            {/* {
-                order.cart.items && 
-                order.cart.items.map((item) =>{
-                    return (
-                        <OrderProduct key={item._id} item={item.product_id} quantity={item.quantity} i={page}></OrderProduct>
-                    )
-                })
-            } */}
-            <OrderProduct item={order.cart.items[page].product_id} quantity={order.cart.items[page].quantity} userId={order.user_id}></OrderProduct>
+            <Divider></Divider>
+            <OrderProduct item={order.cart.items[page].product_id} status={order.status} userId={order.user_id} order={order.cart.items[page]}></OrderProduct>
             <Stack alignItems={'center'} paddingBottom={2}>
                 <Pagination count={order.cart.items.length} onChange={(event,page)=>{setPage(page-1); console.log(page-1)}}></Pagination>
             </Stack>
             
             <Divider></Divider>
             <Stack direction="row" justifyContent={'space-between'}>
-                <Typography padding={3} >Total: 35.43€</Typography>
+                <Typography padding={3} >Total: {(order.cart.subtotal + order.cart.shipping).toFixed(2)}€</Typography>
                 <Box marginRight={2} marginTop={2}>
-                    <Chip  label={order.state || 'Completed'} color={'success'}></Chip>
+                    <Chip variant="outlined"  label={order.status} color={chipColor}></Chip>
                 </Box>
             </Stack>
         </Paper>

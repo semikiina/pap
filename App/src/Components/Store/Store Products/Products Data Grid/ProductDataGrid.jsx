@@ -4,10 +4,11 @@ import {Add, Delete, MoreVert} from '@mui/icons-material';
 import {Column,DataGrid,FilterRow, Paging, Pager,Selection,SearchPanel, HeaderFilter,Item} from 'devextreme-react/data-grid';
 import EditProduct from '../EditProduct';
 import api from '../../../../Services/api';
+import Swal from 'sweetalert2';
 
 const pageSizes = [5,10, 25, 50, 100];
 
-const ProductDataGrid = ({products, update, setUpdate}) => {
+const ProductDataGrid = ({products, update, setUpdate, userRole}) => {
 
     const [anchorElMenu, setAnchorElMenu] = useState(null);
     const [productsToDelete, setProductsToDelete] = useState([])
@@ -21,24 +22,37 @@ const ProductDataGrid = ({products, update, setUpdate}) => {
 		setAnchorElMenu(null);
 	};
 
-    const RemoveProduct = (id)=>{
-        api.delete('product/'+id)
+    const removeManyProductsActions = () =>{
+        api.delete('product/deleteMany',{data:{arr:productsToDelete} })
         .then(data=>{
             setUpdate(update+1);
         })
         .catch(err=>{
+            setUpdate(update+1);
             console.log(err)
         })
     }
 
+    const handleCellClick = (e) =>{
+
+        if(e.column.dataField == "title") {
+            window.location.href="./products/" + e.data._id;
+        }
+    }
+
     const RemoveManyProducts = ()=>{
-        api.delete('product/deleteMany',{data:{d:productsToDelete} })
-        .then(data=>{
-            setUpdate(update+1);
-        })
-        .catch(err=>{
-            console.log(err)
-        })
+        Swal.fire({
+            title: 'Warning!',
+            html: `<Typography>Are you sure that you want to remove ${productsToDelete.length} product(s)?</Typography>`,
+            icon: 'warning',
+            confirmButtonText: 'Confirm'
+          })
+          .then((result) => {
+                if (result.isConfirmed) {
+                    removeManyProductsActions()
+                }
+            })
+       
     }
 
     const UpdateState =(id)=>{
@@ -53,12 +67,12 @@ const ProductDataGrid = ({products, update, setUpdate}) => {
 
     
     const GroupButtons = (e) =>{
-        return (<Button onClick={()=>{window.location.href="../editProduct/"+e.data._id;handleCloseMenu()}}> Edit </Button>)
+        return (<Button onClick={()=>{window.location.href="../editProduct/"+e.data._id;handleCloseMenu()}} size="small" color="secondary" variant="contained"> Edit </Button>)
     }
     
 
     const StateCell = (e) =>{
-        return(<Chip variant="contained" color={e.data.active ? "success" : ""}  size="small" label={e.data.active ? "Active" : "Draft"} onClick={()=>UpdateState(e.data._id)}/>)
+       return(<Chip size="small" variant="contained" color={e.value ? "success" : "warning"}  label={e.value ? "Active" : "Draft"} onClick={()=>UpdateState(e.data._id)} />)
     }
 
     const onSelectionChanged = (e) =>{
@@ -74,22 +88,23 @@ const ProductDataGrid = ({products, update, setUpdate}) => {
         setProductsToDelete(deleteIDS)
     }
 
-
     if(!products) return null;
     return (
         <>
             
-                <DataGrid dataSource={products} showBorders={true} remoteOperations={true} hoverStateEnabled={true} onSelectionChanged={onSelectionChanged}  width={'100%'}>
+                <DataGrid dataSource={products} showBorders={true} remoteOperations={true} hoverStateEnabled={true} onSelectionChanged={onSelectionChanged}  width={'100%'} onCellClick={handleCellClick} >
                     
                     <SearchPanel visible={true} highlightCaseSensitive={true}  width={250}/>
-                    <Selection mode="multiple" showCheckBoxesMode="always"/>
+                    {
+                        userRole<3 && <Selection mode="multiple" showCheckBoxesMode="always"/>
+                    }
                     <HeaderFilter visible={true} allowSearch={true} />
                     <Column dataField="title" caption="Title" width={350} alignment={'center'}/>
                     <Column dataField="category"  width={200} alignment={'center'} />
                     <Column dataField="basePrice" format={{ style: "currency", currency: "EUR", useGrouping: true} } width={150} alignment={'center'}/>
                     <Column dataField="date_created" dataType="date" caption="Date Created" width={'auto'} alignment={'center'}/>
-                    <Column dataField="active"  caption="State" width={150} cellRender={StateCell} alignment={'center'} />
-                    <Column caption="Options"   width={50} cellRender={GroupButtons} alignment={'center'}/>
+                    <Column dataField="active"  caption="State" width={120} cellRender={StateCell} alignment={'center'} />
+                    <Column caption="Options"   width={100} cellRender={GroupButtons} alignment={'center'}/>
                     <Pager allowedPageSizes={pageSizes} showPageSizeSelector={true} />
                     <Paging defaultPageSize={5} />
                 </DataGrid>

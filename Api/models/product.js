@@ -18,6 +18,7 @@ const ProductSchema = new Schema({
     stock: Number,
     views: Number,
     exists: Boolean,
+    removedDate : Date,
     images:[{
         type:String,
     }],

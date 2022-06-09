@@ -42,7 +42,6 @@ const Products = ({onAddToCart, newFav, fav}) => {
         .then( response=>{
             
             setNewStores(response.data)
-            console.log(newStores)
         })
         .catch(err=>{
             setOpenAlert(true)

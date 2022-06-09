@@ -8,26 +8,30 @@ import Carousselitem from '../Components/Carousselitem';
 import CarousselitemStores from '../New Stores/Components/CarousselitemStores';
 import FeedProduct from './All Product Components/FeedProduct';
 import Filters from './All Product Components/Filters';
+import StoreFilters from './All Product Components/StoreFilters';
 
 const AllProducts = ({newFav, onAddToCart}) => {
 
-    
     const [products, setProducts] = useState([]);
+    const [defProducts, setDefProducts] = useState([]);
+    
     const [stores, setStores] = useState([]);
     const [categorys, setCategorys] = useState([]);
+    const [priceRange, setPriceRange] = useState([]);
     const {opt} = useParams();
     const [order, setOrder] = useState(1);
-    
     const [search , setSearch] = useState("");
 
     const SortProducts = (e)=>{
         
+        console.log(e.target.value)
+
         var newSort = [...products];
         //Low to High
         if(e.target.value==1){
             setOrder(1);
             newSort.sort(function(a, b) {
-                return new Date(a.date_created) - new Date(b.date_created);
+                return  b.views -  a.views;
             });
             setProducts(newSort);
         }
@@ -35,7 +39,7 @@ const AllProducts = ({newFav, onAddToCart}) => {
         if(e.target.value==2){
             setOrder(2);
             newSort.sort(function(a, b) {
-            return a.price - b.price;
+            return a.basePrice - b.basePrice;
             });
             setProducts(newSort);
         }
@@ -44,7 +48,7 @@ const AllProducts = ({newFav, onAddToCart}) => {
         if(e.target.value==3){
             setOrder(3);
             newSort.sort(function(a, b) {
-            return b.price - a.price;
+            return b.basePrice - a.basePrice;
             });
             setProducts(newSort);
         }
@@ -77,6 +81,7 @@ const AllProducts = ({newFav, onAddToCart}) => {
 
         api.get('feed')
         .then( data =>{
+            setDefProducts(data.data)
             setProducts(data.data)
         })
         .catch(err=>{
@@ -99,7 +104,41 @@ const AllProducts = ({newFav, onAddToCart}) => {
             console.log(err)
         })
 
+        api.get('feed/pricesRange')
+        .then( data =>{
+            setPriceRange([data.data.min,data.data.max])
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+
     },[newFav])
+
+ 
+    const filterSelectedCategoryOptions = (array, categorys) => {
+        return array.filter((item) =>{ 
+            if(!categorys.length) return item
+            else return categorys.includes(item.category)
+        });
+    };
+
+    const filterSelectedPriceRange = (array, prices) => {
+        return array.filter((item) => {
+            if(!prices.length) return item
+            else return item.basePrice >= prices[0] &&  item.basePrice <= prices[1]
+        });
+    };
+
+    const handleProductFilters = (categorys,prices) => {
+    
+
+        let result = defProducts;
+        result = filterSelectedCategoryOptions(result, categorys);
+        result = filterSelectedPriceRange(result, prices);
+        setProducts(result) 
+    }
+
+
 
     return (
         <Container>
@@ -119,14 +158,17 @@ const AllProducts = ({newFav, onAddToCart}) => {
                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical"/>
                 <IconButton onClick={handleChange}>
                     <Tooltip title="Filters">
-                        <FilterList/>
+                        <FilterList />
                     </Tooltip>
                 </IconButton>
             </Paper>
-            <Box>
-                <Collapse in={checked}>
-                    <Filters categorys={categorys} order={order}/>
-                </Collapse>
+            <Box>{
+                tabIndex=="products" &&
+                    <Collapse in={checked}> 
+                        <Filters setProducts={setProducts} defProducts={defProducts} categorys={categorys} order={order} SortProducts={SortProducts} priceRange={priceRange} handleProductFilters={handleProductFilters} />
+                    </Collapse>
+                }
+               
             </Box>
             <TabContext value={tabIndex}>
                 <TabList  onChange={handleChangeTab}>

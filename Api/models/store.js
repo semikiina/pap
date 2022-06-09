@@ -35,9 +35,22 @@ const StoreSchema = new Schema({
         }],
         status: String,
     }],
-    admins:[{
-        type: Schema.Types.ObjectId,
-        ref:'User'
+    collaborators:[{
+        user_id: {
+            type: Schema.Types.ObjectId,
+            ref:'User'
+        },
+        tempToken: String,
+        role : Number,
+        role_label : String,
+        active: {
+            type: Boolean,
+            default : false
+        },
+        date_created: {
+            type: Number,
+            default : new Date()
+        }
     }]
 })
 

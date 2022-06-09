@@ -20,22 +20,17 @@ router.get('/:id', Product.GetTheProduct)
 router.post('/', Auth, SAuth, Product.NewProduct)
 
 //POST /product/updateState/:id
-router.post('/updateState/:id', Product.UpdateProductState)
+router.post('/updateState/:id',Auth, SAuth, Product.UpdateProductState)
 
 //POST /product/upd/:id
-router.post('/upd/:id', Product.UpdateProduct)
+router.post('/upd/:id', Auth, SAuth, Product.UpdateProduct)
 
-//POST /product/deleteImage/:id
-router.post('/deleteImage/:id', Product.DeleteImageFromProduct)
-
-//POST /product/uploadImage/:id
-router.post('/uploadImage/:id', Product.UploadImageToProduct)
+//POST /product/restore/:id
+router.post('/restore/:id',  Auth, SAuth, Product.RestoreProduct)
 
 //DELETE /product/deleteMany
-router.delete('/deleteMany', Product.DeleteManyProduct)
+router.delete('/deleteMany', Auth, SAuth, Product.DeleteManyProduct)
 
-//DELETE /product/:id
-router.delete('/:id', Product.DeleteProduct)
 
 
 

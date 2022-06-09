@@ -1,9 +1,12 @@
 import React from 'react'
 import { Box, Stack, Typography, Card, Button } from '@mui/material'
+import api from '../../../Services/api'
 
-const CheckoutLabel = ({Cart}) => {
+const CheckoutLabel = ({Cart, handleClick}) => {
 
     const Tot = (Cart.subtotal + Cart?.shipping).toFixed(2)
+
+   
 
     if(!Cart) return null
     return (
@@ -22,7 +25,7 @@ const CheckoutLabel = ({Cart}) => {
                     <Typography variant="h6">{Tot} €</Typography>
                 </Stack>
                 <Box >
-                    <Button variant="contained" color="success" href="/checkout" fullWidth>Checkout</Button>
+                    <Button variant="contained" color="success" onClick={handleClick} fullWidth>Checkout</Button>
                 </Box>
             </Box>
         </Card>
